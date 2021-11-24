@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
-* Студент: [Алексей Артищев](https://up.htmlacademy.ru/ecmascript/16/user/919965).
-* Наставник: `Неизвестно`.
+* Студент: [Алексей Артищев](https://htmlacademy.ru/profile/aartishchev).
+* Наставник: [Артём Рудов](https://htmlacademy.ru/profile/artrudov).
 
 ---
 
