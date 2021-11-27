@@ -7,7 +7,7 @@ import { createTripInfoTemplate } from './view/trip-info.js';
 import {
   renderTemplate,
   renderEvent,
-  RenderPosition,
+  RenderPosition
 } from './utils/useRender.js';
 
 const POINT_EVENTS_COUNT = 3;
