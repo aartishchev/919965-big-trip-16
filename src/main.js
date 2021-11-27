@@ -6,45 +6,34 @@ import { createEventsSorterTemplate } from './view/events-sorter.js';
 import { createTripInfoTemplate } from './view/trip-info.js';
 import {
   renderTemplate,
-  renderEvents,
-  RenderPosition
+  renderEvent,
+  RenderPosition,
 } from './utils/useRender.js';
+
+const POINT_EVENTS_COUNT = 3;
 
 const tripInfoContainer = document.querySelector('.trip-main');
 renderTemplate(
   tripInfoContainer,
   createTripInfoTemplate(),
-  RenderPosition.AFTERBEGIN
+  RenderPosition.AFTER_BEGIN
 );
 
 const navTabsContainer = document.querySelector('.trip-controls__navigation');
-renderTemplate(
-  navTabsContainer,
-  createNavTabsTemplate(),
-  RenderPosition.BEFOREEND
-);
+renderTemplate(navTabsContainer, createNavTabsTemplate());
 
 const filterTabsContainer = document.querySelector('.trip-controls__filters');
-renderTemplate(
-  filterTabsContainer,
-  createFilterTabsTemplate(),
-  RenderPosition.BEFOREEND
-);
+renderTemplate(filterTabsContainer, createFilterTabsTemplate());
 
 const tripEventsContainer = document.querySelector('.trip-events');
-renderTemplate(
-  tripEventsContainer,
-  createEventsSorterTemplate(),
-  RenderPosition.BEFOREEND
-);
+renderTemplate(tripEventsContainer, createEventsSorterTemplate());
 
-const POINT_EVENTS_COUNT = 3;
-const pointEvents = [];
-for (let i = 0; i < POINT_EVENTS_COUNT; i++) {
-  pointEvents.push(createPointEventTemplate());
-}
+const eventsList = document.createElement('ul');
+eventsList.className = 'trip-events__list';
+tripEventsContainer.appendChild(eventsList);
 
-const allEvents = [createAddEventTemplate(), ...pointEvents];
-if (allEvents.length > 0) {
-  renderEvents(tripEventsContainer, allEvents);
+renderEvent(eventsList, createAddEventTemplate());
+
+for(let i = 0; i < POINT_EVENTS_COUNT; i++) {
+  renderEvent(eventsList, createPointEventTemplate());
 }
