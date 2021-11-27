@@ -34,6 +34,6 @@ tripEventsContainer.appendChild(eventsList);
 
 renderEvent(eventsList, createAddEventTemplate());
 
-for(let i = 0; i < POINT_EVENTS_COUNT; i++) {
+for (let i = 0; i < POINT_EVENTS_COUNT; i++) {
   renderEvent(eventsList, createPointEventTemplate());
 }
