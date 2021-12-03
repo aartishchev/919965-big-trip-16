@@ -4,6 +4,7 @@ import { createNavTabsTemplate } from './view/nav-tabs.js';
 import { createPointEventTemplate } from './view/point-event.js';
 import { createEventsSorterTemplate } from './view/events-sorter.js';
 import { createTripInfoTemplate } from './view/trip-info.js';
+import { generateEventPoint } from './mock/event-point.js';
 import {
   renderTemplate,
   renderEvent,
@@ -37,3 +38,5 @@ renderEvent(eventsList, createAddEventTemplate());
 for (let i = 0; i < POINT_EVENTS_COUNT; i++) {
   renderEvent(eventsList, createPointEventTemplate());
 }
+// eslint-disable-next-line no-console
+console.log(generateEventPoint());
