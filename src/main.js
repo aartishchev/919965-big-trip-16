@@ -11,7 +11,9 @@ import {
   RenderPosition
 } from './utils/useRender.js';
 
-const POINT_EVENTS_COUNT = 3;
+const POINT_EVENTS_COUNT = 4;
+
+const pointEvents = Array.from({ length: POINT_EVENTS_COUNT }, generateEventPoint);
 
 const tripInfoContainer = document.querySelector('.trip-main');
 renderTemplate(
@@ -33,10 +35,8 @@ const eventsList = document.createElement('ul');
 eventsList.className = 'trip-events__list';
 tripEventsContainer.appendChild(eventsList);
 
-renderEvent(eventsList, createAddEventTemplate());
+renderEvent(eventsList, createAddEventTemplate(pointEvents[0]));
 
-for (let i = 0; i < POINT_EVENTS_COUNT; i++) {
-  renderEvent(eventsList, createPointEventTemplate());
+for (let i = 1; i < POINT_EVENTS_COUNT; i++) {
+  renderEvent(eventsList, createPointEventTemplate(pointEvents[i]));
 }
-// eslint-disable-next-line no-console
-console.log(generateEventPoint());

@@ -1,34 +1,48 @@
 import { options } from './options';
+import { description } from './event-description';
+import { pointTypes } from './point-types';
 import { getRandomInteger } from '../utils/util';
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
 
-const pointTypes = [
-  'Taxi',
-  'Bus',
-  'Train',
-  'Ship',
-  'Drive',
-  'Flight',
-  'Check-in',
-  'Sightseeing',
-  'Restaurant',
-];
+const MAX_DAYS_GAP = 10;
+const MIN_DAYS_GAP = 0;
+const MIN_BASE_PRICE = 0;
+const MAX_BASE_PRICE = 1000;
+const MIN_DESCRIPTION_LENGTH = 1;
+const MAX_DESCRIPTION_LENGTH = 5;
+const MIN_PHOTOS_QUANTITY = 1;
+const MAX_PHOTOS_QUANTITY = 5;
+
 const generatePointType = () => pointTypes[getRandomInteger(0, pointTypes.length - 1)];
 
 const destinations = ['Amsterdam', 'Chamonix', 'Geneva'];
 const generateDestination = () => destinations[getRandomInteger(0, destinations.length - 1)];
+
+const generateDateFrom = () => {
+  const daysGap = getRandomInteger(-MAX_DAYS_GAP, MAX_DAYS_GAP);
+  const randomMinutes = getRandomInteger(0, dayjs.duration(1, 'day').asMinutes());
+
+  return dayjs().add(daysGap, 'day').add(randomMinutes, 'minute');
+};
+
+const generateDateTo = (dateFrom) => {
+  const daysGap = getRandomInteger(MIN_DAYS_GAP, MAX_DAYS_GAP);
+  const randomMinutes = getRandomInteger(0, dayjs.duration(1, 'day').asMinutes());
+
+  return dateFrom.add(daysGap, 'day').add(randomMinutes, 'minute');
+};
 
 const generateOffers = (optionType) => {
   const index = options.findIndex((o) => o.type === optionType);
   return options[index].offers;
 };
 
-const description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.';
 const descriptions = description.replaceAll('. ', '.|').split('|');
 const getRandomDescription = () => descriptions[getRandomInteger(0, descriptions.length - 1)];
-
 const generateDescription = () => {
-  const descriptionLength = getRandomInteger(1, 5);
+  const descriptionLength = getRandomInteger(MIN_DESCRIPTION_LENGTH, MAX_DESCRIPTION_LENGTH);
   const randomDescription = [];
 
   for (let i = 0; i < descriptionLength; i++) {
@@ -39,7 +53,7 @@ const generateDescription = () => {
 };
 
 const generatePhotos = () => {
-  const photosLength = getRandomInteger(1, 5);
+  const photosLength = getRandomInteger(MIN_PHOTOS_QUANTITY, MAX_PHOTOS_QUANTITY);
   const randomPhotos = [];
 
   for (let i = 0; i < photosLength; i++) {
@@ -50,26 +64,16 @@ const generatePhotos = () => {
   return randomPhotos;
 };
 
-const maxDaysGap = 30;
-const generateDateFrom = () => {
-  const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
-  return dayjs().add(daysGap, 'day');
-};
-
-const generateDateTo = (dateFrom) => {
-  const daysGap = getRandomInteger(1, maxDaysGap);
-  return dateFrom.add(daysGap, 'day');
-};
-
 export const generateEventPoint = () => {
   const pointType = generatePointType();
   const dateFrom = generateDateFrom();
+
   return {
     type: generatePointType(),
     destination: generateDestination(),
     dateFrom: dateFrom.toDate(),
     dateTo: generateDateTo(dateFrom).toDate(),
-    basePrice: getRandomInteger(0, 1000),
+    basePrice: getRandomInteger(MIN_BASE_PRICE, MAX_BASE_PRICE),
     offers: generateOffers(pointType),
     description: generateDescription(),
     photos: generatePhotos(),
