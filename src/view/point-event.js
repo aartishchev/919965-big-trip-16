@@ -14,12 +14,12 @@ export const createPointEventTemplate = (pointEvent) => {
   const finishDate = dayjs(dateTo).format('YYYY-MM-DD');
 
   const eventDuration = dayjs(dateTo).diff(dayjs(dateFrom)); //returns in milliseconds
-  const formatDuration = (durationToFormat) => {
-    const wrappedDuration = dayjs.duration(durationToFormat);
+  const formatDuration = () => {
+    const wrappedDuration = dayjs.duration(eventDuration);
 
-    if (durationToFormat < dayjs.duration(1, 'hours').asMilliseconds()) {
+    if (eventDuration < dayjs.duration(1, 'hours').asMilliseconds()) {
       return wrappedDuration.format('mm[M]');
-    } else if (durationToFormat < dayjs.duration(1, 'days').asMilliseconds()) {
+    } else if (eventDuration < dayjs.duration(1, 'days').asMilliseconds()) {
       return wrappedDuration.format('HH[H] mm[M]');
     }
 
@@ -32,7 +32,7 @@ export const createPointEventTemplate = (pointEvent) => {
     }
 
     let offersTemplate = '';
-    for(const offer of offers) {
+    for (const offer of offers) {
       const currentOffer = `
         <li class="event__offer">
           <span class="event__offer-title">${offer.title}</span>
@@ -92,7 +92,7 @@ export const createPointEventTemplate = (pointEvent) => {
             ${finishTime}
           </time>
         </p>
-        <p class="event__duration">${formatDuration(eventDuration)}</p>
+        <p class="event__duration">${formatDuration()}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${totalPrice}</span>
