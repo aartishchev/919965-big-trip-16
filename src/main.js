@@ -11,7 +11,7 @@ import {
   RenderPosition
 } from './utils/useRender.js';
 
-const POINT_EVENTS_COUNT = 4;
+const POINT_EVENTS_COUNT = 20;
 
 const pointEvents = Array.from({ length: POINT_EVENTS_COUNT }, generateEventPoint);
 

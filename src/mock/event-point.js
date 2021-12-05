@@ -1,6 +1,7 @@
 import { options } from './options';
 import { description } from './event-description';
 import { pointTypes } from './point-types';
+import { destinations } from './event-destinations';
 import { getRandomInteger } from '../utils/util';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -16,8 +17,6 @@ const MIN_PHOTOS_QUANTITY = 1;
 const MAX_PHOTOS_QUANTITY = 5;
 
 const generatePointType = () => pointTypes[getRandomInteger(0, pointTypes.length - 1)];
-
-const destinations = ['Amsterdam', 'Chamonix', 'Geneva'];
 const generateDestination = () => destinations[getRandomInteger(0, destinations.length - 1)];
 
 const generateDateFrom = () => {
@@ -34,8 +33,9 @@ const generateDateTo = (dateFrom) => {
   return dateFrom.add(daysGap, 'day').add(randomMinutes, 'minute');
 };
 
-const generateOffers = (optionType) => {
-  const index = options.findIndex((o) => o.type === optionType);
+const generateOffers = (pointType) => {
+  const index = options.findIndex((o) => o.type === pointType);
+
   return options[index].offers;
 };
 
@@ -69,7 +69,7 @@ export const generateEventPoint = () => {
   const dateFrom = generateDateFrom();
 
   return {
-    type: generatePointType(),
+    type: pointType,
     destination: generateDestination(),
     dateFrom: dateFrom.toDate(),
     dateTo: generateDateTo(dateFrom).toDate(),
