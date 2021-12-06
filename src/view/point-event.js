@@ -1,9 +1,12 @@
+import { getTotalPrice } from '../utils/useRender';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 export const createPointEventTemplate = (pointEvent) => {
   const { type, destination, dateFrom, dateTo, basePrice, offers, isFavorite } = pointEvent;
+
+  const totalPrice = getTotalPrice(offers, basePrice);
 
   const startDay = dayjs(dateFrom).format('MMM D');
 
@@ -53,19 +56,6 @@ export const createPointEventTemplate = (pointEvent) => {
       </ul>
     `;
   };
-
-  const getOffersPrice = () => {
-    let offersPrice = 0;
-    for (const offer of offers) {
-      if (offer.isAdded) {
-        offersPrice += Number(offer.price);
-      }
-    }
-
-    return offersPrice;
-  };
-
-  const totalPrice = basePrice + getOffersPrice();
 
   const isFavoriteClassName = () => {
     if (isFavorite) {

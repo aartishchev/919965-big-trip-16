@@ -1,4 +1,5 @@
 import { POINT_TYPES } from '../utils/const';
+import { getTotalPrice } from '../utils/useRender';
 import { destinations } from '../mock/event-destinations';
 import dayjs from 'dayjs';
 
@@ -17,6 +18,8 @@ export const createEditEventTemplate = (pointEvent) => {
 
   const startDate = dayjs(dateFrom).format('DD/MM/YY HH:mm');
   const finishDate = dayjs(dateTo).format('DD/MM/YY HH:mm');
+
+  const totalPrice = getTotalPrice(offers, basePrice);
 
   const createTypesTemplate = () => {
     let typesTemplate = '';
@@ -44,7 +47,7 @@ export const createEditEventTemplate = (pointEvent) => {
     return typesTemplate;
   };
 
-  const createDestinationOptions = () => {
+  const createDestinationOptionsTemplate = () => {
     let destinationOptionsTemplate = '';
 
     for (const destinationOption of destinations) {
@@ -55,30 +58,46 @@ export const createEditEventTemplate = (pointEvent) => {
     return destinationOptionsTemplate;
   };
 
-  // const createOffersOptions = () => {
-  //   if (offers.length < 1) {
-  //     return '';
-  //   }
+  const createOfferOptionsTemplate = () => {
+    if (offers.length < 1) {
+      return '';
+    }
 
-  //   let offersTemplate = '';
+    let offersTemplate = '';
+    for (const offerOption of offers) {
+      const offerForId = offerOption.title.split(' ').pop().toLowerCase();
+      const offerToRender = `
+        <div class="event__offer-selector">
+          <input
+            class="event__offer-checkbox visually-hidden"
+            id="event-offer-${offerForId}-1"
+            type="checkbox"
+            name="event-offer-${offerForId}"
+            ${offerOption.isAdded ? 'checked' : ''}
+          >
+          <label
+            class="event__offer-label"
+            for="event-offer-${offerForId}-1"
+          >
+            <span class="event__offer-title">${offerOption.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offerOption.price}</span>
+          </label>
+        </div>
+      `;
 
-  //   for (const offer of offers) {
-  //     const offerToRender = `
-  //     <div class="event__offer-selector">
-  //      <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-  //      <label class="event__offer-label" for="event-offer-train-1">
-  //        <span class="event__offer-title">Travel by train</span>
-  //        &plus;&euro;&nbsp;
-  //        <span class="event__offer-price">40</span>
-  //      </label>
-  //     </div>
-  //     `;
+      offersTemplate += offerToRender;
+    }
 
-  //     offersTemplate += offerToRender;
-  //   }
-
-  //   return offersTemplate;
-  // };
+    return `
+      <section class="event__section  event__section--offers">
+        <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+        <div class="event__available-offers">
+          ${offersTemplate}
+        </div>
+      </section>
+    `;
+  };
 
   const createPhotosTemplate = () => {
     if (photos.length < 1) {
@@ -127,9 +146,7 @@ export const createEditEventTemplate = (pointEvent) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-
               ${createTypesTemplate()}
-
             </fieldset>
           </div>
         </div>
@@ -140,9 +157,7 @@ export const createEditEventTemplate = (pointEvent) => {
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
           <datalist id="destination-list-1">
-
-            ${createDestinationOptions()}
-
+            ${createDestinationOptionsTemplate()}
           </datalist>
         </div>
 
@@ -159,7 +174,7 @@ export const createEditEventTemplate = (pointEvent) => {
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="160">
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${totalPrice}">
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -169,26 +184,8 @@ export const createEditEventTemplate = (pointEvent) => {
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-          <div class="event__available-offers">
-
-            <div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-              <label class="event__offer-label" for="event-offer-train-1">
-                <span class="event__offer-title">Travel by train</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">40</span>
-              </label>
-            </div>
-
-
-          </div>
-        </section>
-
+        ${createOfferOptionsTemplate()}
         ${createDescriptionTemplate()}
-
       </section>
     </form>
   `;

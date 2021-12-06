@@ -15,3 +15,14 @@ export function renderEvent(container, event) {
   renderTemplate(listItem, event);
   container.appendChild(listItem);
 }
+
+export function getTotalPrice (offers, basePrice) {
+  let offersPrice = 0;
+  for (const offer of offers) {
+    if (offer.isAdded) {
+      offersPrice += Number(offer.price);
+    }
+  }
+
+  return offersPrice + basePrice;
+}
