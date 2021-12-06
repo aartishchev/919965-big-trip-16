@@ -33,7 +33,8 @@ export const createPointEventTemplate = (pointEvent) => {
 
     let offersTemplate = '';
     for (const offer of offers) {
-      const currentOffer = `
+      if (offer.isAdded) {
+        const offerToRender = `
         <li class="event__offer">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -41,7 +42,8 @@ export const createPointEventTemplate = (pointEvent) => {
         </li>
       `;
 
-      offersTemplate += currentOffer;
+        offersTemplate += offerToRender;
+      }
     }
 
     return `
@@ -55,7 +57,9 @@ export const createPointEventTemplate = (pointEvent) => {
   const getOffersPrice = () => {
     let offersPrice = 0;
     for (const offer of offers) {
-      offersPrice =+ offer.price;
+      if (offer.isAdded) {
+        offersPrice += Number(offer.price);
+      }
     }
 
     return offersPrice;

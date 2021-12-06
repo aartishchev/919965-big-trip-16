@@ -1,8 +1,8 @@
+import { POINT_TYPES } from '../utils/const';
+import { getRandomInteger } from '../utils/util';
 import { options } from './options';
 import { description } from './event-description';
-import { pointTypes } from './point-types';
 import { destinations } from './event-destinations';
-import { getRandomInteger } from '../utils/util';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
@@ -16,7 +16,7 @@ const MAX_DESCRIPTION_LENGTH = 5;
 const MIN_PHOTOS_QUANTITY = 1;
 const MAX_PHOTOS_QUANTITY = 5;
 
-const generatePointType = () => pointTypes[getRandomInteger(0, pointTypes.length - 1)];
+const generatePointType = () => POINT_TYPES[getRandomInteger(0, POINT_TYPES.length - 1)];
 const generateDestination = () => destinations[getRandomInteger(0, destinations.length - 1)];
 
 const generateDateFrom = () => {

@@ -1,21 +1,19 @@
+import { getRandomInteger } from '../utils/util';
+
 const taxiOption = {
   type: 'Taxi',
   offers: [
     {
       title: 'Order Uber',
-      price: '20'
+      price: '20',
+      isAdded: Boolean(getRandomInteger())
     },
   ],
 };
 
 const busOption = {
   type: 'Bus',
-  offers: [
-    {
-      title: 'Book a seat',
-      price: '10'
-    }
-  ],
+  offers: [],
 };
 
 const trainOption = {
@@ -23,7 +21,8 @@ const trainOption = {
   offers: [
     {
       title: 'Order linen',
-      price: '5'
+      price: '5',
+      isAdded: Boolean(getRandomInteger())
     }
   ],
 };
@@ -33,7 +32,8 @@ const shipOption = {
   offers: [
     {
       title: 'Preorder food',
-      price: '30'
+      price: '30',
+      isAdded: Boolean(getRandomInteger())
     }
   ]
 };
@@ -43,7 +43,8 @@ const driveOption = {
   offers: [
     {
       title: 'Rent a car',
-      price: '200'
+      price: '200',
+      isAdded: Boolean(getRandomInteger())
     }
   ]
 };
@@ -53,23 +54,20 @@ const flightOption = {
   offers: [
     {
       title: 'Add luggage',
-      price: '50'
+      price: '50',
+      isAdded: Boolean(getRandomInteger())
     },
     {
       title: 'Switch to comfort',
-      price: '80'
+      price: '80',
+      isAdded: Boolean(getRandomInteger())
     }
   ]
 };
 
 const checkInOption = {
   type: 'Check-in',
-  offers: [
-    {
-      title: 'Add breakfast',
-      price: '50'
-    },
-  ]
+  offers: []
 };
 
 const sightseeingOption = {
@@ -77,11 +75,13 @@ const sightseeingOption = {
   offers: [
     {
       title: 'Book tickets',
-      price: '40'
+      price: '40',
+      isAdded: Boolean(getRandomInteger())
     },
     {
       title: 'Lunch in city',
-      price: '30'
+      price: '30',
+      isAdded: Boolean(getRandomInteger())
     }
   ]
 };

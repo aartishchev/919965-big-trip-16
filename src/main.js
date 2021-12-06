@@ -1,4 +1,4 @@
-import { createAddEventTemplate } from './view/add-event.js';
+import { createEditEventTemplate } from './view/edit-event.js';
 import { createFilterTabsTemplate } from './view/filter-tabs.js';
 import { createNavTabsTemplate } from './view/nav-tabs.js';
 import { createPointEventTemplate } from './view/point-event.js';
@@ -11,7 +11,7 @@ import {
   RenderPosition
 } from './utils/useRender.js';
 
-const POINT_EVENTS_COUNT = 20;
+const POINT_EVENTS_COUNT = 2;
 
 const pointEvents = Array.from({ length: POINT_EVENTS_COUNT }, generateEventPoint);
 
@@ -35,7 +35,7 @@ const eventsList = document.createElement('ul');
 eventsList.className = 'trip-events__list';
 tripEventsContainer.appendChild(eventsList);
 
-renderEvent(eventsList, createAddEventTemplate(pointEvents[0]));
+renderEvent(eventsList, createEditEventTemplate(pointEvents[0]));
 
 for (let i = 1; i < POINT_EVENTS_COUNT; i++) {
   renderEvent(eventsList, createPointEventTemplate(pointEvents[i]));
