@@ -1,9 +1,9 @@
 import { POINT_TYPES } from '../utils/const';
 import { getTotalPrice } from '../utils/useRender';
-import { destinations } from '../mock/event-destinations';
+import { destinations } from '../mock/destinations';
 import dayjs from 'dayjs';
 
-export const createEditEventTemplate = (pointEvent) => {
+export const createEditEventTemplate = (pointEvent, descriptionEvent) => {
   const currentDate = dayjs().format('DD/MM/YY HH:mm');
   const {
     type = 'Taxi',
@@ -12,9 +12,9 @@ export const createEditEventTemplate = (pointEvent) => {
     dateTo = currentDate,
     basePrice = '0',
     offers = [],
-    description = '',
-    photos = [],
   } = pointEvent;
+
+  const { description = '', photos = [] } = descriptionEvent;
 
   const startDate = dayjs(dateFrom).format('DD/MM/YY HH:mm');
   const finishDate = dayjs(dateTo).format('DD/MM/YY HH:mm');
@@ -31,6 +31,7 @@ export const createEditEventTemplate = (pointEvent) => {
             class="event__type-input visually-hidden"
             type="radio" name="event-type"
             value="${pointType.toLowerCase()}"
+            ${pointType === type ? 'checked' : ''}
           >
           <label
             class="event__type-label event__type-label--${pointType.toLowerCase()}"

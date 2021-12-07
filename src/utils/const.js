@@ -9,3 +9,5 @@ export const POINT_TYPES = [
   'Sightseeing',
   'Restaurant',
 ];
+
+export const EVENTS_COUNT = 10;
