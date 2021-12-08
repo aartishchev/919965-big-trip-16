@@ -1,3 +1,4 @@
+import { RenderPosition } from './utils/const.js';
 import { createEditEventTemplate } from './view/edit-event.js';
 import { createFilterTabsTemplate } from './view/filter-tabs.js';
 import { createNavTabsTemplate } from './view/nav-tabs.js';
@@ -5,17 +6,17 @@ import { createPointEventTemplate } from './view/point-event.js';
 import { createEventsSorterTemplate } from './view/events-sorter.js';
 import { createTripInfoTemplate } from './view/trip-info.js';
 import { pointEvents } from './mock/points.js';
-import {descriptionEvents} from './mock/descriptions';
+import { descriptionEvents } from './mock/descriptions';
+import { destinations } from './mock/destinations';
 import {
   renderTemplate,
   renderEvent,
-  RenderPosition
 } from './utils/useRender.js';
 
 const tripInfoContainer = document.querySelector('.trip-main');
 renderTemplate(
   tripInfoContainer,
-  createTripInfoTemplate(),
+  createTripInfoTemplate(pointEvents),
   RenderPosition.AFTER_BEGIN
 );
 
@@ -32,7 +33,7 @@ const eventsList = document.createElement('ul');
 eventsList.className = 'trip-events__list';
 tripEventsContainer.appendChild(eventsList);
 
-renderEvent(eventsList, createEditEventTemplate(pointEvents[0], descriptionEvents[0]));
+renderEvent(eventsList, createEditEventTemplate(pointEvents[0], descriptionEvents[0], destinations));
 
 for (let i = 1; i < pointEvents.length; i++) {
   renderEvent(eventsList, createPointEventTemplate(pointEvents[i]));
