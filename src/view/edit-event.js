@@ -49,9 +49,7 @@ const createOfferOptionsTemplate = (allOffers, offersType) => {
   const offersTemplate = [];
 
   for (const offerOption of allOffers) {
-    const offerForAttribute = (
-      `${offersType.replaceAll(' ', '-')}-${offerOption.id}`
-    );
+    const offerForAttribute = `${offersType.replaceAll(' ', '-')}-${offerOption.id}`;
 
     const offerToRender = (
       `<div class="event__offer-selector">

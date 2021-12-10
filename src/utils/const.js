@@ -25,4 +25,4 @@ export const Format = {
   TIME: 'HH:mm'
 };
 
-export const EVENTS_COUNT = 3;
+export const EVENTS_COUNT = 10;
