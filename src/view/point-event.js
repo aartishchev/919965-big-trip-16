@@ -4,21 +4,17 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
-const formatWrappedDurationToMinutes = (dur) => dur.format('mm[M]');
-const formatWrappedDurationToTime = (dur) => dur.format('HH[H] mm[M]');
-const formatWrappedDurationToDayTime = (dur) => dur.format('DD[D] HH[H] mm[M]');
-
-const formatDuration = (startDate, finishDate) => {
+const getFormattedDuration = (startDate, finishDate) => {
   const eventDuration = dayjs(finishDate).diff(dayjs(startDate));
   const wrappedDuration = dayjs.duration(eventDuration);
 
   if (eventDuration < dayjs.duration(1, 'hours').asMilliseconds()) {
-    return formatWrappedDurationToMinutes(wrappedDuration);
+    return wrappedDuration.format(Format.MIN_W_CHAR);
   } else if (eventDuration < dayjs.duration(1, 'days').asMilliseconds()) {
-    return formatWrappedDurationToTime(wrappedDuration);
+    return wrappedDuration.format(Format.TIME_W_CHAR);
   }
 
-  return formatWrappedDurationToDayTime(wrappedDuration);
+  return wrappedDuration.format(Format.DATE_W_CHAR);
 };
 
 const generateOffersTemplate = (allOffers) => {
@@ -44,9 +40,9 @@ const generateOffersTemplate = (allOffers) => {
 
   return (
     `<h4 class="visually-hidden">Offers:</h4>
-    <ul class="event__selected-offers">
+     <ul class="event__selected-offers">
       ${offersTemplate.join('')}
-    </ul>`
+     </ul>`
   );
 };
 
@@ -56,13 +52,9 @@ export const createPointEventTemplate = (pointEvent) => {
   const totalPrice = getTotalPrice(offers, basePrice);
 
   const startDay = dayjs(dateFrom).format(Format.MONTH_DATE);
-
   const startTime = dayjs(dateFrom).format(Format.TIME);
-
   const startDate = dayjs(dateFrom).format(Format.FULL_DATE);
-
   const finishTime = dayjs(dateTo).format(Format.TIME);
-
   const finishDate = dayjs(dateTo).format(Format.FULL_DATE);
 
   const isFavoriteClassName = isFavorite ? 'event__favorite-btn--active' : '';
@@ -90,7 +82,7 @@ export const createPointEventTemplate = (pointEvent) => {
             ${finishTime}
           </time>
         </p>
-        <p class="event__duration">${formatDuration(dateFrom, dateTo)}</p>
+        <p class="event__duration">${getFormattedDuration(dateFrom, dateTo)}</p>
       </div>
       <p class="event__price">
         &euro;&nbsp;<span class="event__price-value">${totalPrice}</span>

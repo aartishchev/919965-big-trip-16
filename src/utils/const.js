@@ -22,7 +22,10 @@ export const Format = {
   FULL_DATE: 'YYYY-MM-DD',
   MONTH_DATE: 'MMM D',
   DATE: 'DD',
-  TIME: 'HH:mm'
+  TIME: 'HH:mm',
+  MIN_W_CHAR: 'mm[M]',
+  TIME_W_CHAR: 'HH[H] mm[M]',
+  DATE_W_CHAR: 'DD[D] HH[H] mm[M]'
 };
 
 export const EVENTS_COUNT = 10;

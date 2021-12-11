@@ -7,13 +7,16 @@ const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
   const finishDate = sortedEventsByFinishDate[0].dateTo;
 
   const formattedStartDate = dayjs(startDate).format(Format.MONTH_DATE);
+
   const isSameMonth = dayjs(startDate).isSame(dayjs(finishDate, 'month'));
 
   if (isSameMonth) {
     const formattedFinishDate = dayjs(finishDate).format(Format.DATE);
+
     return `${formattedStartDate}&nbsp;&mdash;&nbsp;${formattedFinishDate}`;
   } else {
     const formattedFinishDate = dayjs(finishDate).format(Format.MONTH_DATE);
+
     return `${formattedStartDate}&nbsp;&mdash;&nbsp;${formattedFinishDate}`;
   }
 };

@@ -92,7 +92,13 @@ const createPhotosTemplate = (allPhotos) => {
   const photosTemplate = [];
 
   for (const photo of allPhotos) {
-    const photoToRender = `<img class="event__photo" src="${photo}" alt="Event photo">`;
+    const photoToRender = (
+      `<img
+        class="event__photo"
+        src="${photo}"
+        alt="Event photo"
+      />`
+    );
     photosTemplate.push(photoToRender);
   }
 
