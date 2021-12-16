@@ -44,10 +44,10 @@ const createTypesTemplate = (currentType) => {
   return typesTemplate.join('');
 };
 
-const createDestinationOptionsTemplate = (destionations) => {
+const createDestinationOptionsTemplate = (destinations) => {
   const destinationOptionsTemplate = [];
 
-  for (const destinationOption of destionations) {
+  for (const destinationOption of destinations) {
     const destinationOptionToRender = `<option value="${destinationOption}"></option>`;
     destinationOptionsTemplate.push(destinationOptionToRender);
   }
@@ -234,7 +234,7 @@ const createEditEventTemplate = (pointEvent, descriptionEvent, destinations) => 
         ${createDescriptionTemplate(description, photos)}
       </section>
     </form>
-`);
+  `);
 };
 
 export default class EditEvent {
