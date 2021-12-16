@@ -1,5 +1,5 @@
 import { Format } from '../utils/const';
-import { getTotalPrice } from '../utils/useRender';
+import { createElement, getTotalPrice } from '../utils/useRender';
 import dayjs from 'dayjs';
 
 const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
@@ -35,7 +35,7 @@ const getAllPointsTotalPrice = (allEvents) => (
   allEvents.reduce((acc, event) => acc + getTotalPrice(event.offers, event.basePrice), 0)
 );
 
-export const createTripInfoTemplate = (pointEvents) => {
+const createTripInfoTemplate = (pointEvents) => {
   if (pointEvents.length < 1) {
     return '';
   }
@@ -64,3 +64,28 @@ export const createTripInfoTemplate = (pointEvents) => {
     </section>`
   );
 };
+
+export default class TripInfo {
+  #element = null;
+  #pointEvents = null;
+
+  constructor(pointEvents = []) {
+    this.#pointEvents = pointEvents;
+  }
+
+  get template() {
+    return createTripInfoTemplate(this.#pointEvents);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

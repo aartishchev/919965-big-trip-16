@@ -1,6 +1,20 @@
 import { POINT_TYPES, Format } from '../utils/const';
-import { getTotalPrice } from '../utils/useRender';
+import { createElement, getTotalPrice } from '../utils/useRender';
 import dayjs from 'dayjs';
+
+const BLANK_POINT = {
+  type: 'Taxi',
+  destination: '',
+  dateFrom: dayjs().format(Format.DATE_TIME),
+  dateTo: dayjs().format(Format.DATE_TIME),
+  basePrice: '0',
+  offers: []
+};
+
+const BLANK_DESCRIPTION = {
+  description: '',
+  photos: []
+};
 
 const createTypesTemplate = (currentType) => {
   const typesTemplate = [];
@@ -30,10 +44,10 @@ const createTypesTemplate = (currentType) => {
   return typesTemplate.join('');
 };
 
-const createDestinationOptionsTemplate = (allDestinations) => {
+const createDestinationOptionsTemplate = (destionations) => {
   const destinationOptionsTemplate = [];
 
-  for (const destinationOption of allDestinations) {
+  for (const destinationOption of destionations) {
     const destinationOptionToRender = `<option value="${destinationOption}"></option>`;
     destinationOptionsTemplate.push(destinationOptionToRender);
   }
@@ -125,18 +139,9 @@ const createDescriptionTemplate = (descriptionText, allPhotos) => {
   );
 };
 
-export const createEditEventTemplate = (pointEvent, descriptionEvent, destinations) => {
-  const currentDate = dayjs().format(Format.DATE_TIME);
-  const {
-    type = 'Taxi',
-    destination = '',
-    dateFrom = currentDate,
-    dateTo = currentDate,
-    basePrice = '0',
-    offers = [],
-  } = pointEvent;
-
-  const { description = '', photos = [] } = descriptionEvent;
+const createEditEventTemplate = (pointEvent, descriptionEvent, destinations) => {
+  const { type, destination, dateFrom, dateTo, basePrice, offers } = pointEvent;
+  const { description, photos } = descriptionEvent;
 
   const startDate = dayjs(dateFrom).format(Format.DATE_TIME);
   const finishDate = dayjs(dateTo).format(Format.DATE_TIME);
@@ -149,7 +154,13 @@ export const createEditEventTemplate = (pointEvent, descriptionEvent, destinatio
         <div class="event__type-wrapper">
           <label class="event__type event__type-btn" for="event-type-toggle-1">
             <span class="visually-hidden">Choose event type</span>
-            <img class="event__type-icon" width="17" height="17" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
+            <img
+              class="event__type-icon"
+              width="17"
+              height="17"
+              src="img/icons/${type.toLowerCase()}.png"
+              alt="Event type icon"
+            >
           </label>
           <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -165,7 +176,14 @@ export const createEditEventTemplate = (pointEvent, descriptionEvent, destinatio
           <label class="event__label event__type-output" for="event-destination-1">
             ${type}
           </label>
-          <input class="event__input event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+          <input
+            class="event__input event__input--destination"
+            id="event-destination-1"
+            type="text"
+            name="event-destination"
+            value="${destination}"
+            list="destination-list-1"
+          >
           <datalist id="destination-list-1">
             ${createDestinationOptionsTemplate(destinations)}
           </datalist>
@@ -173,10 +191,22 @@ export const createEditEventTemplate = (pointEvent, descriptionEvent, destinatio
 
         <div class="event__field-group event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
+          <input
+            class="event__input event__input--time"
+            id="event-start-time-1"
+            type="text"
+            name="event-start-time"
+            value="${startDate}"
+          >
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${finishDate}">
+          <input
+            class="event__input event__input--time"
+            id="event-end-time-1"
+            type="text"
+            name="event-end-time"
+            value="${finishDate}"
+          >
         </div>
 
         <div class="event__field-group event__field-group--price">
@@ -184,7 +214,13 @@ export const createEditEventTemplate = (pointEvent, descriptionEvent, destinatio
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input event__input--price" id="event-price-1" type="text" name="event-price" value="${totalPrice}">
+          <input
+            class="event__input event__input--price"
+            id="event-price-1"
+            type="text"
+            name="event-price"
+            value="${totalPrice}"
+          >
         </div>
 
         <button class="event__save-btn btn btn--blue" type="submit">Save</button>
@@ -200,3 +236,40 @@ export const createEditEventTemplate = (pointEvent, descriptionEvent, destinatio
     </form>
 `);
 };
+
+export default class EditEvent {
+  #element = null;
+  #pointEvent = null;
+  #descriptionEvent = null;
+  #destinations = null;
+
+  constructor(
+    pointEvent = BLANK_POINT,
+    descriptionEvent = BLANK_DESCRIPTION,
+    destinations = []
+  ) {
+    this.#pointEvent = pointEvent;
+    this.#descriptionEvent = descriptionEvent;
+    this.#destinations = destinations;
+  }
+
+  get template() {
+    return createEditEventTemplate(
+      this.#pointEvent,
+      this.#descriptionEvent,
+      this.#destinations
+    );
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
