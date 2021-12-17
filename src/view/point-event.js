@@ -1,4 +1,5 @@
-import { createElement, getTotalPrice } from '../utils/useRender';
+import { createElement } from '../utils/useRender';
+import { getTotalPrice } from '../utils/util';
 import { Format } from '../utils/const';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';

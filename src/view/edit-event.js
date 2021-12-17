@@ -1,5 +1,6 @@
 import { POINT_TYPES, Format } from '../utils/const';
-import { createElement, getTotalPrice } from '../utils/useRender';
+import { createElement } from '../utils/useRender';
+import { getTotalPrice } from '../utils/util';
 import dayjs from 'dayjs';
 
 const BLANK_POINT = {

@@ -1,9 +1,5 @@
 import { RenderPosition } from './const.js';
 
-export function getTotalPrice(offers, basePrice) {
-  return offers.reduce((acc, offer) => acc + Number(offer.price), basePrice);
-}
-
 export function renderElement (container, element, place = RenderPosition.BEFORE_END) {
   switch (place) {
     case RenderPosition.BEFORE_BEGIN:
