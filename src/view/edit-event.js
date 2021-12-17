@@ -1,21 +1,7 @@
-import { POINT_TYPES, Format } from '../utils/const';
+import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const';
 import { createElement } from '../utils/useRender';
 import { getTotalPrice } from '../utils/util';
 import dayjs from 'dayjs';
-
-const BLANK_POINT = {
-  type: 'Taxi',
-  destination: '',
-  dateFrom: dayjs().format(Format.DATE_TIME),
-  dateTo: dayjs().format(Format.DATE_TIME),
-  basePrice: '0',
-  offers: []
-};
-
-const BLANK_DESCRIPTION = {
-  description: '',
-  photos: []
-};
 
 const createTypesTemplate = (currentType) => {
   const typesTemplate = [];

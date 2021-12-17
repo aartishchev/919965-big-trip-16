@@ -1,5 +1,12 @@
 import { RenderPosition } from './const.js';
 
+export function createElement (template) {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+}
+
 export function renderElement (container, element, place = RenderPosition.BEFORE_END) {
   switch (place) {
     case RenderPosition.BEFORE_BEGIN:
@@ -15,11 +22,4 @@ export function renderElement (container, element, place = RenderPosition.BEFORE
       container.after(element);
       break;
   }
-}
-
-export function createElement (template) {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
 }
