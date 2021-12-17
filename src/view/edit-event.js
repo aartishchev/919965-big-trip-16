@@ -239,24 +239,24 @@ const createEditEventTemplate = (pointEvent, descriptionEvent, destinations) => 
 
 export default class EditEvent {
   #element = null;
-  #pointEvent = null;
-  #descriptionEvent = null;
+  #event = null;
+  #description = null;
   #destinations = null;
 
   constructor(
-    pointEvent = BLANK_POINT,
-    descriptionEvent = BLANK_DESCRIPTION,
+    event = BLANK_POINT,
+    description = BLANK_DESCRIPTION,
     destinations = []
   ) {
-    this.#pointEvent = pointEvent;
-    this.#descriptionEvent = descriptionEvent;
+    this.#event = event;
+    this.#description = description;
     this.#destinations = destinations;
   }
 
   get template() {
     return createEditEventTemplate(
-      this.#pointEvent,
-      this.#descriptionEvent,
+      this.#event,
+      this.#description,
       this.#destinations
     );
   }

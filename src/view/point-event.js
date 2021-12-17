@@ -103,14 +103,14 @@ const createPointEventTemplate = (pointEvent) => {
 
 export default class PointEvent {
   #element = null;
-  #pointEvent = null;
+  #event = null;
 
-  constructor(pointEvent) {
-    this.#pointEvent = pointEvent;
+  constructor(event) {
+    this.#event = event;
   }
 
   get template() {
-    return createPointEventTemplate(this.#pointEvent);
+    return createPointEventTemplate(this.#event);
   }
 
   get element() {
