@@ -30,6 +30,12 @@ export const Format = {
   DATE_W_CHAR: 'DD[D] HH[H] mm[M]'
 };
 
+export const EmptyFilterMsg = {
+  EVERYTHING: 'Click New Event to create your first point',
+  PAST: 'There are no past events now',
+  FUTURE: 'There are no future events now'
+};
+
 export const BLANK_POINT = {
   type: 'Taxi',
   destination: '',

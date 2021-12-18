@@ -4,6 +4,7 @@ import NavTabs from './view/nav-tabs.js';
 import PointEvent from './view/point-event.js';
 import EventsSorter from './view/events-sorter.js';
 import TripInfo from './view/trip-info.js';
+import EmptyListMsg from './view/empty-list.js';
 import { RenderPosition } from './utils/const.js';
 import { renderElement } from './utils/useRender.js';
 import { pointEvents } from './mock/points.js';
@@ -11,20 +12,13 @@ import { descriptionEvents } from './mock/descriptions.js';
 import { destinations } from './mock/destinations.js';
 
 const tripInfoContainer = document.querySelector('.trip-main');
-renderElement(tripInfoContainer, new TripInfo(pointEvents).element, RenderPosition.AFTER_BEGIN);
-
 const navTabsContainer = document.querySelector('.trip-controls__navigation');
-renderElement(navTabsContainer, new NavTabs().element);
-
 const filterTabsContainer = document.querySelector('.trip-controls__filters');
-renderElement(filterTabsContainer, new FilterTabs().element);
-
 const tripEventsContainer = document.querySelector('.trip-events');
-renderElement(tripEventsContainer, new EventsSorter().element);
 
-const eventsList = document.createElement('ul');
-eventsList.className = 'trip-events__list';
-tripEventsContainer.appendChild(eventsList);
+renderElement(tripInfoContainer, new TripInfo(pointEvents).element, RenderPosition.AFTER_BEGIN);
+renderElement(navTabsContainer, new NavTabs().element);
+renderElement(filterTabsContainer, new FilterTabs().element);
 
 const renderEvent = (eventsContainer, event, description, eventDestinations) => {
   const pointEventComponent = new PointEvent(event);
@@ -73,6 +67,21 @@ const renderEvent = (eventsContainer, event, description, eventDestinations) => 
   expandButton.addEventListener('click', replacePointByForm);
 };
 
-for (let i = 0; i < pointEvents.length; i++) {
-  renderEvent(eventsList, pointEvents[i], descriptionEvents[i], destinations);
-}
+const renderTripEvents = (eventsContainer) => {
+  if (pointEvents.length < 1) {
+    renderElement(eventsContainer, new EmptyListMsg().element);
+    return;
+  }
+
+  renderElement(eventsContainer, new EventsSorter().element);
+
+  const eventsList = document.createElement('ul');
+  eventsList.className = 'trip-events__list';
+  renderElement(eventsContainer, eventsList);
+
+  for (let i = 0; i < pointEvents.length; i++) {
+    renderEvent(eventsList, pointEvents[i], descriptionEvents[i], destinations);
+  }
+};
+
+renderTripEvents(tripEventsContainer);
