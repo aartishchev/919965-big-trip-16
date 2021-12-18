@@ -1,40 +1,59 @@
+import EditEvent from './view/edit-event.js';
+import FilterTabs from './view/filter-tabs.js';
+import NavTabs from './view/nav-tabs.js';
+import PointEvent from './view/point-event.js';
+import EventsSorter from './view/events-sorter.js';
+import TripInfo from './view/trip-info.js';
 import { RenderPosition } from './utils/const.js';
-import { createEditEventTemplate } from './view/edit-event.js';
-import { createFilterTabsTemplate } from './view/filter-tabs.js';
-import { createNavTabsTemplate } from './view/nav-tabs.js';
-import { createPointEventTemplate } from './view/point-event.js';
-import { createEventsSorterTemplate } from './view/events-sorter.js';
-import { createTripInfoTemplate } from './view/trip-info.js';
+import { renderElement } from './utils/useRender.js';
 import { pointEvents } from './mock/points.js';
-import { descriptionEvents } from './mock/descriptions';
-import { destinations } from './mock/destinations';
-import {
-  renderTemplate,
-  renderEvent,
-} from './utils/useRender.js';
+import { descriptionEvents } from './mock/descriptions.js';
+import { destinations } from './mock/destinations.js';
 
 const tripInfoContainer = document.querySelector('.trip-main');
-renderTemplate(
-  tripInfoContainer,
-  createTripInfoTemplate(pointEvents),
-  RenderPosition.AFTER_BEGIN
-);
+renderElement(tripInfoContainer, new TripInfo(pointEvents).element, RenderPosition.AFTER_BEGIN);
 
 const navTabsContainer = document.querySelector('.trip-controls__navigation');
-renderTemplate(navTabsContainer, createNavTabsTemplate());
+renderElement(navTabsContainer, new NavTabs().element);
 
 const filterTabsContainer = document.querySelector('.trip-controls__filters');
-renderTemplate(filterTabsContainer, createFilterTabsTemplate());
+renderElement(filterTabsContainer, new FilterTabs().element);
 
 const tripEventsContainer = document.querySelector('.trip-events');
-renderTemplate(tripEventsContainer, createEventsSorterTemplate());
+renderElement(tripEventsContainer, new EventsSorter().element);
 
 const eventsList = document.createElement('ul');
 eventsList.className = 'trip-events__list';
 tripEventsContainer.appendChild(eventsList);
 
-renderEvent(eventsList, createEditEventTemplate(pointEvents[0], descriptionEvents[0], destinations));
+const renderEvent = (eventsContainer, event, description, eventDestinations) => {
+  const pointEventComponent = new PointEvent(event);
+  const editEventComponent = new EditEvent(event, description, eventDestinations);
 
-for (let i = 1; i < pointEvents.length; i++) {
-  renderEvent(eventsList, createPointEventTemplate(pointEvents[i]));
+  const eventWrapper = document.createElement('li');
+  eventWrapper.className = 'trip-events__list';
+  renderElement(eventWrapper, pointEventComponent.element);
+
+  const replacePointByForm = () => {
+    eventWrapper.replaceChild(editEventComponent.element, pointEventComponent.element);
+  };
+
+  const replaceFormByPoint = () => {
+    eventWrapper.replaceChild(pointEventComponent.element, editEventComponent.element);
+  };
+
+  pointEventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replacePointByForm();
+  });
+
+  editEventComponent.element.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormByPoint();
+  });
+
+  renderElement(eventsContainer, eventWrapper);
+};
+
+for (let i = 0; i < pointEvents.length; i++) {
+  renderEvent(eventsList, pointEvents[i], descriptionEvents[i], destinations);
 }

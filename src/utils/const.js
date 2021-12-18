@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const POINT_TYPES = [
   'Taxi',
   'Bus',
@@ -26,6 +28,20 @@ export const Format = {
   MIN_W_CHAR: 'mm[M]',
   TIME_W_CHAR: 'HH[H] mm[M]',
   DATE_W_CHAR: 'DD[D] HH[H] mm[M]'
+};
+
+export const BLANK_POINT = {
+  type: 'Taxi',
+  destination: '',
+  dateFrom: dayjs().format(Format.DATE_TIME),
+  dateTo: dayjs().format(Format.DATE_TIME),
+  basePrice: '0',
+  offers: []
+};
+
+export const BLANK_DESCRIPTION = {
+  description: '',
+  photos: []
 };
 
 export const EVENTS_COUNT = 10;

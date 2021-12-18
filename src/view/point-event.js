@@ -1,4 +1,5 @@
-import { getTotalPrice } from '../utils/useRender';
+import { createElement } from '../utils/useRender';
+import { getTotalPrice } from '../utils/util';
 import { Format } from '../utils/const';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
@@ -46,7 +47,7 @@ const generateOffersTemplate = (allOffers) => {
   );
 };
 
-export const createPointEventTemplate = (pointEvent) => {
+const createPointEventTemplate = (pointEvent) => {
   const { type, destination, dateFrom, dateTo, basePrice, offers, isFavorite } = pointEvent;
 
   const totalPrice = getTotalPrice(offers, basePrice);
@@ -100,3 +101,28 @@ export const createPointEventTemplate = (pointEvent) => {
     </div>`
   );
 };
+
+export default class PointEvent {
+  #element = null;
+  #event = null;
+
+  constructor(event) {
+    this.#event = event;
+  }
+
+  get template() {
+    return createPointEventTemplate(this.#event);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
