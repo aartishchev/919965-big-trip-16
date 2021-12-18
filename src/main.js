@@ -49,7 +49,7 @@ const renderEvent = (eventsContainer, event, description, eventDestinations) => 
     }
   };
 
-  const replacePointByForm () {
+  function replacePointByForm () {
     eventWrapper.replaceChild(editEventComponent.element, pointEventComponent.element);
 
     expandButton.removeEventListener('click', replacePointByForm);
