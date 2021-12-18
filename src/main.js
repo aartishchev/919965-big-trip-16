@@ -34,24 +34,43 @@ const renderEvent = (eventsContainer, event, description, eventDestinations) => 
   eventWrapper.className = 'trip-events__list';
   renderElement(eventWrapper, pointEventComponent.element);
 
-  const replacePointByForm = () => {
-    eventWrapper.replaceChild(editEventComponent.element, pointEventComponent.element);
-  };
+  const expandButton = pointEventComponent.element.querySelector('.event__rollup-btn');
+  const collapseButton = editEventComponent.element.querySelector('.event__rollup-btn');
 
-  const replaceFormByPoint = () => {
-    eventWrapper.replaceChild(pointEventComponent.element, editEventComponent.element);
-  };
-
-  pointEventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-    replacePointByForm();
-  });
-
-  editEventComponent.element.addEventListener('submit', (evt) => {
+  const onEventSubmit = (evt) => {
     evt.preventDefault();
     replaceFormByPoint();
-  });
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      replaceFormByPoint();
+    }
+  };
+
+  const replacePointByForm () {
+    eventWrapper.replaceChild(editEventComponent.element, pointEventComponent.element);
+
+    expandButton.removeEventListener('click', replacePointByForm);
+
+    collapseButton.addEventListener('click', replaceFormByPoint);
+    editEventComponent.element.addEventListener('submit', onEventSubmit);
+    document.addEventListener('keydown', onEscKeyDown);
+  }
+
+  function replaceFormByPoint () {
+    eventWrapper.replaceChild(pointEventComponent.element, editEventComponent.element);
+
+    collapseButton.removeEventListener('click', replaceFormByPoint);
+    editEventComponent.element.removeEventListener('submit', onEventSubmit);
+    document.removeEventListener('keydown', onEscKeyDown);
+
+    expandButton.addEventListener('click', replacePointByForm);
+  }
 
   renderElement(eventsContainer, eventWrapper);
+  expandButton.addEventListener('click', replacePointByForm);
 };
 
 for (let i = 0; i < pointEvents.length; i++) {
