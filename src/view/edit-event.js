@@ -1,6 +1,6 @@
-import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const';
-import { createElement } from '../utils/useRender';
-import { getTotalPrice } from '../utils/util';
+import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const.js';
+import { getTotalPrice } from '../utils/util.js';
+import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 
 const createTypesTemplate = (currentType) => {
@@ -42,15 +42,15 @@ const createDestinationOptionsTemplate = (destinations) => {
   return destinationOptionsTemplate.join('');
 };
 
-const createOfferOptionsTemplate = (allOffers, offersType) => {
-  if (allOffers.length < 1) {
+const createOfferOptionsTemplate = (offers, offersType) => {
+  if (offers.length < 1) {
     return '';
   }
 
   const offersTemplate = [];
 
-  for (const offerOption of allOffers) {
-    const offerForAttribute = `${offersType.replaceAll(' ', '-')}-${offerOption.id}`;
+  for (const offer of offers) {
+    const offerForAttribute = `${offersType.replaceAll(' ', '-')}-${offer.id}`;
 
     const offerToRender = (
       `<div class="event__offer-selector">
@@ -59,15 +59,15 @@ const createOfferOptionsTemplate = (allOffers, offersType) => {
           id="event-offer-${offerForAttribute}"
           type="checkbox"
           name="event-offer-${offerForAttribute}"
-          ${offerOption.isAdded ? 'checked' : ''}
+          ${offer.isAdded ? 'checked' : ''}
         >
         <label
           class="event__offer-label"
           for="event-offer-${offerForAttribute}"
         >
-          <span class="event__offer-title">${offerOption.title}</span>
+          <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offerOption.price}</span>
+          <span class="event__offer-price">${offer.price}</span>
         </label>
       </div>`
     );
@@ -85,14 +85,14 @@ const createOfferOptionsTemplate = (allOffers, offersType) => {
   );
 };
 
-const createPhotosTemplate = (allPhotos) => {
-  if (allPhotos.length < 1) {
+const createPhotosTemplate = (photos) => {
+  if (photos.length < 1) {
     return '';
   }
 
   const photosTemplate = [];
 
-  for (const photo of allPhotos) {
+  for (const photo of photos) {
     const photoToRender = (
       `<img
         class="event__photo"
@@ -112,7 +112,7 @@ const createPhotosTemplate = (allPhotos) => {
   );
 };
 
-const createDescriptionTemplate = (descriptionText, allPhotos) => {
+const createDescriptionTemplate = (descriptionText, photos) => {
   if (descriptionText.length < 1) {
     return '';
   }
@@ -121,7 +121,7 @@ const createDescriptionTemplate = (descriptionText, allPhotos) => {
     `<section class="event__section event__section--destination">
       <h3 class="event__section-title event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${descriptionText}</p>
-      ${createPhotosTemplate(allPhotos)}
+      ${createPhotosTemplate(photos)}
     </section>`
   );
 };
@@ -224,8 +224,7 @@ const createEditEventTemplate = (pointEvent, descriptionEvent, destinations) => 
   `);
 };
 
-export default class EditEvent {
-  #element = null;
+export default class EditEvent extends AbstractView {
   #event = null;
   #description = null;
   #destinations = null;
@@ -235,6 +234,7 @@ export default class EditEvent {
     description = BLANK_DESCRIPTION,
     destinations = []
   ) {
+    super();
     this.#event = event;
     this.#description = description;
     this.#destinations = destinations;
@@ -246,17 +246,5 @@ export default class EditEvent {
       this.#description,
       this.#destinations
     );
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

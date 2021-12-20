@@ -1,31 +1,19 @@
-import { createElement } from '../utils/useRender';
-import { EmptyFilterMsg } from '../utils/const';
+import AbstractView from '../view/abstract-view.js';
+import { EmptyFilterMsg } from '../utils/const.js';
 
 const createEmpyListTemplate = (message) => (
   `<p class="trip-events__msg">${message}</p>`
 );
 
-export default class EmptyListMsg {
-  #element = null;
+export default class EmptyListMsg extends AbstractView {
   #message = null;
 
   constructor (message = EmptyFilterMsg.EVERYTHING) {
+    super();
     this.#message = message;
   }
 
   get template() {
     return createEmpyListTemplate(this.#message);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

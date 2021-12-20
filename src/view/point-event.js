@@ -1,6 +1,6 @@
-import { createElement } from '../utils/useRender';
-import { getTotalPrice } from '../utils/util';
-import { Format } from '../utils/const';
+import { getTotalPrice } from '../utils/util.js';
+import { Format } from '../utils/const.js';
+import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
@@ -18,14 +18,14 @@ const getFormattedDuration = (startDate, finishDate) => {
   return wrappedDuration.format(Format.DATE_W_CHAR);
 };
 
-const generateOffersTemplate = (allOffers) => {
-  if (allOffers.length < 1) {
+const generateOffersTemplate = (offers) => {
+  if (offers.length < 1) {
     return '';
   }
 
   const offersTemplate = [];
 
-  for (const offer of allOffers) {
+  for (const offer of offers) {
     if (offer.isAdded) {
       const offerToRender = (
         `<li class="event__offer">
@@ -102,27 +102,15 @@ const createPointEventTemplate = (pointEvent) => {
   );
 };
 
-export default class PointEvent {
-  #element = null;
+export default class PointEvent extends AbstractView {
   #event = null;
 
   constructor(event) {
+    super();
     this.#event = event;
   }
 
   get template() {
     return createPointEventTemplate(this.#event);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

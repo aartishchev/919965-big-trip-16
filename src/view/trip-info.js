@@ -1,6 +1,6 @@
 import { Format } from '../utils/const';
-import { createElement } from '../utils/useRender';
 import { getTotalPrice } from '../utils/util';
+import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 
 const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
@@ -66,27 +66,15 @@ const createTripInfoTemplate = (pointEvents) => {
   );
 };
 
-export default class TripInfo {
-  #element = null;
+export default class TripInfo extends AbstractView {
   #pointEvents = null;
 
   constructor(pointEvents = []) {
+    super();
     this.#pointEvents = pointEvents;
   }
 
   get template() {
     return createTripInfoTemplate(this.#pointEvents);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
