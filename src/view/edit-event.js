@@ -247,4 +247,23 @@ export default class EditEvent extends AbstractView {
       this.#destinations
     );
   }
+
+  setOnCollapseHandler = (callback) => {
+    this._callback.onCollapse = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCollapseHandler);
+  }
+
+  #onCollapseHandler = () => {
+    this._callback.onCollapse();
+  }
+
+  setOnSubmitHandler = (callback) => {
+    this._callback.onSubmit = callback;
+    this.element.addEventListener('submit', this.#onSubmitHandler);
+  }
+
+  #onSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.onSubmit();
+  }
 }

@@ -113,4 +113,13 @@ export default class PointEvent extends AbstractView {
   get template() {
     return createPointEventTemplate(this.#event);
   }
+
+  setOnExpandHandler = (callback) => {
+    this._callback.onExpand = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onExpandHandler);
+  }
+
+  #onExpandHandler = () => {
+    this._callback.onExpand();
+  }
 }

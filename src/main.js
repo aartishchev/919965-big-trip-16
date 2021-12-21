@@ -28,43 +28,38 @@ const renderEvent = (eventsContainer, event, description, eventDestinations) => 
   eventWrapper.className = 'trip-events__list';
   renderElement(eventWrapper, pointEventComponent.element);
 
-  const expandButton = pointEventComponent.element.querySelector('.event__rollup-btn');
-  const collapseButton = editEventComponent.element.querySelector('.event__rollup-btn');
+  const replacePointByForm = () => {
+    eventWrapper.replaceChild(editEventComponent.element, pointEventComponent.element);
+  };
 
-  const onEventSubmit = (evt) => {
-    evt.preventDefault();
-    replaceFormByPoint();
+  const replaceFormByPoint = () => {
+    eventWrapper.replaceChild(pointEventComponent.element, editEventComponent.element);
   };
 
   const onEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       replaceFormByPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
     }
   };
 
-  function replacePointByForm () {
-    eventWrapper.replaceChild(editEventComponent.element, pointEventComponent.element);
-
-    expandButton.removeEventListener('click', replacePointByForm);
-
-    collapseButton.addEventListener('click', replaceFormByPoint);
-    editEventComponent.element.addEventListener('submit', onEventSubmit);
+  pointEventComponent.setOnExpandHandler(() => {
+    replacePointByForm();
     document.addEventListener('keydown', onEscKeyDown);
-  }
+  });
 
-  function replaceFormByPoint () {
-    eventWrapper.replaceChild(pointEventComponent.element, editEventComponent.element);
-
-    collapseButton.removeEventListener('click', replaceFormByPoint);
-    editEventComponent.element.removeEventListener('submit', onEventSubmit);
+  editEventComponent.setOnCollapseHandler(() => {
+    replaceFormByPoint();
     document.removeEventListener('keydown', onEscKeyDown);
+  });
 
-    expandButton.addEventListener('click', replacePointByForm);
-  }
+  editEventComponent.setOnSubmitHandler(() => {
+    replaceFormByPoint();
+    document.removeEventListener('keydown', onEscKeyDown);
+  });
 
   renderElement(eventsContainer, eventWrapper);
-  expandButton.addEventListener('click', replacePointByForm);
 };
 
 const renderTripEvents = (eventsContainer) => {
