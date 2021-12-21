@@ -6,7 +6,7 @@ import EventsSorter from './view/events-sorter.js';
 import TripInfo from './view/trip-info.js';
 import EmptyListMsg from './view/empty-list.js';
 import { RenderPosition } from './utils/const.js';
-import { renderElement } from './utils/useRender.js';
+import { renderElement, replace } from './utils/render.js';
 import { pointEvents } from './mock/points.js';
 import { descriptionEvents } from './mock/descriptions.js';
 import { destinations } from './mock/destinations.js';
@@ -16,9 +16,9 @@ const navTabsContainer = document.querySelector('.trip-controls__navigation');
 const filterTabsContainer = document.querySelector('.trip-controls__filters');
 const tripEventsContainer = document.querySelector('.trip-events');
 
-renderElement(tripInfoContainer, new TripInfo(pointEvents).element, RenderPosition.AFTER_BEGIN);
-renderElement(navTabsContainer, new NavTabs().element);
-renderElement(filterTabsContainer, new FilterTabs().element);
+renderElement(tripInfoContainer, new TripInfo(pointEvents), RenderPosition.AFTER_BEGIN);
+renderElement(navTabsContainer, new NavTabs());
+renderElement(filterTabsContainer, new FilterTabs());
 
 const renderEvent = (eventsContainer, event, description, eventDestinations) => {
   const pointEventComponent = new PointEvent(event);
@@ -26,14 +26,14 @@ const renderEvent = (eventsContainer, event, description, eventDestinations) => 
 
   const eventWrapper = document.createElement('li');
   eventWrapper.className = 'trip-events__list';
-  renderElement(eventWrapper, pointEventComponent.element);
+  renderElement(eventWrapper, pointEventComponent);
 
   const replacePointByForm = () => {
-    eventWrapper.replaceChild(editEventComponent.element, pointEventComponent.element);
+    replace(editEventComponent.element, pointEventComponent.element);
   };
 
   const replaceFormByPoint = () => {
-    eventWrapper.replaceChild(pointEventComponent.element, editEventComponent.element);
+    replace(pointEventComponent.element, editEventComponent.element);
   };
 
   const onEscKeyDown = (evt) => {
@@ -64,11 +64,11 @@ const renderEvent = (eventsContainer, event, description, eventDestinations) => 
 
 const renderTripEvents = (eventsContainer) => {
   if (pointEvents.length < 1) {
-    renderElement(eventsContainer, new EmptyListMsg().element);
+    renderElement(eventsContainer, new EmptyListMsg());
     return;
   }
 
-  renderElement(eventsContainer, new EventsSorter().element);
+  renderElement(eventsContainer, new EventsSorter());
 
   const eventsList = document.createElement('ul');
   eventsList.className = 'trip-events__list';

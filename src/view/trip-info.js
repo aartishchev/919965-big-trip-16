@@ -1,5 +1,5 @@
 import { Format } from '../utils/const';
-import { getTotalPrice } from '../utils/util';
+import { getTotalPrice } from '../utils/event';
 import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 

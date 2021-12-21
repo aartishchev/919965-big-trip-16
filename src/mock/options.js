@@ -1,4 +1,4 @@
-import { getRandomInteger } from '../utils/util';
+import { getRandomInteger } from '../utils/common';
 
 const MIN_ID_VALUE = 0;
 const MAX_ID_VALUE = 1000;

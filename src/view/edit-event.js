@@ -1,5 +1,5 @@
 import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const.js';
-import { getTotalPrice } from '../utils/util.js';
+import { getTotalPrice } from '../utils/event.js';
 import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 
