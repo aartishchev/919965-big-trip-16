@@ -25,19 +25,19 @@ const generateOffersTemplate = (offers) => {
 
   const offersTemplate = [];
 
-  for (const offer of offers) {
-    if (offer.isAdded) {
+  offers.map((el) => {
+    if (el.isAdded) {
       const offerToRender = (
         `<li class="event__offer">
-          <span class="event__offer-title">${offer.title}</span>
+          <span class="event__offer-title">${el.title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
+          <span class="event__offer-price">${el.price}</span>
         </li>`
       );
 
       offersTemplate.push(offerToRender);
     }
-  }
+  });
 
   return (
     `<h4 class="visually-hidden">Offers:</h4>

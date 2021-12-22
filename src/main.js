@@ -16,7 +16,7 @@ const navTabsContainer = document.querySelector('.trip-controls__navigation');
 const filterTabsContainer = document.querySelector('.trip-controls__filters');
 const tripEventsContainer = document.querySelector('.trip-events');
 
-renderElement(tripInfoContainer, new TripInfo(pointEvents), RenderPosition.AFTER_BEGIN);
+renderElement(tripInfoContainer, new TripInfo(pointEvents), RenderPosition.PREPEND);
 renderElement(navTabsContainer, new NavTabs());
 renderElement(filterTabsContainer, new FilterTabs());
 

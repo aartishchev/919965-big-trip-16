@@ -8,24 +8,11 @@ export function createElement (template) {
   return newElement.firstChild;
 }
 
-export function renderElement (container, element, place = RenderPosition.BEFORE_END) {
+export function renderElement (container, element, place = RenderPosition.APPEND) {
   const parent = container instanceof AbstractView ? container.element : container;
   const child = element instanceof AbstractView ? element.element : element;
 
-  switch (place) {
-    case RenderPosition.BEFORE_BEGIN:
-      parent.before(child);
-      break;
-    case RenderPosition.AFTER_BEGIN:
-      parent.prepend(child);
-      break;
-    case RenderPosition.BEFORE_END:
-      parent.append(child);
-      break;
-    case RenderPosition.AFTER_END:
-      parent.after(child);
-      break;
-  }
+  parent[place](child);
 }
 
 export const replace = (newElement, oldElement) => {
