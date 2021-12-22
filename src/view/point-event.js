@@ -1,6 +1,6 @@
-import { createElement } from '../utils/useRender';
-import { getTotalPrice } from '../utils/util';
-import { Format } from '../utils/const';
+import { getTotalPrice } from '../utils/event.js';
+import { Format } from '../utils/const.js';
+import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
@@ -18,26 +18,26 @@ const getFormattedDuration = (startDate, finishDate) => {
   return wrappedDuration.format(Format.DATE_W_CHAR);
 };
 
-const generateOffersTemplate = (allOffers) => {
-  if (allOffers.length < 1) {
+const generateOffersTemplate = (offers) => {
+  if (offers.length < 1) {
     return '';
   }
 
   const offersTemplate = [];
 
-  for (const offer of allOffers) {
-    if (offer.isAdded) {
+  offers.map((el) => {
+    if (el.isAdded) {
       const offerToRender = (
         `<li class="event__offer">
-          <span class="event__offer-title">${offer.title}</span>
+          <span class="event__offer-title">${el.title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
+          <span class="event__offer-price">${el.price}</span>
         </li>`
       );
 
       offersTemplate.push(offerToRender);
     }
-  }
+  });
 
   return (
     `<h4 class="visually-hidden">Offers:</h4>
@@ -102,11 +102,11 @@ const createPointEventTemplate = (pointEvent) => {
   );
 };
 
-export default class PointEvent {
-  #element = null;
+export default class PointEvent extends AbstractView {
   #event = null;
 
   constructor(event) {
+    super();
     this.#event = event;
   }
 
@@ -114,15 +114,12 @@ export default class PointEvent {
     return createPointEventTemplate(this.#event);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
+  setOnExpandHandler = (callback) => {
+    this._callback.onExpand = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onExpandHandler);
   }
 
-  removeElement() {
-    this.#element = null;
+  #onExpandHandler = () => {
+    this._callback.onExpand();
   }
 }

@@ -1,5 +1,5 @@
 import { POINT_TYPES, EVENTS_COUNT } from '../utils/const';
-import { getRandomInteger } from '../utils/util';
+import { getRandomInteger } from '../utils/common';
 import { options } from './options';
 import { destinations } from './destinations';
 import dayjs from 'dayjs';

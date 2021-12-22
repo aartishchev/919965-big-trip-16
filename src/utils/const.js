@@ -13,10 +13,10 @@ export const POINT_TYPES = [
 ];
 
 export const RenderPosition = {
-  BEFORE_BEGIN: 'beforebegin',
-  AFTER_BEGIN: 'afterbegin',
-  BEFORE_END: 'beforeend',
-  AFTER_END: 'afterend'
+  BEFORE: 'before',
+  PREPEND: 'prepend',
+  APPEND: 'append',
+  AFTER: 'after'
 };
 
 export const Format = {

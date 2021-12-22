@@ -1,5 +1,5 @@
 import { EVENTS_COUNT } from '../utils/const';
-import { getRandomInteger } from '../utils/util';
+import { getRandomInteger } from '../utils/common';
 
 const MIN_DESCRIPTION_LENGTH = 1;
 const MAX_DESCRIPTION_LENGTH = 5;
