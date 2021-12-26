@@ -16,7 +16,6 @@ export default class tripPresenter {
 
   #eventsSorterComponent = new EventsSorter();
   #emptyListMsgComponent = new EmptyListMsg();
-  #tripInfoComponent = new TripInfo(this.#events);
 
   constructor(eventsContainer, infoContainer) {
     this.#eventsContainer = eventsContainer;
@@ -47,7 +46,8 @@ export default class tripPresenter {
   }
 
   #renderTripInfo = () => {
-    renderElement(this.#infoContainer, this.#tripInfoComponent, RenderPosition.PREPEND);
+    const tripInfoComponent = new TripInfo(this.#events);
+    renderElement(this.#infoContainer, tripInfoComponent, RenderPosition.PREPEND);
   }
 
   #renderTripEvents = () => {
