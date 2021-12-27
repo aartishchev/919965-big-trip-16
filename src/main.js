@@ -15,5 +15,4 @@ renderElement(navTabsContainer, new NavTabs());
 renderElement(filterTabsContainer, new FilterTabs());
 
 const tripPresenter = new TripPresenter(tripEventsContainer, tripInfoContainer);
-
 tripPresenter.init(pointEvents, descriptionEvents, destinations);

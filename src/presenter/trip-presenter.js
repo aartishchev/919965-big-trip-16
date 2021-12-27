@@ -1,10 +1,9 @@
-import EditEvent from '../view/edit-event.js';
-import PointEvent from '../view/point-event.js';
+import EventPresenter from './event-presenter.js';
 import EventsSorter from '../view/events-sorter.js';
 import TripInfo from '../view/trip-info.js';
 import EmptyListMsg from '../view/empty-list.js';
 import { RenderPosition } from '../utils/const.js';
-import { renderElement, replace } from '../utils/render.js';
+import { renderElement } from '../utils/render.js';
 
 export default class tripPresenter {
   #eventsContainer = null;
@@ -50,6 +49,16 @@ export default class tripPresenter {
     renderElement(this.#infoContainer, tripInfoComponent, RenderPosition.PREPEND);
   }
 
+  #renderEvent = (eventsList, event, description, destinations) => {
+    const eventWrapper = document.createElement('li');
+    eventWrapper.className = 'trip-events__list';
+
+    const eventComponent = new EventPresenter(eventWrapper);
+    eventComponent.init(event, description, destinations);
+
+    renderElement(eventsList, eventWrapper);
+  }
+
   #renderTripEvents = () => {
     const eventsList = document.createElement('ul');
     eventsList.className = 'trip-events__list';
@@ -59,47 +68,5 @@ export default class tripPresenter {
     for (let i = 0; i < this.#events.length; i++) {
       this.#renderEvent(eventsList, this.#events[i], this.#descriptions[i], this.#destinations);
     }
-  }
-
-  #renderEvent = (eventsContainer, event, description, destinations) => {
-    const pointEventComponent = new PointEvent(event);
-    const editEventComponent = new EditEvent(event, description, destinations);
-
-    const eventWrapper = document.createElement('li');
-    eventWrapper.className = 'trip-events__list';
-    renderElement(eventWrapper, pointEventComponent);
-
-    const replacePointByForm = () => {
-      replace(editEventComponent.element, pointEventComponent.element);
-    };
-
-    const replaceFormByPoint = () => {
-      replace(pointEventComponent.element, editEventComponent.element);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormByPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    pointEventComponent.setOnExpandHandler(() => {
-      replacePointByForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    editEventComponent.setOnCollapseHandler(() => {
-      replaceFormByPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    editEventComponent.setOnSubmitHandler(() => {
-      replaceFormByPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    renderElement(eventsContainer, eventWrapper);
   }
 }
