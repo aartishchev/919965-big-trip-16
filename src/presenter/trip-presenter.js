@@ -8,6 +8,7 @@ import { renderElement } from '../utils/render.js';
 export default class tripPresenter {
   #eventsContainer = null;
   #infoContainer = null;
+  #eventsList = null;
 
   #events = [];
   #descriptions = [];
@@ -33,6 +34,7 @@ export default class tripPresenter {
 
     this.#renderSorter();
     this.#renderTripInfo();
+    this.#renderEventsList();
     this.#renderTripEvents();
   }
 
@@ -49,24 +51,26 @@ export default class tripPresenter {
     renderElement(this.#infoContainer, tripInfoComponent, RenderPosition.PREPEND);
   }
 
-  #renderEvent = (eventsList, event, description, destinations) => {
+  #renderEventsList = () => {
+    this.#eventsList = document.createElement('ul');
+    this.#eventsList.className = 'trip-events__list';
+
+    renderElement(this.#eventsContainer, this.#eventsList);
+  }
+
+  #renderEvent = (event, description, destinations) => {
     const eventWrapper = document.createElement('li');
     eventWrapper.className = 'trip-events__list';
 
     const eventComponent = new EventPresenter(eventWrapper);
     eventComponent.init(event, description, destinations);
 
-    renderElement(eventsList, eventWrapper);
+    renderElement(this.#eventsList, eventWrapper);
   }
 
   #renderTripEvents = () => {
-    const eventsList = document.createElement('ul');
-    eventsList.className = 'trip-events__list';
-
-    renderElement(this.#eventsContainer, eventsList);
-
     for (let i = 0; i < this.#events.length; i++) {
-      this.#renderEvent(eventsList, this.#events[i], this.#descriptions[i], this.#destinations);
+      this.#renderEvent(this.#events[i], this.#descriptions[i], this.#destinations);
     }
   }
 }
