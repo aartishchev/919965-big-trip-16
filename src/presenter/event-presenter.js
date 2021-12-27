@@ -1,9 +1,9 @@
 import EditEvent from '../view/edit-event.js';
 import PointEvent from '../view/point-event.js';
-import { renderElement, replace } from '../utils/render.js';
+import { renderElement, replace, remove } from '../utils/render.js';
 
 export default class EventPresenter {
-  #eventsListContainer = null;
+  #eventContainer = null;
 
   #pointEventComponent = null;
   #editEventComponent = null;
@@ -12,14 +12,17 @@ export default class EventPresenter {
   #description = null;
   #destinations = [];
 
-  constructor (eventsListContainer) {
-    this.#eventsListContainer = eventsListContainer;
+  constructor (eventContainer) {
+    this.#eventContainer = eventContainer;
   }
 
   init = (event, description, destinations) => {
     this.#event = event;
     this.#description = description;
     this.#destinations = destinations;
+
+    const prevPointEventComponent = this.#pointEventComponent;
+    const prevEditEventComponent = this.#editEventComponent;
 
     this.#pointEventComponent = new PointEvent(this.#event);
     this.#editEventComponent = new EditEvent(this.#event, this.#description, this.#destinations);
@@ -28,7 +31,26 @@ export default class EventPresenter {
     this.#editEventComponent.setOnCollapseHandler(this.#handleOnCollapse);
     this.#editEventComponent.setOnSubmitHandler(this.#handleOnSubmit);
 
-    renderElement(this.#eventsListContainer, this.#pointEventComponent);
+    if (prevPointEventComponent === null || prevEditEventComponent === null) {
+      renderElement(this.#eventContainer, this.#pointEventComponent);
+      return;
+    }
+
+    if (this.#eventContainer.contains(prevPointEventComponent.element)) {
+      replace(this.#pointEventComponent, prevPointEventComponent);
+    }
+
+    if (this.#eventContainer.contains(prevEditEventComponent.element)) {
+      replace(this.#editEventComponent, prevEditEventComponent);
+    }
+
+    remove(prevPointEventComponent);
+    remove(prevEditEventComponent);
+  }
+
+  destroy = () => {
+    remove(this.#pointEventComponent);
+    remove(this.#editEventComponent);
   }
 
   #replacePointByForm = () => {
