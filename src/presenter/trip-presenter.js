@@ -41,9 +41,9 @@ export default class tripPresenter {
     this.#renderTripEvents();
   }
 
-  #handleEventChange = (updatedEvent) => {
+  #handleEventChange = (updatedEvent, description, destinations) => {
     this.#events = updateItem(this.#events, updatedEvent);
-    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
+    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent, description, destinations);
   }
 
   #renderEmptyListMsg = () => {

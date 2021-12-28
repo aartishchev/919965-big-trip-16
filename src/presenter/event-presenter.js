@@ -79,7 +79,7 @@ export default class EventPresenter {
   }
 
   #handleOnFavorite = () => {
-    this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
+    this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite}, this.#description, this.#destinations);
   }
 
   #handleOnEscKeyDown = (evt) => {
