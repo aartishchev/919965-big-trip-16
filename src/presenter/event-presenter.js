@@ -1,10 +1,12 @@
 import EditEvent from '../view/edit-event.js';
 import PointEvent from '../view/point-event.js';
 import { renderElement, replace, remove } from '../utils/render.js';
+import { Mode } from '../utils/const.js';
 
 export default class EventPresenter {
   #eventContainer = null;
   #changeData = null;
+  #changeMode = null;
 
   #pointEventComponent = null;
   #editEventComponent = null;
@@ -12,10 +14,12 @@ export default class EventPresenter {
   #event = null;
   #description = null;
   #destinations = [];
+  #mode = Mode.DEFAULT;
 
-  constructor (eventContainer, changeData) {
+  constructor (eventContainer, changeData, changeMode) {
     this.#eventContainer = eventContainer;
     this.#changeData = changeData;
+    this.#changeMode = changeMode;
   }
 
   init = (event, description, destinations) => {
@@ -39,11 +43,11 @@ export default class EventPresenter {
       return;
     }
 
-    if (this.#eventContainer.contains(prevPointEventComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#pointEventComponent, prevPointEventComponent);
     }
 
-    if (this.#eventContainer.contains(prevEditEventComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editEventComponent, prevEditEventComponent);
     }
 
@@ -56,14 +60,23 @@ export default class EventPresenter {
     remove(this.#editEventComponent);
   }
 
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormByPoint();
+    }
+  }
+
   #replacePointByForm = () => {
     replace(this.#editEventComponent, this.#pointEventComponent);
     document.addEventListener('keydown', this.#handleOnEscKeyDown);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
   }
 
   #replaceFormByPoint = () => {
     replace(this.#pointEventComponent, this.#editEventComponent);
     document.removeEventListener('keydown', this.#handleOnEscKeyDown);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleOnExpand = () => {
@@ -79,7 +92,10 @@ export default class EventPresenter {
   }
 
   #handleOnFavorite = () => {
-    this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite}, this.#description, this.#destinations);
+    this.#changeData(
+      {...this.#event, isFavorite: !this.#event.isFavorite},
+      this.#description,
+      this.#destinations);
   }
 
   #handleOnEscKeyDown = (evt) => {

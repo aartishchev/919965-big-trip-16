@@ -50,4 +50,9 @@ export const BLANK_DESCRIPTION = {
   photos: []
 };
 
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING'
+};
+
 export const EVENTS_COUNT = 10;
