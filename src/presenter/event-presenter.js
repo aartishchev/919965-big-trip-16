@@ -4,6 +4,7 @@ import { renderElement, replace, remove } from '../utils/render.js';
 
 export default class EventPresenter {
   #eventContainer = null;
+  #changeData = null;
 
   #pointEventComponent = null;
   #editEventComponent = null;
@@ -12,8 +13,9 @@ export default class EventPresenter {
   #description = null;
   #destinations = [];
 
-  constructor (eventContainer) {
+  constructor (eventContainer, changeData) {
     this.#eventContainer = eventContainer;
+    this.#changeData = changeData;
   }
 
   init = (event, description, destinations) => {
@@ -28,6 +30,7 @@ export default class EventPresenter {
     this.#editEventComponent = new EditEvent(this.#event, this.#description, this.#destinations);
 
     this.#pointEventComponent.setOnExpandHandler(this.#handleOnExpand);
+    this.#pointEventComponent.setOnFavoriteHandler(this.#handleOnFavorite);
     this.#editEventComponent.setOnCollapseHandler(this.#handleOnCollapse);
     this.#editEventComponent.setOnSubmitHandler(this.#handleOnSubmit);
 
@@ -73,6 +76,10 @@ export default class EventPresenter {
 
   #handleOnSubmit = () => {
     this.#replaceFormByPoint();
+  }
+
+  #handleOnFavorite = () => {
+    this.#changeData({...this.#event, isFavorite: !this.#event.isFavorite});
   }
 
   #handleOnEscKeyDown = (evt) => {

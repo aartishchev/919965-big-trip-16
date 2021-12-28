@@ -4,6 +4,7 @@ import TripInfo from '../view/trip-info.js';
 import EmptyListMsg from '../view/empty-list.js';
 import { RenderPosition } from '../utils/const.js';
 import { renderElement } from '../utils/render.js';
+import { updateItem } from '../utils/common.js';
 
 export default class tripPresenter {
   #eventsContainer = null;
@@ -13,6 +14,8 @@ export default class tripPresenter {
   #events = [];
   #descriptions = [];
   #destinations = [];
+
+  #eventPresenters = new Map();
 
   #eventsSorterComponent = new EventsSorter();
   #emptyListMsgComponent = new EmptyListMsg();
@@ -36,6 +39,11 @@ export default class tripPresenter {
     this.#renderTripInfo();
     this.#renderEventsList();
     this.#renderTripEvents();
+  }
+
+  #handleEventChange = (updatedEvent) => {
+    this.#events = updateItem(this.#events, updatedEvent);
+    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
   }
 
   #renderEmptyListMsg = () => {
@@ -62,8 +70,9 @@ export default class tripPresenter {
     const eventWrapper = document.createElement('li');
     eventWrapper.className = 'trip-events__list';
 
-    const eventComponent = new EventPresenter(eventWrapper);
-    eventComponent.init(event, description, destinations);
+    const eventPresenter = new EventPresenter(eventWrapper, this.#handleEventChange);
+    eventPresenter.init(event, description, destinations);
+    this.#eventPresenters.set(event.id, eventPresenter);
 
     renderElement(this.#eventsList, eventWrapper);
   }
@@ -72,5 +81,10 @@ export default class tripPresenter {
     for (let i = 0; i < this.#events.length; i++) {
       this.#renderEvent(this.#events[i], this.#descriptions[i], this.#destinations);
     }
+  }
+
+  #clearEventsList = () => {
+    this.#eventPresenters.forEach((p) => p.destroy);
+    this.#eventPresenters.clear();
   }
 }
