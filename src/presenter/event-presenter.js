@@ -40,6 +40,7 @@ export default class EventPresenter {
 
     if (prevPointEventComponent === null || prevEditEventComponent === null) {
       renderElement(this.#eventContainer, this.#pointEventComponent);
+
       return;
     }
 
@@ -95,7 +96,8 @@ export default class EventPresenter {
     this.#changeData(
       {...this.#event, isFavorite: !this.#event.isFavorite},
       this.#description,
-      this.#destinations);
+      this.#destinations
+    );
   }
 
   #handleOnEscKeyDown = (evt) => {

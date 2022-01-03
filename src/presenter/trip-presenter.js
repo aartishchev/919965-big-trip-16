@@ -32,6 +32,7 @@ export default class tripPresenter {
 
     if (events.length < 1) {
       this.#renderEmptyListMsg();
+
       return;
     }
 
