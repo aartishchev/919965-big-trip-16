@@ -2,14 +2,16 @@ import EventPresenter from './event-presenter.js';
 import EventsSorter from '../view/events-sorter.js';
 import TripInfo from '../view/trip-info.js';
 import EmptyListMsg from '../view/empty-list.js';
-import { RenderPosition } from '../utils/const.js';
+import { RenderPosition, SortType } from '../utils/const.js';
 import { renderElement } from '../utils/render.js';
 import { updateItem } from '../utils/common.js';
+import { sortByPrice, sortByDate, sortByDuration} from '../utils/event.js';
 
 export default class tripPresenter {
   #eventsContainer = null;
   #infoContainer = null;
   #eventsList = null;
+  #currentSortType = null;
 
   #events = [];
   #descriptions = [];
@@ -36,6 +38,7 @@ export default class tripPresenter {
       return;
     }
 
+    this.#sortTasks();
     this.#renderSorter();
     this.#renderTripInfo();
     this.#renderEventsList();
@@ -55,8 +58,38 @@ export default class tripPresenter {
     renderElement(this.#eventsContainer, this.#emptyListMsgComponent);
   }
 
+  #sortTasks = (sortType) => {
+    switch (sortType) {
+      case SortType.DURATION:
+        this.#events.sort(sortByDuration);
+        break;
+      case SortType.PRICE:
+        this.#events.sort(sortByPrice);
+        break;
+      default:
+        this.#events.sort(sortByDate);
+    }
+
+    if (sortType) {
+      this.#currentSortType = sortType;
+    } else {
+      this.#currentSortType = SortType.DATE;
+    }
+  }
+
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortTasks(sortType);
+    this.#clearEventsList();
+    this.#renderTripEvents();
+  }
+
   #renderSorter = () => {
     renderElement(this.#eventsContainer, this.#eventsSorterComponent);
+    this.#eventsSorterComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
   }
 
   #renderTripInfo = () => {
@@ -89,7 +122,7 @@ export default class tripPresenter {
   }
 
   #clearEventsList = () => {
-    this.#eventPresenters.forEach((p) => p.destroy);
+    this.#eventPresenters.forEach((p) => p.destroy());
     this.#eventPresenters.clear();
   }
 }

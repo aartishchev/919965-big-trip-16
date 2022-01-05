@@ -1,4 +1,4 @@
-import { getTotalPrice } from '../utils/event.js';
+import { getDuration, getTotalPrice } from '../utils/event.js';
 import { Format } from '../utils/const.js';
 import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
@@ -6,7 +6,7 @@ import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 const getFormattedDuration = (startDate, finishDate) => {
-  const eventDuration = dayjs(finishDate).diff(dayjs(startDate));
+  const eventDuration = getDuration(startDate, finishDate);
   const wrappedDuration = dayjs.duration(eventDuration);
 
   if (eventDuration < dayjs.duration(1, 'hours').asMilliseconds()) {
