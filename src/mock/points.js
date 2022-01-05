@@ -2,6 +2,7 @@ import { POINT_TYPES, EVENTS_COUNT } from '../utils/const';
 import { getRandomInteger } from '../utils/common';
 import { options } from './options';
 import { destinations } from './destinations';
+import { nanoid } from 'nanoid';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
@@ -40,6 +41,7 @@ const generateEventPoint = () => {
   const dateFrom = generateDateFrom();
 
   return {
+    id: nanoid(),
     type: pointType,
     destination: generateDestination(),
     dateFrom: dateFrom.toDate(),

@@ -1,13 +1,11 @@
 import { getRandomInteger } from '../utils/common';
-
-const MIN_ID_VALUE = 0;
-const MAX_ID_VALUE = 1000;
+import { nanoid } from 'nanoid';
 
 const taxiOption = {
   type: 'Taxi',
   offers: [
     {
-      id: getRandomInteger(MIN_ID_VALUE, MAX_ID_VALUE),
+      id: nanoid(),
       title: 'Order Uber',
       price: '20',
       isAdded: Boolean(getRandomInteger())
@@ -24,7 +22,7 @@ const trainOption = {
   type: 'Train',
   offers: [
     {
-      id: getRandomInteger(MIN_ID_VALUE, MAX_ID_VALUE),
+      id: nanoid(),
       title: 'Order linen',
       price: '5',
       isAdded: Boolean(getRandomInteger())
@@ -36,7 +34,7 @@ const shipOption = {
   type: 'Ship',
   offers: [
     {
-      id: getRandomInteger(MIN_ID_VALUE, MAX_ID_VALUE),
+      id: nanoid(),
       title: 'Preorder food',
       price: '30',
       isAdded: Boolean(getRandomInteger())
@@ -48,7 +46,7 @@ const driveOption = {
   type: 'Drive',
   offers: [
     {
-      id: getRandomInteger(MIN_ID_VALUE, MAX_ID_VALUE),
+      id: nanoid(),
       title: 'Rent a car',
       price: '200',
       isAdded: Boolean(getRandomInteger())
@@ -60,13 +58,13 @@ const flightOption = {
   type: 'Flight',
   offers: [
     {
-      id: getRandomInteger(MIN_ID_VALUE, MAX_ID_VALUE),
+      id: nanoid(),
       title: 'Add luggage',
       price: '50',
       isAdded: Boolean(getRandomInteger())
     },
     {
-      id: getRandomInteger(MIN_ID_VALUE, MAX_ID_VALUE),
+      id: nanoid(),
       title: 'Switch to comfort',
       price: '80',
       isAdded: Boolean(getRandomInteger())
@@ -83,13 +81,13 @@ const sightseeingOption = {
   type: 'Sightseeing',
   offers: [
     {
-      id: getRandomInteger(MIN_ID_VALUE, MAX_ID_VALUE),
+      id: nanoid(),
       title: 'Book tickets',
       price: '40',
       isAdded: Boolean(getRandomInteger())
     },
     {
-      id: getRandomInteger(MIN_ID_VALUE, MAX_ID_VALUE),
+      id: nanoid(),
       title: 'Lunch in city',
       price: '30',
       isAdded: Boolean(getRandomInteger())
