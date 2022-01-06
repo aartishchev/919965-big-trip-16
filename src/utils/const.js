@@ -51,8 +51,14 @@ export const BLANK_DESCRIPTION = {
 };
 
 export const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING'
+  DEFAULT: 'default',
+  EDITING: 'editing'
+};
+
+export const SortType = {
+  DATE: 'date',
+  DURATION: 'duration',
+  PRICE: 'price',
 };
 
 export const EVENTS_COUNT = 10;

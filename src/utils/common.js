@@ -14,5 +14,7 @@ export const updateItem = (items, updatedItem) => {
     return items;
   }
 
-  return items.splice(index, 1, updatedItem);
+  items.splice(index, 1, updatedItem);
+
+  return items;
 };
