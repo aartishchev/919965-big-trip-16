@@ -1,4 +1,4 @@
-import { EVENTS_COUNT } from '../utils/const';
+import { destinations } from './destinations';
 import { getRandomInteger } from '../utils/common';
 
 const MIN_DESCRIPTION_LENGTH = 1;
@@ -16,12 +16,12 @@ const descriptions = descriptionText.replaceAll('. ', '.|').split('|');
 const getRandomDescription = () =>
   descriptions[getRandomInteger(0, descriptions.length - 1)];
 
-const generateDescriptionText = () => {
+const generateDescriptionText = (destination) => {
   const descriptionLength = getRandomInteger(
     MIN_DESCRIPTION_LENGTH,
     MAX_DESCRIPTION_LENGTH
   );
-  const randomDescription = [];
+  const randomDescription = [destination];
 
   for (let i = 0; i < descriptionLength; i++) {
     randomDescription.push(getRandomDescription());
@@ -48,12 +48,12 @@ const generatePhotos = () => {
   return randomPhotos;
 };
 
-const generateDescription = () => ({
-  description: generateDescriptionText(),
+const generateDescription = (destination) => ({
+  description: generateDescriptionText(destination),
   photos: generatePhotos(),
 });
 
 export const descriptionEvents = Array.from(
-  { length: EVENTS_COUNT },
-  generateDescription
+  destinations,
+  (el) => generateDescription(el)
 );

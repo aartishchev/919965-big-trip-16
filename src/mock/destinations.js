@@ -1,1 +1,1 @@
-export const destinations = ['Amsterdam', 'Chamonix', 'Geneva'];
+export const destinations = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Berlin'];
