@@ -53,7 +53,10 @@ const generateDescription = (destination) => ({
   photos: generatePhotos(),
 });
 
-export const descriptions = Array.from(
-  destinations,
-  (el) => generateDescription(el)
-);
+export const descriptions = destinations.map((el, idx) => {
+  if (idx === destinations.length - 1) {
+    return { description: '', photos: [] };
+  }
+
+  return generateDescription(el);
+});
