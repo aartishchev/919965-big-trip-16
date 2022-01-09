@@ -8,20 +8,20 @@ export function getDuration(startDate, finishDate) {
   return dayjs(finishDate).diff(dayjs(startDate));
 }
 
-export function sortByPrice (a, b) {
-  const aTotalPrice = getTotalPrice(a.offers, a.basePrice);
-  const bTotalPrice = getTotalPrice(b.offers, b.basePrice);
+export function sortByPrice (aEvent, bEvent) {
+  const aTotalPrice = getTotalPrice(aEvent.offers, aEvent.basePrice);
+  const bTotalPrice = getTotalPrice(bEvent.offers, bEvent.basePrice);
 
   return bTotalPrice - aTotalPrice;
 }
 
-export function sortByDate (a, b) {
-  return a.dateFrom - b.dateFrom;
+export function sortByDate (aEvent, bEvent) {
+  return aEvent.dateFrom - bEvent.dateFrom;
 }
 
-export function sortByDuration (a, b) {
-  const aDuration = getDuration(a.dateFrom, a.dateTo);
-  const bDuration = getDuration(b.dateFrom, b.dateTo);
+export function sortByDuration (aEvent, bEvent) {
+  const aDuration = getDuration(aEvent.dateFrom, aEvent.dateTo);
+  const bDuration = getDuration(bEvent.dateFrom, bEvent.dateTo);
 
   return bDuration - aDuration;
 }
