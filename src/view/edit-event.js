@@ -1,6 +1,7 @@
 import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const.js';
 import { getTotalPrice } from '../utils/event.js';
 import AbstractView from '../view/abstract-view.js';
+import { destinations as mockDestinations } from '../mock/destinations.js';
 import dayjs from 'dayjs';
 
 const createTypesTemplate = (currentType) => {
@@ -112,23 +113,26 @@ const createPhotosTemplate = (photos) => {
   );
 };
 
-const createDescriptionTemplate = (descriptionText, photos) => {
-  if (descriptionText.length < 1) {
+const createDescriptionTemplate = (description, photos) => {
+  if (description.length < 1) {
     return '';
   }
 
   return (
     `<section class="event__section event__section--destination">
       <h3 class="event__section-title event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${descriptionText}</p>
+      <p class="event__destination-description">${description}</p>
       ${createPhotosTemplate(photos)}
     </section>`
   );
 };
 
-const createEditEventTemplate = (pointEvent, descriptionEvent, destinations) => {
-  const { type, destination, dateFrom, dateTo, basePrice, offers } = pointEvent;
-  const { description, photos } = descriptionEvent;
+const createEditEventTemplate = (event, descriptions, destinations) => {
+  const { type, destination, dateFrom, dateTo, basePrice, offers } = event;
+
+  const destinationIndex = mockDestinations.findIndex((el) => el === destination);
+  const { description, photos } = descriptions[destinationIndex] || BLANK_DESCRIPTION;
+
 
   const startDate = dayjs(dateFrom).format(Format.DATE_TIME);
   const finishDate = dayjs(dateTo).format(Format.DATE_TIME);
@@ -226,24 +230,24 @@ const createEditEventTemplate = (pointEvent, descriptionEvent, destinations) => 
 
 export default class EditEvent extends AbstractView {
   #event = null;
-  #description = null;
+  #descriptions = null;
   #destinations = null;
 
   constructor(
     event = BLANK_POINT,
-    description = BLANK_DESCRIPTION,
+    descriptions = [],
     destinations = []
   ) {
     super();
     this.#event = event;
-    this.#description = description;
+    this.#descriptions = descriptions;
     this.#destinations = destinations;
   }
 
   get template() {
     return createEditEventTemplate(
       this.#event,
-      this.#description,
+      this.#descriptions,
       this.#destinations
     );
   }
