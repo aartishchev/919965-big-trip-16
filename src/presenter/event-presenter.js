@@ -14,6 +14,7 @@ export default class EventPresenter {
   #event = null;
   #descriptions = [];
   #destinations = [];
+  #options = [];
   #mode = Mode.DEFAULT;
 
   constructor (eventContainer, changeData, changeMode) {
@@ -25,17 +26,19 @@ export default class EventPresenter {
   init = (
     event,
     descriptions = this.#descriptions,
-    destinations = this.#destinations
+    destinations = this.#destinations,
+    options = this.#options
   ) => {
     this.#event = event;
     this.#descriptions = descriptions;
     this.#destinations = destinations;
+    this.#options = options;
 
     const prevPointEventComponent = this.#pointEventComponent;
     const prevEditEventComponent = this.#editEventComponent;
 
     this.#pointEventComponent = new PointEvent(this.#event);
-    this.#editEventComponent = new EditEvent(this.#event, this.#descriptions, this.#destinations);
+    this.#editEventComponent = new EditEvent(this.#event, this.#descriptions, this.#destinations, this.#options);
 
     this.#pointEventComponent.setOnExpandHandler(this.#handleOnExpand);
     this.#pointEventComponent.setOnFavoriteHandler(this.#handleOnFavorite);

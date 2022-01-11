@@ -3,6 +3,7 @@ import NavTabs from './view/nav-tabs.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import { renderElement } from './utils/render.js';
 import { events } from './mock/points.js';
+import { options } from './mock/options.js';
 import { descriptions } from './mock/descriptions.js';
 import { destinations } from './mock/destinations.js';
 
@@ -15,4 +16,4 @@ renderElement(navTabsContainer, new NavTabs());
 renderElement(filterTabsContainer, new FilterTabs());
 
 const tripPresenter = new TripPresenter(tripEventsContainer, tripInfoContainer);
-tripPresenter.init(events, descriptions, destinations);
+tripPresenter.init(events, descriptions, destinations, options);

@@ -10,15 +10,15 @@ const createTypesTemplate = (currentType) => {
     const typeToRender = (
       `<div class="event__type-item">
         <input
-          id="event-type-${type.toLowerCase()}"
+          id="event-type-${type}"
           class="event__type-input visually-hidden"
           type="radio" name="event-type"
-          value="${type.toLowerCase()}"
+          value="${type}"
           ${type === currentType ? 'checked' : ''}
         >
         <label
-          class="event__type-label event__type-label--${type.toLowerCase()}"
-          for="event-type-${type.toLowerCase()}"
+          class="event__type-label event__type-label--${type}"
+          for="event-type-${type}"
         >
           ${type}
         </label>
@@ -112,7 +112,7 @@ const createDescriptionTemplate = (description, photos, arePhotos) => (
     </section>`
 );
 
-const createEditEventTemplate = (data) => {
+const createEditEventTemplate = (data, destinations) => {
   const {
     type,
     destination,
@@ -124,8 +124,7 @@ const createEditEventTemplate = (data) => {
     isDescriptioned,
     arePhotos,
     description,
-    photos,
-    destinations,
+    photos
   } = data;
 
   const startDate = dayjs(dateFrom).format(Format.DATE_TIME);
@@ -223,19 +222,28 @@ const createEditEventTemplate = (data) => {
 };
 
 export default class EditEvent extends AbstractView {
+  #descriptions = null;
+  #destinations = null;
+  #options = null;
+
   constructor(
     event = BLANK_POINT,
     descriptions = [],
-    destinations = []
+    destinations = [],
+    options = []
   ) {
     super();
-    this._data = EditEvent.parseEventToData(event, descriptions, destinations);
+    this.#descriptions = descriptions;
+    this.#destinations = destinations;
+    this.#options = options;
 
-    this.element.querySelector('.event__type-group').addEventListener('click', this.#onTypeChangeHandler);
+    this._data = this.#parseEventToData(event);
+
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createEditEventTemplate(this._data);
+    return createEditEventTemplate(this._data, this.#destinations);
   }
 
   updateData = (update) => {
@@ -246,6 +254,12 @@ export default class EditEvent extends AbstractView {
     this._data = {...this._data, ...update};
 
     this.updateElement();
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
   }
 
   updateElement = () => {
@@ -256,6 +270,12 @@ export default class EditEvent extends AbstractView {
     const newElement = this.element;
 
     parent.replaceChild(newElement, prevElement);
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setOnCollapseHandler(this._callback.onCollapse);
+    this.setOnSubmitHandler(this._callback.onSubmit);
   }
 
   setOnCollapseHandler = (callback) => {
@@ -272,9 +292,28 @@ export default class EditEvent extends AbstractView {
     this.element.addEventListener('submit', this.#onSubmitHandler);
   }
 
+  #setInnerHandlers = () => {
+    this.element
+      .querySelector('.event__type-group')
+      .addEventListener('click', this.#onTypeChangeHandler);
+  }
+
   #onTypeChangeHandler = (evt) => {
     if (evt.target.tagName === 'INPUT') {
-      this.updateData({type: evt.target.value});
+      const targetType = evt.target.value;
+
+      if (targetType === this._data.type) {
+        return;
+      }
+
+      const index = this.#options.findIndex((o) => o.type === targetType);
+      const newOffers = this.#options[index].offers || [];
+
+      this.updateData({
+        type: targetType,
+        offers: newOffers,
+        areOffers: newOffers.length > 0,
+      });
     }
   }
 
@@ -283,9 +322,9 @@ export default class EditEvent extends AbstractView {
     this._callback.onSubmit(EditEvent.parseDataToEvent(this._data));
   }
 
-  static parseEventToData = (event, descriptions, destinations) => {
-    const destinationIndex = destinations.findIndex((el) => el === event.destination);
-    const { description, photos } = descriptions[destinationIndex] || BLANK_DESCRIPTION;
+  #parseEventToData = (event) => {
+    const index = this.#destinations.findIndex((el) => el === event.destination);
+    const { description, photos } = this.#descriptions[index] || BLANK_DESCRIPTION;
 
     return {
       ...event,
@@ -293,8 +332,7 @@ export default class EditEvent extends AbstractView {
       isDescriptioned: description !== '',
       arePhotos: photos.length > 0,
       description,
-      photos,
-      destinations
+      photos
     };
   }
 
@@ -306,7 +344,6 @@ export default class EditEvent extends AbstractView {
     delete event.arePhotos;
     delete event.description;
     delete event.photos;
-    delete event.destinations;
 
     return event;
   }
