@@ -1,27 +1,26 @@
 import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const.js';
 import { getTotalPrice } from '../utils/event.js';
-import { destinations as mockDestinations } from '../mock/destinations.js';
 import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 
 const createTypesTemplate = (currentType) => {
   const typesTemplate = [];
 
-  for (const pointType of POINT_TYPES) {
+  for (const type of POINT_TYPES) {
     const typeToRender = (
       `<div class="event__type-item">
         <input
-          id="event-type-${pointType.toLowerCase()}-1"
+          id="event-type-${type.toLowerCase()}"
           class="event__type-input visually-hidden"
           type="radio" name="event-type"
-          value="${pointType.toLowerCase()}"
-          ${pointType === currentType ? 'checked' : ''}
+          value="${type.toLowerCase()}"
+          ${type === currentType ? 'checked' : ''}
         >
         <label
-          class="event__type-label event__type-label--${pointType.toLowerCase()}"
-          for="event-type-${pointType.toLowerCase()}-1"
+          class="event__type-label event__type-label--${type.toLowerCase()}"
+          for="event-type-${type.toLowerCase()}"
         >
-          ${pointType}
+          ${type}
         </label>
       </div>`
     );
@@ -35,23 +34,19 @@ const createTypesTemplate = (currentType) => {
 const createDestinationOptionsTemplate = (destinations) => {
   const destinationOptionsTemplate = [];
 
-  for (const destinationOption of destinations) {
-    const destinationOptionToRender = `<option value="${destinationOption}"></option>`;
+  for (const destination of destinations) {
+    const destinationOptionToRender = `<option value="${destination}"></option>`;
     destinationOptionsTemplate.push(destinationOptionToRender);
   }
 
   return destinationOptionsTemplate.join('');
 };
 
-const createOfferOptionsTemplate = (offers, offersType) => {
-  if (offers.length < 1) {
-    return '';
-  }
-
+const createOfferOptionsTemplate = (offers, type) => {
   const offersTemplate = [];
 
   for (const offer of offers) {
-    const offerForAttribute = `${offersType.replaceAll(' ', '-')}-${offer.id}`;
+    const offerForAttribute = `${type.replaceAll(' ', '-')}-${offer.id}`;
 
     const offerToRender = (
       `<div class="event__offer-selector">
@@ -87,10 +82,6 @@ const createOfferOptionsTemplate = (offers, offersType) => {
 };
 
 const createPhotosTemplate = (photos) => {
-  if (photos.length < 1) {
-    return '';
-  }
-
   const photosTemplate = [];
 
   for (const photo of photos) {
@@ -113,26 +104,29 @@ const createPhotosTemplate = (photos) => {
   );
 };
 
-const createDescriptionTemplate = (description, photos) => {
-  if (description.length < 1) {
-    return '';
-  }
-
-  return (
-    `<section class="event__section event__section--destination">
-      <h3 class="event__section-title event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${description}</p>
-      ${createPhotosTemplate(photos)}
+const createDescriptionTemplate = (description, photos, arePhotos) => (
+  `<section class="event__section event__section--destination">
+    <h3 class="event__section-title event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${description}</p>
+      ${arePhotos ? createPhotosTemplate(photos) : ''}
     </section>`
-  );
-};
+);
 
-const createEditEventTemplate = (event, descriptions, destinations) => {
-  const { type, destination, dateFrom, dateTo, basePrice, offers } = event;
-
-  const destinationIndex = mockDestinations.findIndex((el) => el === destination);
-  const { description, photos } = descriptions[destinationIndex] || BLANK_DESCRIPTION;
-
+const createEditEventTemplate = (data) => {
+  const {
+    type,
+    destination,
+    dateFrom,
+    dateTo,
+    basePrice,
+    offers,
+    areOffers,
+    isDescriptioned,
+    arePhotos,
+    description,
+    photos,
+    destinations,
+  } = data;
 
   const startDate = dayjs(dateFrom).format(Format.DATE_TIME);
   const finishDate = dayjs(dateTo).format(Format.DATE_TIME);
@@ -158,7 +152,7 @@ const createEditEventTemplate = (event, descriptions, destinations) => {
           <div class="event__type-list">
             <fieldset class="event__type-group">
               <legend class="visually-hidden">Event type</legend>
-              ${createTypesTemplate(type)}
+              ${POINT_TYPES.length > 1 ? createTypesTemplate(type) : ''}
             </fieldset>
           </div>
         </div>
@@ -176,7 +170,7 @@ const createEditEventTemplate = (event, descriptions, destinations) => {
             list="destination-list-1"
           >
           <datalist id="destination-list-1">
-            ${createDestinationOptionsTemplate(destinations)}
+            ${destinations.length > 1 ? createDestinationOptionsTemplate(destinations) : ''}
           </datalist>
         </div>
 
@@ -221,35 +215,47 @@ const createEditEventTemplate = (event, descriptions, destinations) => {
         </button>
       </header>
       <section class="event__details">
-        ${createOfferOptionsTemplate(offers, type)}
-        ${createDescriptionTemplate(description, photos)}
+        ${areOffers ? createOfferOptionsTemplate(offers, type) : ''}
+        ${isDescriptioned ? createDescriptionTemplate(description, photos, arePhotos) : ''}
       </section>
     </form>
   `);
 };
 
 export default class EditEvent extends AbstractView {
-  #event = null;
-  #descriptions = null;
-  #destinations = null;
-
   constructor(
     event = BLANK_POINT,
     descriptions = [],
     destinations = []
   ) {
     super();
-    this.#event = event;
-    this.#descriptions = descriptions;
-    this.#destinations = destinations;
+    this._data = EditEvent.parseEventToData(event, descriptions, destinations);
+
+    this.element.querySelector('.event__type-group').addEventListener('click', this.#onTypeChangeHandler);
   }
 
   get template() {
-    return createEditEventTemplate(
-      this.#event,
-      this.#descriptions,
-      this.#destinations
-    );
+    return createEditEventTemplate(this._data);
+  }
+
+  updateData = (update) => {
+    if (!update) {
+      return;
+    }
+
+    this._data = {...this._data, ...update};
+
+    this.updateElement();
+  }
+
+  updateElement = () => {
+    const prevElement = this.element;
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.element;
+
+    parent.replaceChild(newElement, prevElement);
   }
 
   setOnCollapseHandler = (callback) => {
@@ -266,8 +272,42 @@ export default class EditEvent extends AbstractView {
     this.element.addEventListener('submit', this.#onSubmitHandler);
   }
 
+  #onTypeChangeHandler = (evt) => {
+    if (evt.target.tagName === 'INPUT') {
+      this.updateData({type: evt.target.value});
+    }
+  }
+
   #onSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.onSubmit();
+    this._callback.onSubmit(EditEvent.parseDataToEvent(this._data));
+  }
+
+  static parseEventToData = (event, descriptions, destinations) => {
+    const destinationIndex = destinations.findIndex((el) => el === event.destination);
+    const { description, photos } = descriptions[destinationIndex] || BLANK_DESCRIPTION;
+
+    return {
+      ...event,
+      areOffers: event.offers.length > 0,
+      isDescriptioned: description !== '',
+      arePhotos: photos.length > 0,
+      description,
+      photos,
+      destinations
+    };
+  }
+
+  static parseDataToEvent = (data) => {
+    const event = { ...data };
+
+    delete event.areOffers;
+    delete event.isDescriptioned;
+    delete event.arePhotos;
+    delete event.description;
+    delete event.photos;
+    delete event.destinations;
+
+    return event;
   }
 }
