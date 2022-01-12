@@ -12,7 +12,8 @@ const createTypesTemplate = (currentType) => {
         <input
           id="event-type-${type}"
           class="event__type-input visually-hidden"
-          type="radio" name="event-type"
+          type="radio"
+          name="event-type"
           value="${type}"
           ${type === currentType ? 'checked' : ''}
         >
@@ -109,7 +110,7 @@ const createDescriptionTemplate = (description, photos, arePhotos) => (
     <h3 class="event__section-title event__section-title--destination">Destination</h3>
     <p class="event__destination-description">${description}</p>
       ${arePhotos ? createPhotosTemplate(photos) : ''}
-    </section>`
+  </section>`
 );
 
 const createEditEventTemplate = (data, destinations) => {
@@ -131,6 +132,7 @@ const createEditEventTemplate = (data, destinations) => {
   const finishDate = dayjs(dateTo).format(Format.DATE_TIME);
 
   const totalPrice = getTotalPrice(offers, basePrice);
+  const isSubmitDisabled = !destinations.includes(destination);
 
   return (
     `<form class="event event--edit" action="#" method="post">
@@ -207,7 +209,13 @@ const createEditEventTemplate = (data, destinations) => {
           >
         </div>
 
-        <button class="event__save-btn btn btn--blue" type="submit">Save</button>
+        <button
+          class="event__save-btn btn btn--blue"
+          type="submit"
+          ${isSubmitDisabled ?  'disabled' : ''}
+        >
+          Save
+        </button>
         <button class="event__reset-btn" type="reset">Delete</button>
         <button class="event__rollup-btn" type="button">
           <span class="visually-hidden">Open event</span>
@@ -246,15 +254,18 @@ export default class EditEvent extends AbstractView {
     return createEditEventTemplate(this._data, this.#destinations);
   }
 
-  updateData = (update) => {
+  updateData = (update, isTyping = false) => {
     if (!update) {
       return;
     }
 
     this._data = {...this._data, ...update};
 
-    this.updateElement();
+    if (isTyping) {
+      return;
+    }
 
+    this.updateElement();
     this.restoreHandlers();
   }
 
@@ -293,9 +304,8 @@ export default class EditEvent extends AbstractView {
   }
 
   #setInnerHandlers = () => {
-    this.element
-      .querySelector('.event__type-group')
-      .addEventListener('click', this.#onTypeChangeHandler);
+    this.element.querySelector('.event__type-group').addEventListener('click', this.#onTypeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#onDestinationInputHandler);
   }
 
   #onTypeChangeHandler = (evt) => {
@@ -317,6 +327,26 @@ export default class EditEvent extends AbstractView {
     }
   }
 
+  #onDestinationInputHandler = (evt) => {
+    const value = evt.target.value;
+    const index = this.#destinations.findIndex((el) => el.toLowerCase() === value.toLowerCase());
+
+    if (index > -1) {
+      const { description, photos } = this.#descriptions[index];
+      this.updateData({
+        description,
+        photos,
+        isDescriptioned: description.length > 0,
+        arePhotos: photos.length > 0,
+        destination: value
+      });
+
+      return;
+    }
+
+    this.updateData({ destination: value }, true);
+  }
+
   #onSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.onSubmit(EditEvent.parseDataToEvent(this._data));
@@ -329,7 +359,7 @@ export default class EditEvent extends AbstractView {
     return {
       ...event,
       areOffers: event.offers.length > 0,
-      isDescriptioned: description !== '',
+      isDescriptioned: description.length > 0,
       arePhotos: photos.length > 0,
       description,
       photos
