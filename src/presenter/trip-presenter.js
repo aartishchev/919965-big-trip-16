@@ -16,6 +16,7 @@ export default class tripPresenter {
   #events = [];
   #descriptions = [];
   #destinations = [];
+  #options = [];
 
   #eventPresenters = new Map();
 
@@ -27,10 +28,11 @@ export default class tripPresenter {
     this.#infoContainer = infoContainer;
   }
 
-  init = (events, descriptions, destinations) => {
+  init = (events, descriptions, destinations, options) => {
     this.#events = [...events];
     this.#descriptions = [...descriptions];
     this.#destinations = [...destinations];
+    this.#options = [...options];
 
     if (events.length < 1) {
       this.#renderEmptyListMsg();
@@ -49,9 +51,9 @@ export default class tripPresenter {
     this.#eventPresenters.forEach((p) => p.resetView());
   }
 
-  #handleEventChange = (updatedEvent, description, destinations) => {
+  #handleEventChange = (updatedEvent) => {
     this.#events = updateItem(this.#events, updatedEvent);
-    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent, description, destinations);
+    this.#eventPresenters.get(updatedEvent.id).init(updatedEvent);
   }
 
   #renderEmptyListMsg = () => {
@@ -104,12 +106,12 @@ export default class tripPresenter {
     renderElement(this.#eventsContainer, this.#eventsList);
   }
 
-  #renderEvent = (event, description, destinations) => {
+  #renderEvent = (event, descriptions, destinations, options) => {
     const eventWrapper = document.createElement('li');
     eventWrapper.className = 'trip-events__list';
 
     const eventPresenter = new EventPresenter(eventWrapper, this.#handleEventChange, this.#handleModeChange);
-    eventPresenter.init(event, description, destinations);
+    eventPresenter.init(event, descriptions, destinations, options);
     this.#eventPresenters.set(event.id, eventPresenter);
 
     renderElement(this.#eventsList, eventWrapper);
@@ -117,7 +119,7 @@ export default class tripPresenter {
 
   #renderTripEvents = () => {
     for (let i = 0; i < this.#events.length; i++) {
-      this.#renderEvent(this.#events[i], this.#descriptions[i], this.#destinations);
+      this.#renderEvent(this.#events[i], this.#descriptions, this.#destinations, this.#options);
     }
   }
 

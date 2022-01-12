@@ -52,4 +52,4 @@ const generateEventPoint = () => {
   };
 };
 
-export const pointEvents = Array.from({ length: EVENTS_COUNT }, generateEventPoint);
+export const events = Array.from({ length: EVENTS_COUNT }, generateEventPoint);

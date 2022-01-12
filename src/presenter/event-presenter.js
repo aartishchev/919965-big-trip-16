@@ -12,8 +12,9 @@ export default class EventPresenter {
   #editEventComponent = null;
 
   #event = null;
-  #description = null;
+  #descriptions = [];
   #destinations = [];
+  #options = [];
   #mode = Mode.DEFAULT;
 
   constructor (eventContainer, changeData, changeMode) {
@@ -22,16 +23,22 @@ export default class EventPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (event, description, destinations) => {
+  init = (
+    event,
+    descriptions = this.#descriptions,
+    destinations = this.#destinations,
+    options = this.#options
+  ) => {
     this.#event = event;
-    this.#description = description;
+    this.#descriptions = descriptions;
     this.#destinations = destinations;
+    this.#options = options;
 
     const prevPointEventComponent = this.#pointEventComponent;
     const prevEditEventComponent = this.#editEventComponent;
 
     this.#pointEventComponent = new PointEvent(this.#event);
-    this.#editEventComponent = new EditEvent(this.#event, this.#description, this.#destinations);
+    this.#editEventComponent = new EditEvent(this.#event, this.#descriptions, this.#destinations, this.#options);
 
     this.#pointEventComponent.setOnExpandHandler(this.#handleOnExpand);
     this.#pointEventComponent.setOnFavoriteHandler(this.#handleOnFavorite);
@@ -63,6 +70,7 @@ export default class EventPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#editEventComponent.resetData(this.#event);
       this.#replaceFormByPoint();
     }
   }
@@ -85,6 +93,7 @@ export default class EventPresenter {
   }
 
   #handleOnCollapse = () => {
+    this.#editEventComponent.resetData(this.#event);
     this.#replaceFormByPoint();
   }
 
@@ -93,16 +102,13 @@ export default class EventPresenter {
   }
 
   #handleOnFavorite = () => {
-    this.#changeData(
-      {...this.#event, isFavorite: !this.#event.isFavorite},
-      this.#description,
-      this.#destinations
-    );
-  }
+    this.#changeData({ ...this.#event, isFavorite: !this.#event.isFavorite });
+  };
 
   #handleOnEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#editEventComponent.resetData(this.#event);
       this.#replaceFormByPoint();
     }
   }
