@@ -1,6 +1,6 @@
 import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const.js';
 import { getTotalPrice } from '../utils/event.js';
-import AbstractView from '../view/abstract-view.js';
+import SmartView from '../view/smart-view.js';
 import dayjs from 'dayjs';
 
 const createTypesTemplate = (currentType) => {
@@ -229,7 +229,7 @@ const createEditEventTemplate = (data, destinations) => {
   `);
 };
 
-export default class EditEvent extends AbstractView {
+export default class EditEvent extends SmartView {
   #descriptions = null;
   #destinations = null;
   #options = null;
@@ -254,33 +254,8 @@ export default class EditEvent extends AbstractView {
     return createEditEventTemplate(this._data, this.#destinations);
   }
 
-  updateData = (update, isTyping = false) => {
-    if (!update) {
-      return;
-    }
-
-    this._data = {...this._data, ...update};
-
-    if (isTyping) {
-      return;
-    }
-
-    this.updateElement();
-    this.restoreHandlers();
-  }
-
-  restoreHandlers = () => {
-    this.#setInnerHandlers();
-  }
-
-  updateElement = () => {
-    const prevElement = this.element;
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.element;
-
-    parent.replaceChild(newElement, prevElement);
+  resetData = (event) => {
+    this.updateData(this.#parseEventToData(event));
   }
 
   restoreHandlers = () => {
