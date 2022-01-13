@@ -47,8 +47,8 @@ const generateOffersTemplate = (offers) => {
   );
 };
 
-const createPointEventTemplate = (pointEvent) => {
-  const { type, destination, dateFrom, dateTo, basePrice, offers, isFavorite } = pointEvent;
+const createPointEventTemplate = (event) => {
+  const { type, destination, dateFrom, dateTo, basePrice, offers, isFavorite } = event;
 
   const totalPrice = getTotalPrice(offers, basePrice);
 
