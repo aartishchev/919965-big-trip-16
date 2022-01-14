@@ -2,6 +2,9 @@ import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/co
 import { getTotalPrice } from '../utils/event.js';
 import SmartView from '../view/smart-view.js';
 import dayjs from 'dayjs';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypesTemplate = (currentType) => {
   const typesTemplate = [];
@@ -176,19 +179,19 @@ const createEditEventTemplate = (data, destinations) => {
         </div>
 
         <div class="event__field-group event__field-group--time">
-          <label class="visually-hidden" for="event-start-time-1">From</label>
+          <label class="visually-hidden" for="event-start-time">From</label>
           <input
             class="event__input event__input--time"
-            id="event-start-time-1"
+            id="event-start-time"
             type="text"
             name="event-start-time"
             value="${startDate}"
           >
           &mdash;
-          <label class="visually-hidden" for="event-end-time-1">To</label>
+          <label class="visually-hidden" for="event-end-time">To</label>
           <input
             class="event__input event__input--time"
-            id="event-end-time-1"
+            id="event-end-time"
             type="text"
             name="event-end-time"
             value="${finishDate}"
@@ -233,6 +236,8 @@ export default class EditEvent extends SmartView {
   #descriptions = null;
   #destinations = null;
   #options = null;
+  #startDatepicker = null;
+  #finishDatepicker = null;
 
   constructor(
     event = BLANK_POINT,
@@ -248,10 +253,20 @@ export default class EditEvent extends SmartView {
     this._data = this.#parseEventToData(event);
 
     this.#setInnerHandlers();
+    this.#setDatepickers();
   }
 
   get template() {
     return createEditEventTemplate(this._data, this.#destinations);
+  }
+
+  removeElement = () => {
+    super.removeElement();
+
+    this.#startDatepicker?.destroy();
+    this.#finishDatepicker?.destroy();
+    this.#startDatepicker = null;
+    this.#finishDatepicker = null;
   }
 
   resetData = (event) => {
@@ -260,6 +275,7 @@ export default class EditEvent extends SmartView {
 
   restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.#setDatepickers();
     this.setOnCollapseHandler(this._callback.onCollapse);
     this.setOnSubmitHandler(this._callback.onSubmit);
   }
@@ -276,6 +292,38 @@ export default class EditEvent extends SmartView {
   setOnSubmitHandler = (callback) => {
     this._callback.onSubmit = callback;
     this.element.addEventListener('submit', this.#onSubmitHandler);
+  }
+
+  #setDatepickers = () => {
+    this.#startDatepicker = flatpickr(
+      this.element.querySelector('#event-start-time'),
+      {
+        dateFormat: Format.DATEPICKER,
+        enableTime: true,
+        'time_24hr': true,
+        onChange: this.#startDateChangeHandler,
+      },
+    );
+    this.#startDatepicker = flatpickr(
+      this.element.querySelector('#event-end-time'),
+      {
+        dateFormat: Format.DATEPICKER,
+        enableTime: true,
+        'time_24hr': true,
+        minDate: this._data.dateFrom,
+        maxDate: this._data.dateFrom.fp_incr(29),
+        onChange: this.#finishDataChangeHandler,
+      },
+    );
+
+  }
+
+  #startDateChangeHandler = ([date]) => {
+    this.updateData({ dateFrom: date });
+  }
+
+  #finishDataChangeHandler = ([date]) => {
+    this.updateData({ dateTo: date });
   }
 
   #setInnerHandlers = () => {

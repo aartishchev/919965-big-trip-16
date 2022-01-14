@@ -97,7 +97,8 @@ export default class EventPresenter {
     this.#replaceFormByPoint();
   }
 
-  #handleOnSubmit = () => {
+  #handleOnSubmit = (event) => {
+    this.#changeData(event);
     this.#replaceFormByPoint();
   }
 
