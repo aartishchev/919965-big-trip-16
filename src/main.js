@@ -17,7 +17,7 @@ renderElement(navTabsContainer, new NavTabs());
 renderElement(filterTabsContainer, new FilterTabs());
 
 const eventsModel = new EventsModel();
-EventsModel.events = events;
+eventsModel.events = events;
 
 const tripPresenter = new TripPresenter(tripEventsContainer, tripInfoContainer, eventsModel);
-tripPresenter.init(events, descriptions, destinations, options);
+tripPresenter.init(descriptions, destinations, options);
