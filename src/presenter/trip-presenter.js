@@ -12,6 +12,7 @@ export default class tripPresenter {
   #infoContainer = null;
   #eventsList = null;
   #currentSortType = null;
+  #eventsModel = null;
 
   #events = [];
   #descriptions = [];
@@ -23,9 +24,14 @@ export default class tripPresenter {
   #eventsSorterComponent = new EventsSorter();
   #emptyListMsgComponent = new EmptyListMsg();
 
-  constructor(eventsContainer, infoContainer) {
+  constructor(eventsContainer, infoContainer, eventsModel) {
     this.#eventsContainer = eventsContainer;
     this.#infoContainer = infoContainer;
+    this.#eventsModel = eventsModel;
+  }
+
+  get events() {
+    return this.#eventsModel.events;
   }
 
   init = (events, descriptions, destinations, options) => {
