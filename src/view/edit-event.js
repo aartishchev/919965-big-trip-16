@@ -1,4 +1,4 @@
-import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const.js';
+import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, EVENT_DURATION_DAYS_LIMIT, Format } from '../utils/const.js';
 import { getTotalPrice } from '../utils/event.js';
 import SmartView from '../view/smart-view.js';
 import dayjs from 'dayjs';
@@ -278,6 +278,7 @@ export default class EditEvent extends SmartView {
     this.#setDatepickers();
     this.setOnCollapseHandler(this._callback.onCollapse);
     this.setOnSubmitHandler(this._callback.onSubmit);
+    this.setOnDeleteHandler(this._callback.onDelete);
   }
 
   setOnCollapseHandler = (callback) => {
@@ -285,13 +286,28 @@ export default class EditEvent extends SmartView {
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCollapseHandler);
   }
 
+  setOnSubmitHandler = (callback) => {
+    this._callback.onSubmit = callback;
+    this.element.addEventListener('submit', this.#onSubmitHandler);
+  }
+
+  setOnDeleteHandler = (callback) => {
+    this._callback.onDelete = callback;
+    this.element.addEventListener('reset', this.#onDeleteHandler);
+  }
+
   #onCollapseHandler = () => {
     this._callback.onCollapse();
   }
 
-  setOnSubmitHandler = (callback) => {
-    this._callback.onSubmit = callback;
-    this.element.addEventListener('submit', this.#onSubmitHandler);
+  #onSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.onSubmit(EditEvent.parseDataToEvent(this._data));
+  }
+
+  #onDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.onDelete(EditEvent.parseDataToEvent(this._data));
   }
 
   #setDatepickers = () => {
@@ -311,7 +327,7 @@ export default class EditEvent extends SmartView {
         enableTime: true,
         'time_24hr': true,
         minDate: this._data.dateFrom,
-        maxDate: this._data.dateFrom.fp_incr(29),
+        maxDate: this._data.dateFrom.fp_incr(EVENT_DURATION_DAYS_LIMIT),
         onChange: this.#finishDataChangeHandler,
       },
     );
@@ -368,11 +384,6 @@ export default class EditEvent extends SmartView {
     }
 
     this.updateData({ destination: value }, true);
-  }
-
-  #onSubmitHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.onSubmit(EditEvent.parseDataToEvent(this._data));
   }
 
   #parseEventToData = (event) => {

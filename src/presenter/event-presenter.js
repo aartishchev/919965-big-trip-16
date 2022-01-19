@@ -1,7 +1,7 @@
 import EditEvent from '../view/edit-event.js';
 import PointEvent from '../view/point-event.js';
-import { renderElement, replace, remove } from '../utils/render.js';
-import { Mode } from '../utils/const.js';
+import { renderElement, replaceElement, removeComponent } from '../utils/render.js';
+import { Mode, UserAction, UpdateType } from '../utils/const.js';
 
 export default class EventPresenter {
   #eventContainer = null;
@@ -44,6 +44,7 @@ export default class EventPresenter {
     this.#pointEventComponent.setOnFavoriteHandler(this.#handleOnFavorite);
     this.#editEventComponent.setOnCollapseHandler(this.#handleOnCollapse);
     this.#editEventComponent.setOnSubmitHandler(this.#handleOnSubmit);
+    this.#editEventComponent.setOnDeleteHandler(this.#handleOnDelete);
 
     if (prevPointEventComponent === null || prevEditEventComponent === null) {
       renderElement(this.#eventContainer, this.#pointEventComponent);
@@ -52,20 +53,20 @@ export default class EventPresenter {
     }
 
     if (this.#mode === Mode.DEFAULT) {
-      replace(this.#pointEventComponent, prevPointEventComponent);
+      replaceElement(this.#pointEventComponent, prevPointEventComponent);
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#editEventComponent, prevEditEventComponent);
+      replaceElement(this.#editEventComponent, prevEditEventComponent);
     }
 
-    remove(prevPointEventComponent);
-    remove(prevEditEventComponent);
+    removeComponent(prevPointEventComponent);
+    removeComponent(prevEditEventComponent);
   }
 
   destroy = () => {
-    remove(this.#pointEventComponent);
-    remove(this.#editEventComponent);
+    removeComponent(this.#pointEventComponent);
+    removeComponent(this.#editEventComponent);
   }
 
   resetView = () => {
@@ -76,14 +77,14 @@ export default class EventPresenter {
   }
 
   #replacePointByForm = () => {
-    replace(this.#editEventComponent, this.#pointEventComponent);
+    replaceElement(this.#editEventComponent, this.#pointEventComponent);
     document.addEventListener('keydown', this.#handleOnEscKeyDown);
     this.#changeMode();
     this.#mode = Mode.EDITING;
   }
 
   #replaceFormByPoint = () => {
-    replace(this.#pointEventComponent, this.#editEventComponent);
+    replaceElement(this.#pointEventComponent, this.#editEventComponent);
     document.removeEventListener('keydown', this.#handleOnEscKeyDown);
     this.#mode = Mode.DEFAULT;
   }
@@ -97,14 +98,30 @@ export default class EventPresenter {
     this.#replaceFormByPoint();
   }
 
+  #handleOnFavorite = () => {
+    this.#changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.PATCH,
+      { ...this.#event, isFavorite: !this.#event.isFavorite }
+    );
+  };
+
   #handleOnSubmit = (event) => {
-    this.#changeData(event);
+    this.#changeData(
+      UserAction.UPDATE_EVENT,
+      UpdateType.MINOR,
+      event
+    );
     this.#replaceFormByPoint();
   }
 
-  #handleOnFavorite = () => {
-    this.#changeData({ ...this.#event, isFavorite: !this.#event.isFavorite });
-  };
+  #handleOnDelete = (event) => {
+    this.#changeData(
+      UserAction.DELETE_EVENT,
+      UpdateType.MAJOR,
+      event
+    );
+  }
 
   #handleOnEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
