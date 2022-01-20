@@ -76,4 +76,4 @@ export const UpdateType = {
 
 export const EVENT_DURATION_DAYS_LIMIT = 29;
 
-export const EVENTS_COUNT = 3;
+export const EVENTS_COUNT = 1;

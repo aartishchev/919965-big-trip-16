@@ -94,7 +94,7 @@ export default class EventPresenter {
   }
 
   #handleOnCollapse = () => {
-    this.#editEventComponent.resetData(this.#event);
+    this.#editEventComponent.resetEvent(this.#event);
     this.#replaceFormByPoint();
   }
 
