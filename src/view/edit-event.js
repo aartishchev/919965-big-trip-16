@@ -1,5 +1,4 @@
 import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, EVENT_DURATION_DAYS_LIMIT, Format } from '../utils/const.js';
-import { getTotalPrice } from '../utils/event.js';
 import SmartView from '../view/smart-view.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
@@ -134,14 +133,13 @@ const createEditEventTemplate = (data, destinations) => {
   const startDate = dayjs(dateFrom).format(Format.DATE_TIME);
   const finishDate = dayjs(dateTo).format(Format.DATE_TIME);
 
-  const totalPrice = getTotalPrice(offers, basePrice);
   const isSubmitDisabled = !destinations.includes(destination);
 
   return (
     `<form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type event__type-btn" for="event-type-toggle-1">
+          <label class="event__type event__type-btn" for="event-type-toggle">
             <span class="visually-hidden">Choose event type</span>
             <img
               class="event__type-icon"
@@ -151,7 +149,7 @@ const createEditEventTemplate = (data, destinations) => {
               alt="Event type icon"
             >
           </label>
-          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle visually-hidden" id="event-type-toggle" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -162,18 +160,18 @@ const createEditEventTemplate = (data, destinations) => {
         </div>
 
         <div class="event__field-group event__field-group--destination">
-          <label class="event__label event__type-output" for="event-destination-1">
+          <label class="event__label event__type-output" for="event-destination">
             ${type}
           </label>
           <input
             class="event__input event__input--destination"
-            id="event-destination-1"
+            id="event-destination"
             type="text"
             name="event-destination"
             value="${destination}"
-            list="destination-list-1"
+            list="destination-list"
           >
-          <datalist id="destination-list-1">
+          <datalist id="destination-list">
             ${destinations.length > 1 ? createDestinationOptionsTemplate(destinations) : ''}
           </datalist>
         </div>
@@ -199,16 +197,16 @@ const createEditEventTemplate = (data, destinations) => {
         </div>
 
         <div class="event__field-group event__field-group--price">
-          <label class="event__label" for="event-price-1">
+          <label class="event__label" for="event-price">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
           <input
             class="event__input event__input--price"
-            id="event-price-1"
+            id="event-price"
             type="text"
             name="event-price"
-            value="${totalPrice}"
+            value="${basePrice}"
           >
         </div>
 
@@ -278,6 +276,7 @@ export default class EditEvent extends SmartView {
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.#setDatepickers();
+
     this.setOnCollapseHandler(this._callback.onCollapse);
     this.setOnSubmitHandler(this._callback.onSubmit);
     this.setOnDeleteHandler(this._callback.onDelete);
@@ -347,6 +346,7 @@ export default class EditEvent extends SmartView {
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-group').addEventListener('click', this.#onTypeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#onDestinationInputHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#onPriceChangeHandler);
   }
 
   #onTypeChangeHandler = (evt) => {
@@ -386,6 +386,10 @@ export default class EditEvent extends SmartView {
     }
 
     this.updateData({ destination: value }, true);
+  }
+
+  #onPriceChangeHandler = (evt) => {
+    this.updateData({ basePrice: evt.target.value }, true);
   }
 
   #parseEventToData = (event) => {

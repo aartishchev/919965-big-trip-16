@@ -1,7 +1,13 @@
 import dayjs from 'dayjs';
 
 export function getTotalPrice(offers, basePrice) {
-  return offers.reduce((acc, offer) => acc + Number(offer.price), basePrice);
+  return offers.reduce((acc, { isAdded, price }) => {
+    if (isAdded) {
+      return acc + Number(price);
+    }
+
+    return acc;
+  }, basePrice);
 }
 
 export function getDuration(startDate, finishDate) {

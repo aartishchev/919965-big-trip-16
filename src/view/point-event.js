@@ -1,4 +1,4 @@
-import { getDuration, getTotalPrice } from '../utils/event.js';
+import { getDuration } from '../utils/event.js';
 import { Format } from '../utils/const.js';
 import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
@@ -50,8 +50,6 @@ const generateOffersTemplate = (offers) => {
 const createPointEventTemplate = (event) => {
   const { type, destination, dateFrom, dateTo, basePrice, offers, isFavorite } = event;
 
-  const totalPrice = getTotalPrice(offers, basePrice);
-
   const startDay = dayjs(dateFrom).format(Format.MONTH_DATE);
   const startTime = dayjs(dateFrom).format(Format.TIME);
   const startDate = dayjs(dateFrom).format(Format.FULL_DATE);
@@ -86,7 +84,7 @@ const createPointEventTemplate = (event) => {
         <p class="event__duration">${getFormattedDuration(dateFrom, dateTo)}</p>
       </div>
       <p class="event__price">
-        &euro;&nbsp;<span class="event__price-value">${totalPrice}</span>
+        &euro;&nbsp;<span class="event__price-value">${basePrice}</span>
       </p>
       ${generateOffersTemplate(offers)}
       <button class="event__favorite-btn ${isFavoriteClassName}" type="button">
