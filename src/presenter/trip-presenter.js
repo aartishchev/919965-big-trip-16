@@ -69,7 +69,7 @@ export default class tripPresenter {
     }
   }
 
-  #handleModelEvent = (updateType, data) => {
+  #handleModelEvent = (updateType, data = null) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#eventPresenters.get(data.id).init(data);
@@ -154,13 +154,13 @@ export default class tripPresenter {
   }
 
   #clearBoard = () => {
-    this.#clearEventsList();
-    this.#eventsList.remove();
-    removeComponent(this.#tripInfoComponent);
-
     if (this.events.length < 1) {
       removeComponent(this.#eventsSorterComponent);
     }
+
+    removeComponent(this.#tripInfoComponent);
+    this.#clearEventsList();
+    this.#eventsList.remove();
   }
 
   #clearEventsList = () => {

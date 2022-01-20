@@ -246,6 +246,7 @@ export default class EditEvent extends SmartView {
     options = []
   ) {
     super();
+
     this.#descriptions = descriptions;
     this.#destinations = destinations;
     this.#options = options;
@@ -263,10 +264,15 @@ export default class EditEvent extends SmartView {
   removeElement = () => {
     super.removeElement();
 
-    this.#startDatepicker?.destroy();
-    this.#finishDatepicker?.destroy();
-    this.#startDatepicker = null;
-    this.#finishDatepicker = null;
+    if (this.#startDatepicker) {
+      this.#startDatepicker.destroy();
+      this.#startDatepicker = null;
+    }
+
+    if (this.#finishDatepicker) {
+      this.#finishDatepicker.destroy();
+      this.#finishDatepicker = null;
+    }
   }
 
   resetData = (event) => {
