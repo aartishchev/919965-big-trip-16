@@ -11,18 +11,6 @@ export default class EventsModel extends AbstractObservable {
     return this.#events;
   }
 
-  // updateItem = (items, updatedItem) => {
-  //   const index = items.findIndex((item) => item.id === updatedItem.id);
-
-  //   if (index === -1) {
-  //     return items;
-  //   }
-
-  //   items.splice(index, 1, updatedItem);
-
-  //   return items;
-  // };
-
   updateEvent = (updateType, update) => {
     const index = this.#events.findIndex((event) => event.id === update.id);
 

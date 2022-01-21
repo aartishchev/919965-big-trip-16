@@ -1,4 +1,5 @@
 import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, EVENT_DURATION_DAYS_LIMIT, Format } from '../utils/const.js';
+import { updateItem } from '../utils/common.js';
 import SmartView from '../view/smart-view.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
@@ -45,24 +46,22 @@ const createDestinationOptionsTemplate = (destinations) => {
   return destinationOptionsTemplate.join('');
 };
 
-const createOfferOptionsTemplate = (offers, type) => {
+const createOfferOptionsTemplate = (offers) => {
   const offersTemplate = [];
 
   for (const offer of offers) {
-    const offerForAttribute = `${type.replaceAll(' ', '-')}-${offer.id}`;
-
     const offerToRender = (
       `<div class="event__offer-selector">
         <input
           class="event__offer-checkbox visually-hidden"
-          id="event-offer-${offerForAttribute}"
+          id="${offer.id}"
           type="checkbox"
-          name="event-offer-${offerForAttribute}"
+          name="${offer.id}"
           ${offer.isAdded ? 'checked' : ''}
         >
         <label
           class="event__offer-label"
-          for="event-offer-${offerForAttribute}"
+          for="${offer.id}"
         >
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -344,10 +343,20 @@ export default class EditEvent extends SmartView {
   }
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__type-group').addEventListener('click', this.#onTypeChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('input', this.#onDestinationInputHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#onPriceChangeHandler);
-  }
+    this.element
+      .querySelector('.event__type-group')
+      .addEventListener('click', this.#onTypeChangeHandler);
+    this.element
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this.#onDestinationInputHandler);
+    this.element
+      .querySelector('.event__input--price')
+      .addEventListener('input', this.#onPriceChangeHandler);
+
+    this.element
+      .querySelectorAll('.event__offer-checkbox')
+      .forEach((el) => el.addEventListener('click', this.#onOfferToggleHandler));
+  };
 
   #onTypeChangeHandler = (evt) => {
     if (evt.target.tagName === 'INPUT') {
@@ -359,6 +368,10 @@ export default class EditEvent extends SmartView {
 
       const index = this.#options.findIndex((o) => o.type === targetType);
       const newOffers = this.#options[index].offers || [];
+
+      newOffers.forEach((el) => {
+        el.isAdded = false;
+      });
 
       this.updateData({
         type: targetType,
@@ -392,8 +405,15 @@ export default class EditEvent extends SmartView {
     this.updateData({ basePrice: evt.target.value }, true);
   }
 
+  #onOfferToggleHandler = (evt) => {
+    const offer = this._data.offers.find((el) => el.id === evt.target.id);
+    offer.isAdded = evt.target.checked;
+
+    this.updateData({ offers: updateItem(this._data.offers, offer) }, true);
+  }
+
   #parseEventToData = (event) => {
-    const index = this.#destinations.findIndex((el) => el === event.destination);
+    const index = this.#destinations.findIndex((d) => d === event.destination);
     const { description, photos } = this.#descriptions[index] || BLANK_DESCRIPTION;
 
     return {
