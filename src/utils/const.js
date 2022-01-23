@@ -31,12 +31,6 @@ export const Format = {
   DATEPICKER: 'd/m/y H:i'
 };
 
-export const EmptyFilterMsg = {
-  EVERYTHING: 'Click New Event to create your first point',
-  PAST: 'There are no past events now',
-  FUTURE: 'There are no future events now'
-};
-
 export const BLANK_POINT = {
   type: 'Taxi',
   destination: '',
@@ -59,21 +53,35 @@ export const Mode = {
 export const SortType = {
   DATE: 'date',
   DURATION: 'duration',
-  PRICE: 'price',
+  PRICE: 'price'
 };
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
-  DELETE_EVENT: 'DELETE_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT'
 };
 
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR',
+  MAJOR: 'MAJOR'
+};
+
+export const FilterType = {
+  EVERYTHING: 'Everything',
+  FUTURE: 'Future',
+  PAST: 'Past'
+};
+
+export const FILTER_TYPES = ['Everything', 'Future', 'Past'];
+
+export const EmptyFilterMsg = {
+  EVERYTHING: 'Click New Event to create your first point',
+  FUTURE: 'There are no future events now',
+  PAST: 'There are no past events now'
 };
 
 export const EVENT_DURATION_DAYS_LIMIT = 28;
 
-export const EVENTS_COUNT = 1;
+export const EVENTS_COUNT = 5;

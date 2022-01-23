@@ -5,6 +5,7 @@ import EmptyListMsg from '../view/empty-list.js';
 import { RenderPosition, SortType, UpdateType, UserAction } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
 import { sortByPrice, sortByDate, sortByDuration} from '../utils/event.js';
+import { filter } from '../utils/filter.js';
 
 export default class tripPresenter {
   #eventsContainer = null;
@@ -15,30 +16,38 @@ export default class tripPresenter {
   #tripInfoComponent = null;
   #emptyListMsgComponent = new EmptyListMsg();
 
+  #eventsModel = null;
+  #filterModel = null;
+
   #eventPresenters = new Map();
   #currentSortType = SortType.DATE;
 
-  #eventsModel = null;
   #descriptions = [];
   #destinations = [];
   #options = [];
 
-  constructor(eventsContainer, infoContainer, eventsModel) {
+  constructor(eventsContainer, infoContainer, eventsModel, filterModel) {
     this.#eventsContainer = eventsContainer;
     this.#infoContainer = infoContainer;
     this.#eventsModel = eventsModel;
+    this.#filterModel = filterModel;
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get events() {
+    const events = this.#eventsModel.events;
+    const currentFilterType = this.#filterModel.filter;
+    const filteredEvents = filter(events, currentFilterType);
+
     switch (this.#currentSortType) {
       case SortType.DATE:
-        return [...this.#eventsModel.events].sort(sortByDate);
+        return filteredEvents.sort(sortByDate);
       case SortType.DURATION:
-        return [...this.#eventsModel.events].sort(sortByDuration);
+        return filteredEvents.sort(sortByDuration);
       case SortType.PRICE:
-        return [...this.#eventsModel.events].sort(sortByPrice);
+        return filteredEvents.sort(sortByPrice);
       default:
         throw new Error('Sort type is undefined');
     }

@@ -71,7 +71,7 @@ export default class EventPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
-      this.#editEventComponent.resetData(this.#event);
+      this.#editEventComponent.resetEvent(this.#event);
       this.#replaceFormByPoint();
     }
   }
@@ -109,7 +109,7 @@ export default class EventPresenter {
   #handleOnSubmit = (event) => {
     this.#changeData(
       UserAction.UPDATE_EVENT,
-      UpdateType.MINOR,
+      UpdateType.MAJOR,
       event
     );
     this.#replaceFormByPoint();
@@ -126,7 +126,7 @@ export default class EventPresenter {
   #handleOnEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
-      this.#editEventComponent.resetData(this.#event);
+      this.#editEventComponent.resetEvent(this.#event);
       this.#replaceFormByPoint();
     }
   }

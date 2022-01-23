@@ -402,7 +402,7 @@ export default class EditEvent extends SmartView {
   }
 
   #onPriceChangeHandler = (evt) => {
-    this.updateData({ basePrice: evt.target.value }, true);
+    this.updateData({ basePrice: Number(evt.target.value) }, true);
   }
 
   #onOfferToggleHandler = (evt) => {
