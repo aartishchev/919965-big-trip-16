@@ -18,7 +18,7 @@ export default class FilterPresenter {
     this.#filterComponent = new FilterTabs(this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
-    // this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
 
     if (prevFilterComponent === null) {
       renderElement(this.#filterContainer, this.#filterComponent);
@@ -34,13 +34,13 @@ export default class FilterPresenter {
     removeComponent(this.#filterComponent);
     this.#filterComponent = null;
 
-    // this.#filterModel.removeObserver(this.#handleModelEvent);
+    this.#filterModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
   }
 
-  // #handleModelEvent = () => {
-  //   this.init();
-  // }
+  #handleModelEvent = () => {
+    this.init();
+  }
 
   #handleFilterTypeChange = (filterType) => {
     if (this.#filterModel.filter === filterType) {

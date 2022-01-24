@@ -24,7 +24,10 @@ const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
 
 const getDestinationsRoute = (sortedEvents) => {
   if (sortedEvents.length >= 3) {
-    const route = [sortedEvents[0].destination, sortedEvents[sortedEvents.length - 1].destination];
+    const route = [
+      sortedEvents[0].destination,
+      sortedEvents[sortedEvents.length - 1].destination,
+    ];
     return route.join(' &mdash; ... &mdash; ');
   } else {
     const route = [];

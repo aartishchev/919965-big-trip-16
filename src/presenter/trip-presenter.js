@@ -63,13 +63,12 @@ export default class tripPresenter {
     this.#destinations = [...destinations];
     this.#options = [...options];
 
-    this.#renderSorter();
     this.#renderBoard();
   }
 
   createEvent = () => {
     this.#currentSortType = SortType.DATE;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    
     this.#newEventPresenter.init(BLANK_POINT, this.#descriptions, this.#destinations, this.#options);
   }
 
@@ -99,7 +98,7 @@ export default class tripPresenter {
         this.#renderTripEvents();
         break;
       case UpdateType.MAJOR:
-        this.#clearBoard();
+        this.#clearBoard({ resetSortType: true });
         this.#renderBoard();
         break;
       default:
@@ -170,20 +169,22 @@ export default class tripPresenter {
       return;
     }
 
+    this.#renderSorter();
     this.#renderTripInfo();
     this.#renderEventsList();
     this.#renderTripEvents();
   }
 
-  #clearBoard = () => {
-    if (this.events.length < 1) {
-      removeComponent(this.#eventsSorterComponent);
+  #clearBoard = ({ resetSortType = false } = {}) => {
+    if (resetSortType) {
+      this.#currentSortType = SortType.DATE;
     }
 
     if (this.#emptyListMsgComponent) {
       removeComponent(this.#emptyListMsgComponent);
     }
 
+    removeComponent(this.#eventsSorterComponent);
     removeComponent(this.#tripInfoComponent);
     this.#newEventPresenter.destroy();
     this.#clearEventsList();
