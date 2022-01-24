@@ -39,7 +39,7 @@ export default class NewEventPresenter {
     this.#editEventComponent.setOnSubmitHandler(this.#handleOnSubmit);
     this.#editEventComponent.setOnDeleteHandler(this.#handleOnCancel);
 
-    renderElement(this.#eventContainer, this.#editEventComponent, RenderPosition.APPEND);
+    renderElement(this.#eventContainer, this.#editEventComponent, RenderPosition.PREPEND);
 
     document.addEventListener('keydown', this.#handleOnEscKeyDown);
   }

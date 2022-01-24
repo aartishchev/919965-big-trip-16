@@ -35,8 +35,6 @@ export default class tripPresenter {
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
 
-    this.#newEventPresenter = new NewEventPresenter(this.#eventsContainer, this.#handleViewAction);
-
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
@@ -68,7 +66,13 @@ export default class tripPresenter {
 
   createEvent = () => {
     this.#currentSortType = SortType.DATE;
-    
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+
+    if (!this.#eventsList) {
+      this.#renderEventsList();
+    }
+
+    this.#newEventPresenter = new NewEventPresenter(this.#eventsList, this.#handleViewAction);
     this.#newEventPresenter.init(BLANK_POINT, this.#descriptions, this.#destinations, this.#options);
   }
 
@@ -186,7 +190,7 @@ export default class tripPresenter {
 
     removeComponent(this.#eventsSorterComponent);
     removeComponent(this.#tripInfoComponent);
-    this.#newEventPresenter.destroy();
+    this.#newEventPresenter?.destroy();
     this.#clearEventsList();
     this.#eventsList.remove();
   }
