@@ -114,7 +114,13 @@ const createDescriptionTemplate = (description, photos, arePhotos) => (
   </section>`
 );
 
-const createEditEventTemplate = (data, destinations) => {
+const createRollupBtnTemplate = () => (
+  `<button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>`
+);
+
+const createEditEventTemplate = (data, destinations, isNewEvent) => {
   const {
     type,
     destination,
@@ -216,10 +222,10 @@ const createEditEventTemplate = (data, destinations) => {
         >
           Save
         </button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
+        <button class="event__reset-btn" type="reset">
+          ${isNewEvent ? 'Cancel' : 'Delete'}
         </button>
+        ${!isNewEvent ? createRollupBtnTemplate() : ''}
       </header>
       <section class="event__details">
         ${areOffers ? createOfferOptionsTemplate(offers, type) : ''}
@@ -233,6 +239,7 @@ export default class EditEvent extends SmartView {
   #descriptions = null;
   #destinations = null;
   #options = null;
+  #isNewEvent = null;
   #startDatepicker = null;
   #finishDatepicker = null;
 
@@ -240,13 +247,15 @@ export default class EditEvent extends SmartView {
     event = BLANK_POINT,
     descriptions = [],
     destinations = [],
-    options = []
+    options = [],
+    isNewEvent = false
   ) {
     super();
 
     this.#descriptions = descriptions;
     this.#destinations = destinations;
     this.#options = options;
+    this.#isNewEvent = isNewEvent;
 
     this._data = this.#parseEventToData(event);
 
@@ -255,7 +264,7 @@ export default class EditEvent extends SmartView {
   }
 
   get template() {
-    return createEditEventTemplate(this._data, this.#destinations);
+    return createEditEventTemplate(this._data, this.#destinations, this.#isNewEvent);
   }
 
   removeElement = () => {
@@ -282,6 +291,10 @@ export default class EditEvent extends SmartView {
   }
 
   setOnCollapseHandler = (callback) => {
+    if (this.#isNewEvent) {
+      return;
+    }
+
     this._callback.onCollapse = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCollapseHandler);
   }

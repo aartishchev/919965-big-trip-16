@@ -1,8 +1,9 @@
 import EventPresenter from './event-presenter.js';
+import NewEventPresenter from './new-event-presenter.js';
 import EventsSorter from '../view/events-sorter.js';
 import TripInfo from '../view/trip-info.js';
 import EmptyListMsg from '../view/empty-list.js';
-import { RenderPosition, SortType, UpdateType, UserAction, FilterType } from '../utils/const.js';
+import { RenderPosition, SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
 import { sortByPrice, sortByDate, sortByDuration} from '../utils/event.js';
 import { filter } from '../utils/filter.js';
@@ -20,6 +21,7 @@ export default class tripPresenter {
   #filterModel = null;
 
   #eventPresenters = new Map();
+  #newEventPresenter = null;
   #currentSortType = SortType.DATE;
   #currentFilterType = FilterType.EVERYTHING;
 
@@ -32,6 +34,8 @@ export default class tripPresenter {
     this.#infoContainer = infoContainer;
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
+
+    this.#newEventPresenter = new NewEventPresenter(this.#eventsContainer, this.#handleViewAction);
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -61,6 +65,12 @@ export default class tripPresenter {
 
     this.#renderSorter();
     this.#renderBoard();
+  }
+
+  createEvent = () => {
+    this.#currentSortType = SortType.DATE;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#newEventPresenter.init(BLANK_POINT, this.#descriptions, this.#destinations, this.#options);
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -98,6 +108,7 @@ export default class tripPresenter {
   }
 
   #handleModeChange = () => {
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((p) => p.resetView());
   }
 
@@ -174,6 +185,7 @@ export default class tripPresenter {
     }
 
     removeComponent(this.#tripInfoComponent);
+    this.#newEventPresenter.destroy();
     this.#clearEventsList();
     this.#eventsList.remove();
   }

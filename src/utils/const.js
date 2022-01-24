@@ -34,10 +34,11 @@ export const Format = {
 export const BLANK_POINT = {
   type: 'Taxi',
   destination: '',
-  dateFrom: dayjs().format(Format.DATE_TIME),
-  dateTo: dayjs().format(Format.DATE_TIME),
-  basePrice: '0',
-  offers: []
+  dateFrom: new Date(),
+  dateTo: new Date(),
+  basePrice: 0,
+  offers: [],
+  isFavorite: false
 };
 
 export const BLANK_DESCRIPTION = {
@@ -84,4 +85,4 @@ export const EmptyFilterMsg = {
 
 export const EVENT_DURATION_DAYS_LIMIT = 28;
 
-export const EVENTS_COUNT = 10;
+export const EVENTS_COUNT = 1;

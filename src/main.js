@@ -25,3 +25,7 @@ const tripPresenter = new TripPresenter(tripEventsContainer, tripInfoContainer, 
 
 filterPresenter.init();
 tripPresenter.init(descriptions, destinations, options);
+
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', () => {
+  tripPresenter.createEvent();
+});
