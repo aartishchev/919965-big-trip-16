@@ -2,7 +2,7 @@ import EventPresenter from './event-presenter.js';
 import EventsSorter from '../view/events-sorter.js';
 import TripInfo from '../view/trip-info.js';
 import EmptyListMsg from '../view/empty-list.js';
-import { RenderPosition, SortType, UpdateType, UserAction } from '../utils/const.js';
+import { RenderPosition, SortType, UpdateType, UserAction, FilterType } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
 import { sortByPrice, sortByDate, sortByDuration} from '../utils/event.js';
 import { filter } from '../utils/filter.js';
@@ -14,13 +14,14 @@ export default class tripPresenter {
 
   #eventsSorterComponent = null;
   #tripInfoComponent = null;
-  #emptyListMsgComponent = new EmptyListMsg();
+  #emptyListMsgComponent = null;
 
   #eventsModel = null;
   #filterModel = null;
 
   #eventPresenters = new Map();
   #currentSortType = SortType.DATE;
+  #currentFilterType = FilterType.EVERYTHING;
 
   #descriptions = [];
   #destinations = [];
@@ -38,8 +39,8 @@ export default class tripPresenter {
 
   get events() {
     const events = this.#eventsModel.events;
-    const currentFilterType = this.#filterModel.filter;
-    const filteredEvents = filter(events, currentFilterType);
+    this.#currentFilterType = this.#filterModel.filter;
+    const filteredEvents = filter(events, this.#currentFilterType);
 
     switch (this.#currentSortType) {
       case SortType.DATE:
@@ -101,6 +102,7 @@ export default class tripPresenter {
   }
 
   #renderEmptyListMsg = () => {
+    this.#emptyListMsgComponent = new EmptyListMsg(this.#currentFilterType);
     renderElement(this.#eventsContainer, this.#emptyListMsgComponent);
   }
 
@@ -165,6 +167,10 @@ export default class tripPresenter {
   #clearBoard = () => {
     if (this.events.length < 1) {
       removeComponent(this.#eventsSorterComponent);
+    }
+
+    if (this.#emptyListMsgComponent) {
+      removeComponent(this.#emptyListMsgComponent);
     }
 
     removeComponent(this.#tripInfoComponent);

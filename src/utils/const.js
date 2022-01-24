@@ -77,11 +77,11 @@ export const FilterType = {
 export const FILTER_TYPES = ['Everything', 'Future', 'Past'];
 
 export const EmptyFilterMsg = {
-  EVERYTHING: 'Click New Event to create your first point',
-  FUTURE: 'There are no future events now',
-  PAST: 'There are no past events now'
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.PAST]: 'There are no past events now'
 };
 
 export const EVENT_DURATION_DAYS_LIMIT = 28;
 
-export const EVENTS_COUNT = 5;
+export const EVENTS_COUNT = 10;
