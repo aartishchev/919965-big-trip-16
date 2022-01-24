@@ -21,8 +21,12 @@ export function sortByPrice (aEvent, bEvent) {
   return bTotalPrice - aTotalPrice;
 }
 
-export function sortByDate (aEvent, bEvent) {
+export function sortByStartDate (aEvent, bEvent) {
   return aEvent.dateFrom - bEvent.dateFrom;
+}
+
+export function sortByFinishDate (aEvent, bEvent) {
+  return bEvent.dateTo - aEvent.dateTo;
 }
 
 export function sortByDuration (aEvent, bEvent) {

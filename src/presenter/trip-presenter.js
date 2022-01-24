@@ -5,7 +5,7 @@ import TripInfo from '../view/trip-info.js';
 import EmptyListMsg from '../view/empty-list.js';
 import { RenderPosition, SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
-import { sortByPrice, sortByDate, sortByDuration} from '../utils/event.js';
+import { sortByPrice, sortByStartDate, sortByDuration} from '../utils/event.js';
 import { filter } from '../utils/filter.js';
 
 export default class tripPresenter {
@@ -48,7 +48,7 @@ export default class tripPresenter {
 
     switch (this.#currentSortType) {
       case SortType.DATE:
-        return filteredEvents.sort(sortByDate);
+        return filteredEvents.sort(sortByStartDate);
       case SortType.DURATION:
         return filteredEvents.sort(sortByDuration);
       case SortType.PRICE:

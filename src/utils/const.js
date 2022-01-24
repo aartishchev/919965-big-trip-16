@@ -1,5 +1,3 @@
-import dayjs from 'dayjs';
-
 export const POINT_TYPES = [
   'Taxi',
   'Bus',
@@ -85,4 +83,4 @@ export const EmptyFilterMsg = {
 
 export const EVENT_DURATION_DAYS_LIMIT = 28;
 
-export const EVENTS_COUNT = 1;
+export const EVENTS_COUNT = 10;

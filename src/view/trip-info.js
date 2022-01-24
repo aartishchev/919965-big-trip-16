@@ -1,5 +1,5 @@
 import { Format } from '../utils/const';
-import { getTotalPrice } from '../utils/event';
+import { getTotalPrice, sortByStartDate, sortByFinishDate } from '../utils/event';
 import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 
@@ -22,27 +22,28 @@ const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
   }
 };
 
-const getDestinationsRoute = (sortedEventsByStartDate) => {
-  const route = [];
-
-  for (const event of sortedEventsByStartDate) {
-    route.push(event.destination);
+const getDestinationsRoute = (sortedEvents) => {
+  if (sortedEvents.length >= 3) {
+    const route = [sortedEvents[0].destination, sortedEvents[sortedEvents.length - 1].destination];
+    return route.join(' &mdash; ... &mdash; ');
+  } else {
+    const route = [];
+    sortedEvents.forEach((d) => route.push(d.destination));
+    return route.join(' &mdash; ');
   }
-
-  return route.join(' &mdash; ');
 };
 
 const getAllPointsTotalPrice = (allEvents) => (
   allEvents.reduce((acc, event) => acc + getTotalPrice(event.offers, event.basePrice), 0)
 );
 
-const createTripInfoTemplate = (pointEvents) => {
-  if (pointEvents.length < 1) {
+const createTripInfoTemplate = (events) => {
+  if (events.length < 1) {
     return '';
   }
 
-  const sortedEventsByStartDate = pointEvents.slice().sort((a, b) => a.dateFrom - b.dateFrom);
-  const sortedEventsByFinishDate = pointEvents.slice().sort((a, b) => b.dateTo - a.dateTo);
+  const sortedEventsByStartDate = events.sort(sortByStartDate);
+  const sortedEventsByFinishDate = events.slice().sort(sortByFinishDate);
 
   return (
     `<section class="trip-main__trip-info trip-info">
@@ -59,7 +60,7 @@ const createTripInfoTemplate = (pointEvents) => {
       <p class="trip-info__cost">
         Total: &euro;&nbsp;
         <span class="trip-info__cost-value">
-          ${getAllPointsTotalPrice(pointEvents)}
+          ${getAllPointsTotalPrice(events)}
         </span>
       </p>
     </section>`
