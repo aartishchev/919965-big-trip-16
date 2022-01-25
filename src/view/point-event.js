@@ -23,19 +23,15 @@ const generateOffersTemplate = (offers) => {
     return '';
   }
 
-  const offersTemplate = [];
-
-  offers.map((el) => {
-    if (el.isAdded) {
-      const offerToRender = (
+  const offersTemplate = offers.map((o) => {
+    if (o.isAdded) {
+      return (
         `<li class="event__offer">
-          <span class="event__offer-title">${el.title}</span>
+          <span class="event__offer-title">${o.title}</span>
           &plus;&euro;&nbsp;
-          <span class="event__offer-price">${el.price}</span>
+          <span class="event__offer-price">${o.price}</span>
         </li>`
       );
-
-      offersTemplate.push(offerToRender);
     }
   });
 

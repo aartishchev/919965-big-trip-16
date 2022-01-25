@@ -18,12 +18,7 @@ export default class EventsModel extends AbstractObservable {
       throw new Error('Can\'t update unexisting event');
     }
 
-    this.#events = [
-      ...this.#events.slice(0, index),
-      update,
-      ...this.#events.slice(index + 1)
-    ];
-
+    this.#events.splice(index, 1, update);
     this._notify(updateType, update);
   }
 
@@ -33,17 +28,13 @@ export default class EventsModel extends AbstractObservable {
   }
 
   deleteEvent = (updateType, update) => {
-    const index = this.#events.findIndex((event) => event.id === update.id);
+    const index = this.#events.findIndex((e) => e.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting event');
     }
 
-    this.#events = [
-      ...this.#events.slice(0, index),
-      ...this.#events.slice(index + 1),
-    ];
-
+    this.#events = this.#events.filter((e) => e.id !== update.id);
     this._notify(updateType);
   }
 }

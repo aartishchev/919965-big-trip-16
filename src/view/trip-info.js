@@ -1,5 +1,5 @@
-import { Format } from '../utils/const';
 import { getTotalPrice, sortByStartDate, sortByFinishDate } from '../utils/event';
+import { Format } from '../utils/const';
 import AbstractView from '../view/abstract-view.js';
 import dayjs from 'dayjs';
 
@@ -24,14 +24,13 @@ const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
 
 const getDestinationsRoute = (sortedEvents) => {
   if (sortedEvents.length >= 3) {
-    const route = [
-      sortedEvents[0].destination,
-      sortedEvents[sortedEvents.length - 1].destination,
-    ];
-    return route.join(' &mdash; ... &mdash; ');
+    const startEvent = sortedEvents[0].destination;
+    const finishEvent = sortedEvents[sortedEvents.length - 1].destination;
+
+    return `${startEvent} &mdash; ... &mdash; ${finishEvent}`;
   } else {
-    const route = [];
-    sortedEvents.forEach((d) => route.push(d.destination));
+    const route = sortedEvents.map((e) => e.destination);
+
     return route.join(' &mdash; ');
   }
 };

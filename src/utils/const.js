@@ -55,6 +55,30 @@ export const SortType = {
   PRICE: 'price'
 };
 
+export const SORTERS = [
+  {
+    name: 'day',
+    type: SortType.DATE,
+    checked: true,
+  },
+  {
+    name: 'event',
+    disabled: true,
+  },
+  {
+    name: 'time',
+    type: SortType.DURATION,
+  },
+  {
+    name: 'price',
+    type: SortType.PRICE,
+  },
+  {
+    name: 'offers',
+    disabled: true,
+  }
+];
+
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',

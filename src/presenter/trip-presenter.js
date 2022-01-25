@@ -111,7 +111,7 @@ export default class tripPresenter {
   }
 
   #handleModeChange = () => {
-    this.#newEventPresenter.destroy();
+    this.#newEventPresenter?.destroy();
     this.#eventPresenters.forEach((p) => p.resetView());
   }
 

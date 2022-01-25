@@ -7,71 +7,51 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypesTemplate = (currentType) => {
-  const typesTemplate = [];
 
-  for (const type of POINT_TYPES) {
-    const typeToRender = (
-      `<div class="event__type-item">
-        <input
-          id="event-type-${type}"
-          class="event__type-input visually-hidden"
-          type="radio"
-          name="event-type"
-          value="${type}"
-          ${type === currentType ? 'checked' : ''}
-        >
-        <label
-          class="event__type-label event__type-label--${type}"
-          for="event-type-${type}"
-        >
-          ${type}
-        </label>
-      </div>`
-    );
-
-    typesTemplate.push(typeToRender);
-  }
+  const typesTemplate = POINT_TYPES.map((t) => (
+    `<div class="event__type-item">
+    <input
+      id="event-type-${t}"
+      class="event__type-input visually-hidden"
+      type="radio"
+      name="event-type"
+      value="${t}"
+      ${t === currentType ? 'checked' : ''}
+    >
+    <label
+      class="event__type-label event__type-label--${t}" for="event-type-${t}">${t}</label>
+    </div>`)
+  );
 
   return typesTemplate.join('');
 };
 
 const createDestinationOptionsTemplate = (destinations) => {
-  const destinationOptionsTemplate = [];
-
-  for (const destination of destinations) {
-    const destinationOptionToRender = `<option value="${destination}"></option>`;
-    destinationOptionsTemplate.push(destinationOptionToRender);
-  }
+  const destinationOptionsTemplate = destinations.map((d) => `<option value="${d}"></option>`);
 
   return destinationOptionsTemplate.join('');
 };
 
 const createOfferOptionsTemplate = (offers) => {
-  const offersTemplate = [];
-
-  for (const offer of offers) {
-    const offerToRender = (
-      `<div class="event__offer-selector">
-        <input
-          class="event__offer-checkbox visually-hidden"
-          id="${offer.id}"
-          type="checkbox"
-          name="${offer.id}"
-          ${offer.isAdded ? 'checked' : ''}
-        >
-        <label
-          class="event__offer-label"
-          for="${offer.id}"
-        >
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
-        </label>
-      </div>`
-    );
-
-    offersTemplate.push(offerToRender);
-  }
+  const offersTemplate = offers.map((o) => (
+    `<div class="event__offer-selector">
+      <input
+        class="event__offer-checkbox visually-hidden"
+        id="${o.id}"
+        type="checkbox"
+        name="${o.id}"
+        ${o.isAdded ? 'checked' : ''}
+      >
+      <label
+        class="event__offer-label"
+        for="${o.id}"
+      >
+        <span class="event__offer-title">${o.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${o.price}</span>
+      </label>
+    </div>`)
+  );
 
   return (
     `<section class="event__section event__section--offers">
@@ -84,18 +64,13 @@ const createOfferOptionsTemplate = (offers) => {
 };
 
 const createPhotosTemplate = (photos) => {
-  const photosTemplate = [];
-
-  for (const photo of photos) {
-    const photoToRender = (
-      `<img
-        class="event__photo"
-        src="${photo}"
-        alt="Event photo"
-      />`
-    );
-    photosTemplate.push(photoToRender);
-  }
+  const photosTemplate = photos.map((p) => (
+    `<img
+      class="event__photo"
+      src="${p}"
+      alt="Event photo"
+    />`)
+  );
 
   return (
     `<div class="event__photos-container">
@@ -209,7 +184,9 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
           <input
             class="event__input event__input--price"
             id="event-price"
-            type="text"
+            type="number"
+            min="0"
+            oninput="validity.valid||(value='');"
             name="event-price"
             value="${basePrice}"
           >

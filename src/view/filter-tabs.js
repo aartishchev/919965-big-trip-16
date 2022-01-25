@@ -6,25 +6,19 @@ const createFilterTabsTemplate = (filterTypes, currentType) => {
     return;
   }
 
-  const tabs = [];
-
-  filterTypes.map((type) => {
-    const tabToRender = (
-      `<div class="trip-filters__filter">
-        <input
-          id="filter-${type}"
-          class="trip-filters__filter-input visually-hidden"
-          type="radio"
-          name="trip-filter"
-          value="${type}"
-          ${type === currentType ? 'checked' : ''}
-        >
-        <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
-      </div>`
-    );
-
-    tabs.push(tabToRender);
-  });
+  const tabs = filterTypes.map((type) =>
+    `<div class="trip-filters__filter">
+      <input
+        id="filter-${type}"
+        class="trip-filters__filter-input visually-hidden"
+        type="radio"
+        name="trip-filter"
+        value="${type}"
+        ${type === currentType ? 'checked' : ''}
+      >
+      <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
+    </div>`
+  );
 
   return (
     `<form class="trip-filters" action="#" method="get">
