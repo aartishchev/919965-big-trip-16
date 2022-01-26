@@ -15,7 +15,7 @@ export function renderElement (container, element, place = RenderPosition.APPEND
   parent[place](child);
 }
 
-export const replace = (newElement, oldElement) => {
+export const replaceElement = (newElement, oldElement) => {
   if (newElement === null || oldElement === null) {
     throw new Error('Can\'t replace unexisting elements');
   }
@@ -32,7 +32,7 @@ export const replace = (newElement, oldElement) => {
   parent.replaceChild(newChild, oldChild);
 };
 
-export const remove = (component) => {
+export const removeComponent = (component) => {
   if (component === null) {
     return;
   }

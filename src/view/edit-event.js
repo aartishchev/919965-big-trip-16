@@ -1,5 +1,5 @@
-import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, Format } from '../utils/const.js';
-import { getTotalPrice } from '../utils/event.js';
+import { POINT_TYPES, BLANK_DESCRIPTION, BLANK_POINT, EVENT_DURATION_DAYS_LIMIT, Format } from '../utils/const.js';
+import { updateItem } from '../utils/common.js';
 import SmartView from '../view/smart-view.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
@@ -7,73 +7,50 @@ import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypesTemplate = (currentType) => {
-  const typesTemplate = [];
 
-  for (const type of POINT_TYPES) {
-    const typeToRender = (
-      `<div class="event__type-item">
-        <input
-          id="event-type-${type}"
-          class="event__type-input visually-hidden"
-          type="radio"
-          name="event-type"
-          value="${type}"
-          ${type === currentType ? 'checked' : ''}
-        >
-        <label
-          class="event__type-label event__type-label--${type}"
-          for="event-type-${type}"
-        >
-          ${type}
-        </label>
-      </div>`
-    );
-
-    typesTemplate.push(typeToRender);
-  }
+  const typesTemplate = POINT_TYPES.map((type) => (
+    `<div class="event__type-item">
+      <input
+        id="event-type-${type}"
+        class="event__type-input visually-hidden"
+        type="radio"
+        name="event-type"
+        value="${type}"
+        ${type === currentType ? 'checked' : ''}
+      >
+      <label class="event__type-label event__type-label--${type}" for="event-type-${type}">${type}</label>
+    </div>`)
+  );
 
   return typesTemplate.join('');
 };
 
 const createDestinationOptionsTemplate = (destinations) => {
-  const destinationOptionsTemplate = [];
-
-  for (const destination of destinations) {
-    const destinationOptionToRender = `<option value="${destination}"></option>`;
-    destinationOptionsTemplate.push(destinationOptionToRender);
-  }
+  const destinationOptionsTemplate = destinations.map((destination) => `<option value="${destination}"></option>`);
 
   return destinationOptionsTemplate.join('');
 };
 
-const createOfferOptionsTemplate = (offers, type) => {
-  const offersTemplate = [];
-
-  for (const offer of offers) {
-    const offerForAttribute = `${type.replaceAll(' ', '-')}-${offer.id}`;
-
-    const offerToRender = (
-      `<div class="event__offer-selector">
-        <input
-          class="event__offer-checkbox visually-hidden"
-          id="event-offer-${offerForAttribute}"
-          type="checkbox"
-          name="event-offer-${offerForAttribute}"
-          ${offer.isAdded ? 'checked' : ''}
-        >
-        <label
-          class="event__offer-label"
-          for="event-offer-${offerForAttribute}"
-        >
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
-        </label>
-      </div>`
-    );
-
-    offersTemplate.push(offerToRender);
-  }
+const createOfferOptionsTemplate = (offers) => {
+  const offersTemplate = offers.map(({ id, isAdded, title, price }) => (
+    `<div class="event__offer-selector">
+      <input
+        class="event__offer-checkbox visually-hidden"
+        id="${id}"
+        type="checkbox"
+        name="${id}"
+        ${isAdded ? 'checked' : ''}
+      >
+      <label
+        class="event__offer-label"
+        for="${id}"
+      >
+        <span class="event__offer-title">${title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${price}</span>
+      </label>
+    </div>`)
+  );
 
   return (
     `<section class="event__section event__section--offers">
@@ -86,18 +63,13 @@ const createOfferOptionsTemplate = (offers, type) => {
 };
 
 const createPhotosTemplate = (photos) => {
-  const photosTemplate = [];
-
-  for (const photo of photos) {
-    const photoToRender = (
-      `<img
-        class="event__photo"
-        src="${photo}"
-        alt="Event photo"
-      />`
-    );
-    photosTemplate.push(photoToRender);
-  }
+  const photosTemplate = photos.map((photo) => (
+    `<img
+      class="event__photo"
+      src="${photo}"
+      alt="Event photo"
+    />`)
+  );
 
   return (
     `<div class="event__photos-container">
@@ -116,7 +88,13 @@ const createDescriptionTemplate = (description, photos, arePhotos) => (
   </section>`
 );
 
-const createEditEventTemplate = (data, destinations) => {
+const createRollupBtnTemplate = () => (
+  `<button class="event__rollup-btn" type="button">
+    <span class="visually-hidden">Open event</span>
+  </button>`
+);
+
+const createEditEventTemplate = (data, destinations, isNewEvent) => {
   const {
     type,
     destination,
@@ -134,14 +112,13 @@ const createEditEventTemplate = (data, destinations) => {
   const startDate = dayjs(dateFrom).format(Format.DATE_TIME);
   const finishDate = dayjs(dateTo).format(Format.DATE_TIME);
 
-  const totalPrice = getTotalPrice(offers, basePrice);
   const isSubmitDisabled = !destinations.includes(destination);
 
   return (
     `<form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
-          <label class="event__type event__type-btn" for="event-type-toggle-1">
+          <label class="event__type event__type-btn" for="event-type-toggle">
             <span class="visually-hidden">Choose event type</span>
             <img
               class="event__type-icon"
@@ -151,7 +128,7 @@ const createEditEventTemplate = (data, destinations) => {
               alt="Event type icon"
             >
           </label>
-          <input class="event__type-toggle visually-hidden" id="event-type-toggle-1" type="checkbox">
+          <input class="event__type-toggle visually-hidden" id="event-type-toggle" type="checkbox">
 
           <div class="event__type-list">
             <fieldset class="event__type-group">
@@ -162,18 +139,18 @@ const createEditEventTemplate = (data, destinations) => {
         </div>
 
         <div class="event__field-group event__field-group--destination">
-          <label class="event__label event__type-output" for="event-destination-1">
+          <label class="event__label event__type-output" for="event-destination">
             ${type}
           </label>
           <input
             class="event__input event__input--destination"
-            id="event-destination-1"
+            id="event-destination"
             type="text"
             name="event-destination"
             value="${destination}"
-            list="destination-list-1"
+            list="destination-list"
           >
-          <datalist id="destination-list-1">
+          <datalist id="destination-list">
             ${destinations.length > 1 ? createDestinationOptionsTemplate(destinations) : ''}
           </datalist>
         </div>
@@ -199,16 +176,17 @@ const createEditEventTemplate = (data, destinations) => {
         </div>
 
         <div class="event__field-group event__field-group--price">
-          <label class="event__label" for="event-price-1">
+          <label class="event__label" for="event-price">
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
           <input
             class="event__input event__input--price"
-            id="event-price-1"
-            type="text"
+            id="event-price"
+            type="number"
+            min="0"
             name="event-price"
-            value="${totalPrice}"
+            value="${basePrice}"
           >
         </div>
 
@@ -219,10 +197,10 @@ const createEditEventTemplate = (data, destinations) => {
         >
           Save
         </button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
-          <span class="visually-hidden">Open event</span>
+        <button class="event__reset-btn" type="reset">
+          ${isNewEvent ? 'Cancel' : 'Delete'}
         </button>
+        ${!isNewEvent ? createRollupBtnTemplate() : ''}
       </header>
       <section class="event__details">
         ${areOffers ? createOfferOptionsTemplate(offers, type) : ''}
@@ -236,6 +214,7 @@ export default class EditEvent extends SmartView {
   #descriptions = null;
   #destinations = null;
   #options = null;
+  #isNewEvent = null;
   #startDatepicker = null;
   #finishDatepicker = null;
 
@@ -243,12 +222,15 @@ export default class EditEvent extends SmartView {
     event = BLANK_POINT,
     descriptions = [],
     destinations = [],
-    options = []
+    options = [],
+    isNewEvent = false
   ) {
     super();
+
     this.#descriptions = descriptions;
     this.#destinations = destinations;
     this.#options = options;
+    this.#isNewEvent = isNewEvent;
 
     this._data = this.#parseEventToData(event);
 
@@ -257,41 +239,63 @@ export default class EditEvent extends SmartView {
   }
 
   get template() {
-    return createEditEventTemplate(this._data, this.#destinations);
+    return createEditEventTemplate(this._data, this.#destinations, this.#isNewEvent);
   }
 
   removeElement = () => {
     super.removeElement();
 
-    this.#startDatepicker?.destroy();
-    this.#finishDatepicker?.destroy();
+    this.#startDatepicker.destroy();
     this.#startDatepicker = null;
+
+    this.#finishDatepicker.destroy();
     this.#finishDatepicker = null;
   }
 
-  resetData = (event) => {
+  resetEvent = (event) => {
     this.updateData(this.#parseEventToData(event));
   }
 
   restoreHandlers = () => {
     this.#setInnerHandlers();
     this.#setDatepickers();
+
     this.setOnCollapseHandler(this._callback.onCollapse);
     this.setOnSubmitHandler(this._callback.onSubmit);
+    this.setOnDeleteHandler(this._callback.onDelete);
   }
 
   setOnCollapseHandler = (callback) => {
+    if (this.#isNewEvent) {
+      return;
+    }
+
     this._callback.onCollapse = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCollapseHandler);
+  }
+
+  setOnSubmitHandler = (callback) => {
+    this._callback.onSubmit = callback;
+    this.element.addEventListener('submit', this.#onSubmitHandler);
+  }
+
+  setOnDeleteHandler = (callback) => {
+    this._callback.onDelete = callback;
+    this.element.addEventListener('reset', this.#onDeleteHandler);
   }
 
   #onCollapseHandler = () => {
     this._callback.onCollapse();
   }
 
-  setOnSubmitHandler = (callback) => {
-    this._callback.onSubmit = callback;
-    this.element.addEventListener('submit', this.#onSubmitHandler);
+  #onSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.onSubmit(EditEvent.parseDataToEvent(this._data));
+  }
+
+  #onDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.onDelete(EditEvent.parseDataToEvent(this._data));
   }
 
   #setDatepickers = () => {
@@ -304,14 +308,14 @@ export default class EditEvent extends SmartView {
         onChange: this.#startDateChangeHandler,
       },
     );
-    this.#startDatepicker = flatpickr(
+    this.#finishDatepicker = flatpickr(
       this.element.querySelector('#event-end-time'),
       {
         dateFormat: Format.DATEPICKER,
         enableTime: true,
         'time_24hr': true,
         minDate: this._data.dateFrom,
-        maxDate: this._data.dateFrom.fp_incr(29),
+        maxDate: this._data.dateFrom.fp_incr(EVENT_DURATION_DAYS_LIMIT),
         onChange: this.#finishDataChangeHandler,
       },
     );
@@ -327,9 +331,20 @@ export default class EditEvent extends SmartView {
   }
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__type-group').addEventListener('click', this.#onTypeChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('input', this.#onDestinationInputHandler);
-  }
+    this.element
+      .querySelector('.event__type-group')
+      .addEventListener('click', this.#onTypeChangeHandler);
+    this.element
+      .querySelector('.event__input--destination')
+      .addEventListener('input', this.#onDestinationInputHandler);
+    this.element
+      .querySelector('.event__input--price')
+      .addEventListener('input', this.#onPriceChangeHandler);
+
+    this.element
+      .querySelectorAll('.event__offer-checkbox')
+      .forEach((element) => element.addEventListener('click', this.#onOfferToggleHandler));
+  };
 
   #onTypeChangeHandler = (evt) => {
     if (evt.target.tagName === 'INPUT') {
@@ -339,8 +354,12 @@ export default class EditEvent extends SmartView {
         return;
       }
 
-      const index = this.#options.findIndex((o) => o.type === targetType);
+      const index = this.#options.findIndex((option) => option.type === targetType);
       const newOffers = this.#options[index].offers || [];
+
+      newOffers.forEach((offer) => {
+        offer.isAdded = false;
+      });
 
       this.updateData({
         type: targetType,
@@ -352,7 +371,7 @@ export default class EditEvent extends SmartView {
 
   #onDestinationInputHandler = (evt) => {
     const value = evt.target.value;
-    const index = this.#destinations.findIndex((el) => el.toLowerCase() === value.toLowerCase());
+    const index = this.#destinations.findIndex((destination) => destination.toLowerCase() === value.toLowerCase());
 
     if (index > -1) {
       const { description, photos } = this.#descriptions[index];
@@ -370,13 +389,19 @@ export default class EditEvent extends SmartView {
     this.updateData({ destination: value }, true);
   }
 
-  #onSubmitHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.onSubmit(EditEvent.parseDataToEvent(this._data));
+  #onPriceChangeHandler = (evt) => {
+    this.updateData({ basePrice: Number(evt.target.value) }, true);
+  }
+
+  #onOfferToggleHandler = (evt) => {
+    const offer = this._data.offers.find((el) => el.id === evt.target.id);
+    offer.isAdded = evt.target.checked;
+
+    this.updateData({ offers: updateItem(this._data.offers, offer) }, true);
   }
 
   #parseEventToData = (event) => {
-    const index = this.#destinations.findIndex((el) => el === event.destination);
+    const index = this.#destinations.findIndex((destination) => destination === event.destination);
     const { description, photos } = this.#descriptions[index] || BLANK_DESCRIPTION;
 
     return {

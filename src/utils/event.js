@@ -1,7 +1,13 @@
 import dayjs from 'dayjs';
 
 export function getTotalPrice(offers, basePrice) {
-  return offers.reduce((acc, offer) => acc + Number(offer.price), basePrice);
+  return offers.reduce((acc, { isAdded, price }) => {
+    if (isAdded) {
+      return acc + Number(price);
+    }
+
+    return acc;
+  }, basePrice);
 }
 
 export function getDuration(startDate, finishDate) {
@@ -15,8 +21,12 @@ export function sortByPrice (aEvent, bEvent) {
   return bTotalPrice - aTotalPrice;
 }
 
-export function sortByDate (aEvent, bEvent) {
+export function sortByStartDate (aEvent, bEvent) {
   return aEvent.dateFrom - bEvent.dateFrom;
+}
+
+export function sortByFinishDate (aEvent, bEvent) {
+  return bEvent.dateTo - aEvent.dateTo;
 }
 
 export function sortByDuration (aEvent, bEvent) {
