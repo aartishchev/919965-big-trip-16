@@ -2,22 +2,22 @@ import AbstractView from '../view/abstract-view.js';
 import { SORTERS } from '../utils/const.js';
 
 const createEventsSorterTemplate = () => {
-  const eventsSorter = SORTERS.map((s) => (
-    `<div class="trip-sort__item trip-sort__item--${s.name}">
-      <input id="sort-${s.name}"
+  const eventsSorter = SORTERS.map(({ name, type, isChecked, isDisabled }) => (
+    `<div class="trip-sort__item trip-sort__item--${name}">
+      <input id="sort-${name}"
         class="trip-sort__input visually-hidden"
         type="radio"
         name="trip-sort"
-        value="sort-${s.name}"
-        ${s.checked ? 'checked' : ''}
-        ${s.disabled ? 'disabled' : ''}
+        value="sort-${name}"
+        ${isChecked ? 'checked' : ''}
+        ${isDisabled ? 'disabled' : ''}
       >
       <label
         class="trip-sort__btn"
-        for="sort-${s.name}"
-        ${s.type ? `data-sort-type=${s.type}` : ''}
+        for="sort-${name}"
+        ${type ? `data-sort-type=${type}` : ''}
       >
-        ${s.name}
+        ${name}
       </label>
     </div>`)
   );

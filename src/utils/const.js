@@ -59,11 +59,11 @@ export const SORTERS = [
   {
     name: 'day',
     type: SortType.DATE,
-    checked: true,
+    isChecked: true,
   },
   {
     name: 'event',
-    disabled: true,
+    isDisabled: true,
   },
   {
     name: 'time',
@@ -75,7 +75,7 @@ export const SORTERS = [
   },
   {
     name: 'offers',
-    disabled: true,
+    isDisabled: true,
   }
 ];
 

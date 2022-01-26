@@ -33,22 +33,22 @@ const createDestinationOptionsTemplate = (destinations) => {
 };
 
 const createOfferOptionsTemplate = (offers) => {
-  const offersTemplate = offers.map((o) => (
+  const offersTemplate = offers.map(({ id, isAdded, title, price }) => (
     `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox visually-hidden"
-        id="${o.id}"
+        id="${id}"
         type="checkbox"
-        name="${o.id}"
-        ${o.isAdded ? 'checked' : ''}
+        name="${id}"
+        ${isAdded ? 'checked' : ''}
       >
       <label
         class="event__offer-label"
-        for="${o.id}"
+        for="${id}"
       >
-        <span class="event__offer-title">${o.title}</span>
+        <span class="event__offer-title">${title}</span>
         &plus;&euro;&nbsp;
-        <span class="event__offer-price">${o.price}</span>
+        <span class="event__offer-price">${price}</span>
       </label>
     </div>`)
   );
@@ -186,7 +186,6 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
             id="event-price"
             type="number"
             min="0"
-            oninput="validity.valid||(value='');"
             name="event-price"
             value="${basePrice}"
           >
