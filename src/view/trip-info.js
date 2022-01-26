@@ -29,7 +29,7 @@ const getDestinationsRoute = (sortedEvents) => {
 
     return `${startEvent} &mdash; ... &mdash; ${finishEvent}`;
   } else {
-    const route = sortedEvents.map((e) => e.destination);
+    const route = sortedEvents.map((event) => event.destination);
 
     return route.join(' &mdash; ');
   }

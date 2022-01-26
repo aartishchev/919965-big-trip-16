@@ -8,18 +8,17 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const createTypesTemplate = (currentType) => {
 
-  const typesTemplate = POINT_TYPES.map((t) => (
+  const typesTemplate = POINT_TYPES.map((type) => (
     `<div class="event__type-item">
-    <input
-      id="event-type-${t}"
-      class="event__type-input visually-hidden"
-      type="radio"
-      name="event-type"
-      value="${t}"
-      ${t === currentType ? 'checked' : ''}
-    >
-    <label
-      class="event__type-label event__type-label--${t}" for="event-type-${t}">${t}</label>
+      <input
+        id="event-type-${type}"
+        class="event__type-input visually-hidden"
+        type="radio"
+        name="event-type"
+        value="${type}"
+        ${type === currentType ? 'checked' : ''}
+      >
+      <label class="event__type-label event__type-label--${type}" for="event-type-${type}">${type}</label>
     </div>`)
   );
 
@@ -27,7 +26,7 @@ const createTypesTemplate = (currentType) => {
 };
 
 const createDestinationOptionsTemplate = (destinations) => {
-  const destinationOptionsTemplate = destinations.map((d) => `<option value="${d}"></option>`);
+  const destinationOptionsTemplate = destinations.map((destination) => `<option value="${destination}"></option>`);
 
   return destinationOptionsTemplate.join('');
 };
@@ -64,10 +63,10 @@ const createOfferOptionsTemplate = (offers) => {
 };
 
 const createPhotosTemplate = (photos) => {
-  const photosTemplate = photos.map((p) => (
+  const photosTemplate = photos.map((photo) => (
     `<img
       class="event__photo"
-      src="${p}"
+      src="${photo}"
       alt="Event photo"
     />`)
   );
@@ -344,7 +343,7 @@ export default class EditEvent extends SmartView {
 
     this.element
       .querySelectorAll('.event__offer-checkbox')
-      .forEach((el) => el.addEventListener('click', this.#onOfferToggleHandler));
+      .forEach((element) => element.addEventListener('click', this.#onOfferToggleHandler));
   };
 
   #onTypeChangeHandler = (evt) => {
@@ -355,11 +354,11 @@ export default class EditEvent extends SmartView {
         return;
       }
 
-      const index = this.#options.findIndex((o) => o.type === targetType);
+      const index = this.#options.findIndex((option) => option.type === targetType);
       const newOffers = this.#options[index].offers || [];
 
-      newOffers.forEach((el) => {
-        el.isAdded = false;
+      newOffers.forEach((offer) => {
+        offer.isAdded = false;
       });
 
       this.updateData({
@@ -372,7 +371,7 @@ export default class EditEvent extends SmartView {
 
   #onDestinationInputHandler = (evt) => {
     const value = evt.target.value;
-    const index = this.#destinations.findIndex((el) => el.toLowerCase() === value.toLowerCase());
+    const index = this.#destinations.findIndex((destination) => destination.toLowerCase() === value.toLowerCase());
 
     if (index > -1) {
       const { description, photos } = this.#descriptions[index];
@@ -402,7 +401,7 @@ export default class EditEvent extends SmartView {
   }
 
   #parseEventToData = (event) => {
-    const index = this.#destinations.findIndex((d) => d === event.destination);
+    const index = this.#destinations.findIndex((destination) => destination === event.destination);
     const { description, photos } = this.#descriptions[index] || BLANK_DESCRIPTION;
 
     return {

@@ -31,7 +31,7 @@ const generateDateTo = (dateFrom) => {
 };
 
 const generateOffers = (pointType) => {
-  const index = options.findIndex((o) => o.type === pointType);
+  const index = options.findIndex((option) => option.type === pointType);
 
   return options[index].offers;
 };

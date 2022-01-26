@@ -112,7 +112,7 @@ export default class tripPresenter {
 
   #handleModeChange = () => {
     this.#newEventPresenter?.destroy();
-    this.#eventPresenters.forEach((p) => p.resetView());
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
   }
 
   #renderEmptyListMsg = () => {
@@ -196,7 +196,7 @@ export default class tripPresenter {
   }
 
   #clearEventsList = () => {
-    this.#eventPresenters.forEach((p) => p.destroy());
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
   }
 }
