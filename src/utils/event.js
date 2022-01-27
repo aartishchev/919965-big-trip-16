@@ -1,4 +1,7 @@
+import { Format } from './const';
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
+dayjs.extend(duration);
 
 export function getTotalPrice(offers, basePrice) {
   return offers.reduce((acc, { isAdded, price }) => {
@@ -12,6 +15,31 @@ export function getTotalPrice(offers, basePrice) {
 
 export function getDuration(startDate, finishDate) {
   return dayjs(finishDate).diff(dayjs(startDate));
+}
+
+export function formatDuration(eventDuration) {
+  const wrappedDuration = dayjs.duration(eventDuration);
+
+  if (eventDuration < dayjs.duration(1, 'hours').asMilliseconds()) {
+    return wrappedDuration.format(Format.MIN_W_CHAR);
+  }
+
+  if (eventDuration < dayjs.duration(1, 'days').asMilliseconds()) {
+    return wrappedDuration.format(Format.HOURS_W_CHAR);
+  }
+
+  if (eventDuration < dayjs.duration(1, 'months').asMilliseconds()) {
+    return wrappedDuration.format(Format.DAYS_W_CHAR);
+  }
+
+  return wrappedDuration.format(Format.MONTHS_W_CHAR);
+
+}
+
+export function getFormattedEventDuration (startDate, finishDate) {
+  const eventDuration = getDuration(startDate, finishDate);
+
+  return formatDuration(eventDuration);
 }
 
 export function sortByPrice (aEvent, bEvent) {
