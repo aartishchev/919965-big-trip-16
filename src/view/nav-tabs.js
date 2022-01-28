@@ -1,17 +1,17 @@
 import AbstractView from '../view/abstract-view.js';
 import { NavItem } from '../utils/const.js';
 
-const createNavTabsTemplate = () => (
+const createNavTabsTemplate = (currentActiveTab) => (
   `<nav class="trip-controls__trip-tabs trip-tabs">
     <a
-      class="trip-tabs__btn trip-tabs__btn--active"
+      class="trip-tabs__btn ${currentActiveTab === NavItem.EVENTS ? 'trip-tabs__btn--active' : ''}"
       href="#"
       data-nav-item ="${NavItem.EVENTS}"
     >
       Table
     </a>
     <a
-      class="trip-tabs__btn"
+      class="trip-tabs__btn ${currentActiveTab === NavItem.STATISTICS ? 'trip-tabs__btn--active' : ''}"
       href="#"
       data-nav-item ="${NavItem.STATISTICS}"
     >
@@ -21,8 +21,15 @@ const createNavTabsTemplate = () => (
 );
 
 export default class NavTabs extends AbstractView {
+  #currentActiveTab = null;
+
+  constructor(currentActiveTab) {
+    super();
+    this.#currentActiveTab = currentActiveTab;
+  }
+
   get template() {
-    return createNavTabsTemplate();
+    return createNavTabsTemplate(this.#currentActiveTab);
   }
 
   setOnTabsClickHandler = (callback) => {

@@ -11,6 +11,7 @@ import { events } from './mock/points.js';
 import { options } from './mock/options.js';
 import { descriptions } from './mock/descriptions.js';
 import { destinations } from './mock/destinations.js';
+import NavPresenter from './presenter/nav-presenter.js';
 
 const mainContainer = document.querySelector('main .page-body__container');
 const tripInfoContainer = document.querySelector('.trip-main');
@@ -22,13 +23,11 @@ const filterModel = new FilterModel();
 const eventsModel = new EventsModel();
 eventsModel.events = events;
 
-const navTabsComponent = new NavTabs();
 const createButtonComponent = new CreateButton();
 
 const tripPresenter = new TripPresenter(tripEventsContainer, tripInfoContainer, eventsModel, filterModel);
 const filterPresenter = new FilterPresenter(filterTabsContainer, filterModel);
 
-renderElement(navTabsContainer, navTabsComponent);
 renderElement(tripInfoContainer, createButtonComponent);
 
 let statisticsComponent = null;
@@ -57,8 +56,9 @@ const handleOnNavClick = (navItem) => {
   }
 };
 
-navTabsComponent.setOnTabsClickHandler(handleOnNavClick);
+const navPresenter = new NavPresenter(navTabsContainer, handleOnNavClick)
 createButtonComponent.setOnClickHander(handleOnNavClick);
 
+navPresenter.init();
 filterPresenter.init();
 tripPresenter.init(descriptions, destinations, options);
