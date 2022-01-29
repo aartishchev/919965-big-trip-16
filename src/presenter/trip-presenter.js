@@ -1,20 +1,17 @@
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import EventsSorter from '../view/events-sorter.js';
-import TripInfo from '../view/trip-info.js';
 import EmptyListMsg from '../view/empty-list.js';
-import { RenderPosition, SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../utils/const.js';
+import { SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
 import { sortByPrice, sortByStartDate, sortByDuration} from '../utils/event.js';
 import { filter } from '../utils/filter.js';
 
 export default class tripPresenter {
   #eventsContainer = null;
-  #infoContainer = null;
   #eventsList = null;
 
   #eventsSorterComponent = null;
-  #tripInfoComponent = null;
   #emptyListMsgComponent = null;
 
   #eventsModel = null;
@@ -29,9 +26,8 @@ export default class tripPresenter {
   #destinations = [];
   #options = [];
 
-  constructor(eventsContainer, infoContainer, eventsModel, filterModel) {
+  constructor(eventsContainer, eventsModel, filterModel) {
     this.#eventsContainer = eventsContainer;
-    this.#infoContainer = infoContainer;
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
   }
@@ -58,7 +54,6 @@ export default class tripPresenter {
     this.#destinations = [...destinations];
     this.#options = [...options];
 
-    this.#renderTripInfo();
     this.#renderBoard();
 
     this.#eventsModel.addObserver(this.#handleModelEvent);
@@ -71,7 +66,6 @@ export default class tripPresenter {
     this.#options = [];
 
     this.#clearBoard({ resetSortType: true });
-    removeComponent(this.#tripInfoComponent);
 
     this.#eventsModel.removeObserver(this.#handleModelEvent);
     this.#filterModel.removeObserver(this.#handleModelEvent);
@@ -113,9 +107,7 @@ export default class tripPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({ resetSortType: true });
-        removeComponent(this.#tripInfoComponent);
         this.#renderBoard();
-        this.#renderTripInfo();
         break;
       default:
         throw new Error('Update type is undefined or does not exist');
@@ -147,11 +139,6 @@ export default class tripPresenter {
     this.#eventsSorterComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
 
     renderElement(this.#eventsContainer, this.#eventsSorterComponent);
-  }
-
-  #renderTripInfo = () => {
-    this.#tripInfoComponent = new TripInfo(this.events);
-    renderElement(this.#infoContainer, this.#tripInfoComponent, RenderPosition.PREPEND);
   }
 
   #renderEventsContainer = () => {
