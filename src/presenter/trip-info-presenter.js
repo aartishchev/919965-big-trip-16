@@ -13,6 +13,10 @@ export default class TripInfoPresenter {
   }
 
   init = () => {
+    if (this.#eventsModel.events.length < 1 ) {
+      return;
+    }
+
     const prevTripInfoComponent = this.#tripInfoComponent;
 
     this.#tripInfoComponent = new TripInfo(this.#eventsModel.events);

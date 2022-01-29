@@ -2,6 +2,7 @@ import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
 import EventsSorter from '../view/events-sorter.js';
 import EmptyListMsg from '../view/empty-list.js';
+import EventsList from '../view/events-list.js';
 import { SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
 import { sortByPrice, sortByStartDate, sortByDuration} from '../utils/event.js';
@@ -9,10 +10,10 @@ import { filter } from '../utils/filter.js';
 
 export default class tripPresenter {
   #eventsContainer = null;
-  #eventsList = null;
 
   #eventsSorterComponent = null;
   #emptyListMsgComponent = null;
+  #eventsListComponent = new EventsList();
 
   #eventsModel = null;
   #filterModel = null;
@@ -30,6 +31,8 @@ export default class tripPresenter {
     this.#eventsContainer = eventsContainer;
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
+
+    this.#newEventPresenter = new NewEventPresenter(this.#eventsListComponent, this.#handleViewAction);
   }
 
   get events() {
@@ -72,11 +75,10 @@ export default class tripPresenter {
   }
 
   createEvent = () => {
-    if (!this.#eventsList) {
-      this.#renderEventsContainer();
+    if (this.#eventsModel.events.length < 1) {
+      renderElement(this.#eventsContainer, this.#eventsListComponent);
     }
 
-    this.#newEventPresenter = new NewEventPresenter(this.#eventsList, this.#handleViewAction);
     this.#newEventPresenter.init(BLANK_POINT, this.#descriptions, this.#destinations, this.#options);
   }
 
@@ -115,7 +117,7 @@ export default class tripPresenter {
   }
 
   #handleModeChange = () => {
-    this.#newEventPresenter?.destroy();
+    this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
   }
 
@@ -141,22 +143,14 @@ export default class tripPresenter {
     renderElement(this.#eventsContainer, this.#eventsSorterComponent);
   }
 
-  #renderEventsContainer = () => {
-    this.#eventsList = document.createElement('ul');
-    this.#eventsList.className = 'trip-events__list';
-
-    renderElement(this.#eventsContainer, this.#eventsList);
-  }
-
   #renderEvent = (event, descriptions, destinations, options) => {
-    const eventWrapper = document.createElement('li');
-    eventWrapper.className = 'trip-events__list';
-
-    const eventPresenter = new EventPresenter(eventWrapper, this.#handleViewAction, this.#handleModeChange);
+    const eventPresenter = new EventPresenter(
+      this.#eventsListComponent,
+      this.#handleViewAction,
+      this.#handleModeChange
+    );
     eventPresenter.init(event, descriptions, destinations, options);
     this.#eventPresenters.set(event.id, eventPresenter);
-
-    renderElement(this.#eventsList, eventWrapper);
   }
 
   #renderEvents = () => {
@@ -173,7 +167,7 @@ export default class tripPresenter {
     }
 
     this.#renderSorter();
-    this.#renderEventsContainer();
+    renderElement(this.#eventsContainer, this.#eventsListComponent);
     this.#renderEvents();
   }
 
@@ -186,10 +180,10 @@ export default class tripPresenter {
       removeComponent(this.#emptyListMsgComponent);
     }
 
-    removeComponent(this.#eventsSorterComponent);
-    this.#newEventPresenter?.destroy();
+    this.#newEventPresenter.destroy();
     this.#clearEventsList();
-    this.#eventsList.remove();
+    removeComponent(this.#eventsSorterComponent);
+    removeComponent(this.#eventsListComponent);
   }
 
   #clearEventsList = () => {

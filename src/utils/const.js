@@ -122,4 +122,4 @@ export const STAT_BAR_HEIGHT = 55;
 
 export const EVENT_DURATION_DAYS_LIMIT = 28;
 
-export const EVENTS_COUNT = 1;
+export const EVENTS_COUNT = 0;
