@@ -23,18 +23,20 @@ const filterModel = new FilterModel();
 const eventsModel = new EventsModel();
 eventsModel.events = events;
 
-const createButtonComponent = new CreateButton();
-
-const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, eventsModel)
+const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, eventsModel);
 const tripPresenter = new TripPresenter(tripEventsContainer, eventsModel, filterModel);
 const filterPresenter = new FilterPresenter(filterTabsContainer, filterModel);
+const navPresenter = new NavPresenter(navTabsContainer, handleOnNavClick);
+
+const createButtonComponent = new CreateButton();
 
 let statisticsComponent = null;
 
-const handleOnNavClick = (navItem) => {
+function handleOnNavClick (navItem) {
   switch (navItem) {
     case NavItem.ADD_NEW_EVENT:
       removeComponent(statisticsComponent);
+      navPresenter.resetActiveTab();
       filterPresenter.destroy();
       filterPresenter.init();
       tripPresenter.destroy();
@@ -53,13 +55,12 @@ const handleOnNavClick = (navItem) => {
       renderElement(mainContainer, statisticsComponent);
       break;
   }
-};
+}
 
-const navPresenter = new NavPresenter(navTabsContainer, handleOnNavClick)
 createButtonComponent.setOnClickHander(handleOnNavClick);
 
 renderElement(tripInfoContainer, createButtonComponent);
+tripInfoPresenter.init();
 navPresenter.init();
 filterPresenter.init();
-tripInfoPresenter.init();
 tripPresenter.init(descriptions, destinations, options);

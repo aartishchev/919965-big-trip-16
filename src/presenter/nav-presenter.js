@@ -2,7 +2,6 @@ import NavTabs from '../view/nav-tabs.js';
 import { renderElement, replaceElement, removeComponent } from '../utils/render.js';
 import { NavItem } from '../utils/const.js';
 
-
 export default class NavPresenter {
   #navContainer = null;
   #navComponent = null;
@@ -29,6 +28,17 @@ export default class NavPresenter {
     replaceElement(this.#navComponent, prevNavComponent);
     removeComponent(prevNavComponent);
   }
+
+  resetActiveTab = () => {
+    const eventTab = this.#navComponent.element.querySelector(`[data-nav-item = ${NavItem.EVENTS}]`);
+    const statTab = this.#navComponent.element.querySelector(`[data-nav-item = ${NavItem.STATISTICS}]`);
+
+    if (statTab.classList.contains('trip-tabs__btn--active')) {
+      statTab.classList.remove('trip-tabs__btn--active');
+      eventTab.classList.add('trip-tabs__btn--active');
+      this.#currentActiveTab = NavItem.EVENTS;
+    }
+  };
 
   #handleActiveTabChange = (activeTab) => {
     if (this.#currentActiveTab === activeTab) {
