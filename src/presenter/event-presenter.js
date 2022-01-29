@@ -107,20 +107,12 @@ export default class EventPresenter {
   };
 
   #handleOnSubmit = (event) => {
-    this.#changeData(
-      UserAction.UPDATE_EVENT,
-      UpdateType.MAJOR,
-      event
-    );
+    this.#changeData(UserAction.UPDATE_EVENT, UpdateType.MAJOR, event);
     this.#replaceFormByPoint();
   }
 
   #handleOnDelete = (event) => {
-    this.#changeData(
-      UserAction.DELETE_EVENT,
-      UpdateType.MAJOR,
-      event
-    );
+    this.#changeData(UserAction.DELETE_EVENT, UpdateType.MAJOR, event);
   }
 
   #handleOnEscKeyDown = (evt) => {

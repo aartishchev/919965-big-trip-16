@@ -10,6 +10,8 @@ export default class TripInfoPresenter {
   constructor(tripInfoContainer, eventsModel) {
     this.#tripInfoContainer = tripInfoContainer;
     this.#eventsModel = eventsModel;
+
+    this.#eventsModel.addObserver(this.#handleEventsUpdate);
   }
 
   init = () => {
@@ -21,8 +23,6 @@ export default class TripInfoPresenter {
 
     this.#tripInfoComponent = new TripInfo(this.#eventsModel.events);
 
-    this.#eventsModel.addObserver(this.#handleEventsUpdate);
-
     if (prevTripInfoComponent === null) {
       renderElement(this.#tripInfoContainer, this.#tripInfoComponent, RenderPosition.PREPEND);
 
@@ -33,20 +33,14 @@ export default class TripInfoPresenter {
     removeComponent(prevTripInfoComponent);
   }
 
-  destroy = () => {
-    removeComponent(this.#tripInfoComponent);
-    this.#tripInfoComponent = null;
-
-    this.#eventsModel.removeObserver(this.#handleEventsUpdate);
-  }
-
   #handleEventsUpdate = (updateType) => {
     if (!UpdateType.MAJOR === updateType) {
       return;
     }
 
     if (this.#eventsModel.events.length < 1) {
-      this.destroy();
+      removeComponent(this.#tripInfoComponent);
+      this.#tripInfoComponent = null;
     } else {
       this.init();
     }

@@ -77,6 +77,7 @@ export default class tripPresenter {
   createEvent = () => {
     if (this.#eventsModel.events.length < 1) {
       renderElement(this.#eventsContainer, this.#eventsListComponent);
+      removeComponent(this.#emptyListMsgComponent);
     }
 
     this.#newEventPresenter.init(BLANK_POINT, this.#descriptions, this.#destinations, this.#options);
