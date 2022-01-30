@@ -1,5 +1,5 @@
 import StatView from './view/stat-view.js';
-import CreateButton from './view/create-button.js';
+import CreateButtonPresenter from './presenter/create-button-presenter.js';
 import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
@@ -27,8 +27,7 @@ const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, eventsModel);
 const tripPresenter = new TripPresenter(tripEventsContainer, eventsModel, filterModel);
 const filterPresenter = new FilterPresenter(filterTabsContainer, filterModel);
 const navPresenter = new NavPresenter(navTabsContainer, handleOnNavClick);
-
-const createButtonComponent = new CreateButton();
+const createButtonPresenter = new CreateButtonPresenter(tripInfoContainer, handleOnNavClick);
 
 let statisticsComponent = null;
 
@@ -57,12 +56,12 @@ function handleOnNavClick (navItem) {
   }
 }
 
-createButtonComponent.setOnClickHander(handleOnNavClick);
-
-renderElement(tripInfoContainer, createButtonComponent);
+createButtonPresenter.addDisabled();
 tripInfoPresenter.init();
 navPresenter.init();
 filterPresenter.init();
 tripPresenter.init(descriptions, destinations, options);
 
-eventsModel.init();
+eventsModel.init().finally(() => {
+  createButtonPresenter.removeDisabled();
+});
