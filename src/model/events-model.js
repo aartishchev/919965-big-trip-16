@@ -25,15 +25,21 @@ export default class EventsModel extends AbstractObservable {
     this._notify(UpdateType.INIT);
   }
 
-  updateEvent = (updateType, update) => {
+  updateEvent = async (updateType, update) => {
     const index = this.#events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting event');
     }
 
-    this.#events.splice(index, 1, update);
-    this._notify(updateType, update);
+    try {
+      const response = await this.#apiService.updateEvent(update);
+      const updatedEvent = this.#adaptToClient(response);
+      this.#events.splice(index, 1, update);
+      this._notify(updateType, updatedEvent);
+    } catch(err) {
+      throw new Error('Can\'t update event');
+    }
   }
 
   addEvent = (updateType, update) => {
