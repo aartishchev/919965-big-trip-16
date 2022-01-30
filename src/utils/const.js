@@ -89,7 +89,8 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 export const FilterType = {
@@ -125,5 +126,3 @@ export const END_POINT = 'https://16.ecmascript.pages.academy/big-trip/';
 export const STAT_BAR_HEIGHT = 55;
 
 export const EVENT_DURATION_DAYS_LIMIT = 28;
-
-export const EVENTS_COUNT = 10;

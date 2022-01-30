@@ -10,7 +10,6 @@ import ApiService from './api-service.js';
 import { AUTHORIZATION, END_POINT } from './utils/const.js';
 import { removeComponent, renderElement } from './utils/render.js';
 import { NavItem } from './utils/const.js';
-import { events } from './mock/points.js';
 import { options } from './mock/options.js';
 import { descriptions } from './mock/descriptions.js';
 import { destinations } from './mock/destinations.js';
@@ -23,7 +22,6 @@ const tripEventsContainer = document.querySelector('.trip-events');
 
 const filterModel = new FilterModel();
 const eventsModel = new EventsModel(new ApiService(END_POINT, AUTHORIZATION));
-eventsModel.events = events;
 
 const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, eventsModel);
 const tripPresenter = new TripPresenter(tripEventsContainer, eventsModel, filterModel);
@@ -66,3 +64,5 @@ tripInfoPresenter.init();
 navPresenter.init();
 filterPresenter.init();
 tripPresenter.init(descriptions, destinations, options);
+
+eventsModel.init();

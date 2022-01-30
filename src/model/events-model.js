@@ -1,4 +1,5 @@
 import AbstractObservable from '../utils/abstract-observable.js';
+import { UpdateType } from '../utils/const.js';
 
 export default class EventsModel extends AbstractObservable {
   #apiService = null;
@@ -7,18 +8,21 @@ export default class EventsModel extends AbstractObservable {
   constructor(apiService) {
     super();
     this.#apiService = apiService;
-
-    this.#apiService.events.then((events) => {
-      console.log(events.map(this.#adaptToClient));
-    });
-  }
-
-  set events(events) {
-    this.#events = [...events];
   }
 
   get events() {
     return this.#events;
+  }
+
+  init = async () => {
+    try {
+      const events = await this.#apiService.events;
+      this.#events = events.map(this.#adaptToClient);
+    } catch(err) {
+      this.#events = [];
+    }
+
+    this._notify(UpdateType.INIT);
   }
 
   updateEvent = (updateType, update) => {

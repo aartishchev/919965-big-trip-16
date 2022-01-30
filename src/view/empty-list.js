@@ -4,9 +4,7 @@ import { EmptyFilterMsg, FilterType } from '../utils/const.js';
 const createEmpyListTemplate = (filterType) => {
   const emptyListTextValue = EmptyFilterMsg[filterType];
 
-  return (
-    `<p class="trip-events__msg">${emptyListTextValue}</p>`
-  );
+  return `<p class="trip-events__msg">${emptyListTextValue}</p>`;
 };
 
 export default class EmptyListMsg extends AbstractView {

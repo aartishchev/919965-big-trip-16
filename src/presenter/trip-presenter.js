@@ -3,6 +3,7 @@ import NewEventPresenter from './new-event-presenter.js';
 import EventsSorter from '../view/events-sorter.js';
 import EmptyListMsg from '../view/empty-list.js';
 import EventsList from '../view/events-list.js';
+import LoadingView from '../view/loading-view.js';
 import { SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
 import { sortByPrice, sortByStartDate, sortByDuration} from '../utils/event.js';
@@ -14,6 +15,7 @@ export default class tripPresenter {
   #eventsSorterComponent = null;
   #emptyListMsgComponent = null;
   #eventsListComponent = new EventsList();
+  #loadingComponent = new LoadingView();
 
   #eventsModel = null;
   #filterModel = null;
@@ -22,6 +24,7 @@ export default class tripPresenter {
   #newEventPresenter = null;
   #currentSortType = SortType.DATE;
   #currentFilterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   #descriptions = [];
   #destinations = [];
@@ -112,6 +115,11 @@ export default class tripPresenter {
         this.#clearBoard({ resetSortType: true });
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        removeComponent(this.#loadingComponent);
+        this.#renderBoard();
+        break;
       default:
         throw new Error('Update type is undefined or does not exist');
     }
@@ -120,6 +128,10 @@ export default class tripPresenter {
   #handleModeChange = () => {
     this.#newEventPresenter.destroy();
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
+  }
+
+  #renderLoading = () => {
+    renderElement(this.#eventsContainer, this.#loadingComponent);
   }
 
   #renderEmptyListMsg = () => {
@@ -161,6 +173,12 @@ export default class tripPresenter {
   };
 
   #renderBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+
+      return;
+    }
+
     if (this.events.length < 1) {
       this.#renderEmptyListMsg();
 
