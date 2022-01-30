@@ -24,8 +24,9 @@ export const Format = {
   DATE: 'DD',
   TIME: 'HH:mm',
   MIN_W_CHAR: 'mm[M]',
-  TIME_W_CHAR: 'HH[H] mm[M]',
-  DATE_W_CHAR: 'DD[D] HH[H] mm[M]',
+  HOURS_W_CHAR: 'HH[H] mm[M]',
+  DAYS_W_CHAR: 'DD[D] HH[H] mm[M]',
+  MONTHS_W_CHAR: 'MM[M] DD[D] HH[H] mm[M]',
   DATEPICKER: 'd/m/y H:i'
 };
 
@@ -104,6 +105,20 @@ export const EmptyFilterMsg = {
   [FilterType.FUTURE]: 'There are no future events now',
   [FilterType.PAST]: 'There are no past events now'
 };
+
+export const ChartLabel = {
+  MONEY: 'MONEY',
+  TYPE: 'TYPE',
+  TIME: 'TIME'
+};
+
+export const NavItem = {
+  EVENTS: 'EVENTS',
+  STATISTICS: 'STATISTICS',
+  ADD_NEW_EVENT: 'ADD_NEW_TASK'
+};
+
+export const STAT_BAR_HEIGHT = 55;
 
 export const EVENT_DURATION_DAYS_LIMIT = 28;
 

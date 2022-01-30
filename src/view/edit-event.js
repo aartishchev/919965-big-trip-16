@@ -115,98 +115,100 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
   const isSubmitDisabled = !destinations.includes(destination);
 
   return (
-    `<form class="event event--edit" action="#" method="post">
-      <header class="event__header">
-        <div class="event__type-wrapper">
-          <label class="event__type event__type-btn" for="event-type-toggle">
-            <span class="visually-hidden">Choose event type</span>
-            <img
-              class="event__type-icon"
-              width="17"
-              height="17"
-              src="img/icons/${type.toLowerCase()}.png"
-              alt="Event type icon"
-            >
-          </label>
-          <input class="event__type-toggle visually-hidden" id="event-type-toggle" type="checkbox">
+    `<li class="trip-events__item">
+      <form class="event event--edit" action="#" method="post">
+        <header class="event__header">
+          <div class="event__type-wrapper">
+            <label class="event__type event__type-btn" for="event-type-toggle">
+              <span class="visually-hidden">Choose event type</span>
+              <img
+                class="event__type-icon"
+                width="17"
+                height="17"
+                src="img/icons/${type.toLowerCase()}.png"
+                alt="Event type icon"
+              >
+            </label>
+            <input class="event__type-toggle visually-hidden" id="event-type-toggle" type="checkbox">
 
-          <div class="event__type-list">
-            <fieldset class="event__type-group">
-              <legend class="visually-hidden">Event type</legend>
-              ${POINT_TYPES.length > 1 ? createTypesTemplate(type) : ''}
-            </fieldset>
+            <div class="event__type-list">
+              <fieldset class="event__type-group">
+                <legend class="visually-hidden">Event type</legend>
+                ${POINT_TYPES.length > 1 ? createTypesTemplate(type) : ''}
+              </fieldset>
+            </div>
           </div>
-        </div>
 
-        <div class="event__field-group event__field-group--destination">
-          <label class="event__label event__type-output" for="event-destination">
-            ${type}
-          </label>
-          <input
-            class="event__input event__input--destination"
-            id="event-destination"
-            type="text"
-            name="event-destination"
-            value="${destination}"
-            list="destination-list"
-          >
-          <datalist id="destination-list">
-            ${destinations.length > 1 ? createDestinationOptionsTemplate(destinations) : ''}
-          </datalist>
-        </div>
+          <div class="event__field-group event__field-group--destination">
+            <label class="event__label event__type-output" for="event-destination">
+              ${type}
+            </label>
+            <input
+              class="event__input event__input--destination"
+              id="event-destination"
+              type="text"
+              name="event-destination"
+              value="${destination}"
+              list="destination-list"
+            >
+            <datalist id="destination-list">
+              ${destinations.length > 1 ? createDestinationOptionsTemplate(destinations) : ''}
+            </datalist>
+          </div>
 
-        <div class="event__field-group event__field-group--time">
-          <label class="visually-hidden" for="event-start-time">From</label>
-          <input
-            class="event__input event__input--time"
-            id="event-start-time"
-            type="text"
-            name="event-start-time"
-            value="${startDate}"
-          >
-          &mdash;
-          <label class="visually-hidden" for="event-end-time">To</label>
-          <input
-            class="event__input event__input--time"
-            id="event-end-time"
-            type="text"
-            name="event-end-time"
-            value="${finishDate}"
-          >
-        </div>
+          <div class="event__field-group event__field-group--time">
+            <label class="visually-hidden" for="event-start-time">From</label>
+            <input
+              class="event__input event__input--time"
+              id="event-start-time"
+              type="text"
+              name="event-start-time"
+              value="${startDate}"
+            >
+            &mdash;
+            <label class="visually-hidden" for="event-end-time">To</label>
+            <input
+              class="event__input event__input--time"
+              id="event-end-time"
+              type="text"
+              name="event-end-time"
+              value="${finishDate}"
+            >
+          </div>
 
-        <div class="event__field-group event__field-group--price">
-          <label class="event__label" for="event-price">
-            <span class="visually-hidden">Price</span>
-            &euro;
-          </label>
-          <input
-            class="event__input event__input--price"
-            id="event-price"
-            type="number"
-            min="0"
-            name="event-price"
-            value="${basePrice}"
-          >
-        </div>
+          <div class="event__field-group event__field-group--price">
+            <label class="event__label" for="event-price">
+              <span class="visually-hidden">Price</span>
+              &euro;
+            </label>
+            <input
+              class="event__input event__input--price"
+              id="event-price"
+              type="number"
+              min="0"
+              name="event-price"
+              value="${basePrice}"
+            >
+          </div>
 
-        <button
-          class="event__save-btn btn btn--blue"
-          type="submit"
-          ${isSubmitDisabled ?  'disabled' : ''}
-        >
-          Save
-        </button>
-        <button class="event__reset-btn" type="reset">
-          ${isNewEvent ? 'Cancel' : 'Delete'}
-        </button>
-        ${!isNewEvent ? createRollupBtnTemplate() : ''}
-      </header>
-      <section class="event__details">
-        ${areOffers ? createOfferOptionsTemplate(offers, type) : ''}
-        ${isDescriptioned ? createDescriptionTemplate(description, photos, arePhotos) : ''}
-      </section>
-    </form>
+          <button
+            class="event__save-btn btn btn--blue"
+            type="submit"
+            ${isSubmitDisabled ?  'disabled' : ''}
+          >
+            Save
+          </button>
+          <button class="event__reset-btn" type="reset">
+            ${isNewEvent ? 'Cancel' : 'Delete'}
+          </button>
+          ${!isNewEvent ? createRollupBtnTemplate() : ''}
+        </header>
+        <section class="event__details">
+          ${areOffers ? createOfferOptionsTemplate(offers, type) : ''}
+          ${isDescriptioned ? createDescriptionTemplate(description, photos, arePhotos) : ''}
+        </section>
+      </form>
+    </li>
   `);
 };
 

@@ -28,7 +28,7 @@ export default class EventsModel extends AbstractObservable {
   }
 
   deleteEvent = (updateType, update) => {
-    this.#events = this.#events.filter((e) => e.id !== update.id);
+    this.#events = this.#events.filter((event) => event.id !== update.id);
     this._notify(updateType);
   }
 }
