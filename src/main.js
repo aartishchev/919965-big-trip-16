@@ -6,6 +6,8 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import NavPresenter from './presenter/nav-presenter.js';
 import EventsModel from './model/events-model.js';
 import FilterModel from './model/filter-model.js';
+import ApiService from './api-service.js';
+import { AUTHORIZATION, END_POINT } from './utils/const.js';
 import { removeComponent, renderElement } from './utils/render.js';
 import { NavItem } from './utils/const.js';
 import { events } from './mock/points.js';
@@ -20,7 +22,7 @@ const filterTabsContainer = document.querySelector('.trip-controls__filters');
 const tripEventsContainer = document.querySelector('.trip-events');
 
 const filterModel = new FilterModel();
-const eventsModel = new EventsModel();
+const eventsModel = new EventsModel(new ApiService(END_POINT, AUTHORIZATION));
 eventsModel.events = events;
 
 const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, eventsModel);

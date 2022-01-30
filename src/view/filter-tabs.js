@@ -27,6 +27,7 @@ const createFilterTabsTemplate = (filterTypes, currentType) => {
     </form>`
   );
 };
+
 export default class FilterTabs extends AbstractView {
   #currentFilter = null;
 

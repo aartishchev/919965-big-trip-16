@@ -118,6 +118,10 @@ export const NavItem = {
   ADD_NEW_EVENT: 'ADD_NEW_TASK'
 };
 
+export const AUTHORIZATION = 'Basic sep8orw0983q4hbksodzpfhb9035';
+
+export const END_POINT = 'https://16.ecmascript.pages.academy/big-trip/';
+
 export const STAT_BAR_HEIGHT = 55;
 
 export const EVENT_DURATION_DAYS_LIMIT = 28;
