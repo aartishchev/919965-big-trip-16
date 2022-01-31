@@ -40,11 +40,6 @@ export const BLANK_POINT = {
   isFavorite: false
 };
 
-export const BLANK_DESCRIPTION = {
-  description: '',
-  photos: []
-};
-
 export const Mode = {
   DEFAULT: 'default',
   EDITING: 'editing'

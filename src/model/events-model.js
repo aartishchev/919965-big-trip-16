@@ -53,11 +53,19 @@ export default class EventsModel extends AbstractObservable {
   }
 
   #adaptToClient = (event) => {
+    const adaptedDestination = {
+      ...event.destination,
+      photos: event.destination.pictures
+    };
+
+    delete adaptedDestination.pictures;
+
     const adaptedEvent = {...event,
+      destination: adaptedDestination,
       dateFrom: new Date(event['date_from']),
       dateTo: new Date(event['date_to']),
       basePrice: event['base_price'],
-      isFavorite: event['is_favorite'],
+      isFavorite: event['is_favorite']
     };
 
     delete adaptedEvent['date_from'];

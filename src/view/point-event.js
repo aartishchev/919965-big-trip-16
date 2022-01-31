@@ -8,17 +8,13 @@ const generateOffersTemplate = (offers) => {
     return '';
   }
 
-  const offersTemplate = offers.map(({ title, price, isAdded }) => {
-    if (isAdded) {
-      return (
-        `<li class="event__offer">
-          <span class="event__offer-title">${title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${price}</span>
-        </li>`
-      );
-    }
-  });
+  const offersTemplate = offers.map(({ title, price }) => (
+    `<li class="event__offer">
+      <span class="event__offer-title">${title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${price}</span>
+    </li>`
+  ));
 
   return (
     `<h4 class="visually-hidden">Offers:</h4>
@@ -52,7 +48,7 @@ const createPointEventTemplate = (event) => {
             alt="Event type icon"
           >
         </div>
-        <h3 class="event__title">${type} ${destination}</h3>
+        <h3 class="event__title">${type} ${destination.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${startDate}T${startTime}">

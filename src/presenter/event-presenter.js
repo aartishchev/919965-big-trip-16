@@ -23,12 +23,7 @@ export default class EventPresenter {
     this.#changeMode = changeMode;
   }
 
-  init = (
-    event,
-    descriptions = this.#descriptions,
-    destinations = this.#destinations,
-    options = this.#options
-  ) => {
+  init = (event, descriptions = this.#descriptions, destinations = this.#destinations, options = this.#options) => {
     this.#event = event;
     this.#descriptions = descriptions;
     this.#destinations = destinations;
