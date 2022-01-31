@@ -6,7 +6,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 export function getTypesTotalValues (events) {
   return POINT_TYPES.map((eventType) => {
     const typeTotalValues = events.reduce((acc, { type, basePrice, dateFrom, dateTo }) => {
-      if (type === eventType) {
+      if (type === eventType.toLowerCase()) {
         acc.totalCount++;
         acc.totalPrice += Number(basePrice);
         acc.totalDuration += getDuration(dateFrom, dateTo);

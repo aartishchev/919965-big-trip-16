@@ -13,6 +13,9 @@ import { NavItem } from './utils/const.js';
 import { options } from './mock/options.js';
 import { descriptions } from './mock/descriptions.js';
 import { destinations } from './mock/destinations.js';
+// import OptionsModel from './model/options-model.js';
+
+// let options = [];
 
 const mainContainer = document.querySelector('main .page-body__container');
 const tripInfoContainer = document.querySelector('.trip-main');
@@ -22,6 +25,10 @@ const tripEventsContainer = document.querySelector('.trip-events');
 
 const filterModel = new FilterModel();
 const eventsModel = new EventsModel(new ApiService(END_POINT, AUTHORIZATION));
+// const optionsModel = new OptionsModel(new ApiService(END_POINT, AUTHORIZATION));
+// optionsModel.init().then(() => {
+//   options = optionsModel.options;
+// });
 
 const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, eventsModel);
 const tripPresenter = new TripPresenter(tripEventsContainer, eventsModel, filterModel);

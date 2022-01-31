@@ -23,13 +23,14 @@ const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
 };
 
 const getDestinationsRoute = (sortedEvents) => {
+
   if (sortedEvents.length >= 3) {
-    const startEvent = sortedEvents[0].destination;
-    const finishEvent = sortedEvents[sortedEvents.length - 1].destination;
+    const startEvent = sortedEvents[0].destination.name;
+    const finishEvent = sortedEvents[sortedEvents.length - 1].destination.name;
 
     return `${startEvent} &mdash; ... &mdash; ${finishEvent}`;
   } else {
-    const route = sortedEvents.map((event) => event.destination);
+    const route = sortedEvents.map((event) => event.destination.name);
 
     return route.join(' &mdash; ');
   }
@@ -70,14 +71,14 @@ const createTripInfoTemplate = (events) => {
 };
 
 export default class TripInfo extends AbstractView {
-  #pointEvents = null;
+  #events = null;
 
-  constructor(pointEvents = []) {
+  constructor(events = []) {
     super();
-    this.#pointEvents = pointEvents;
+    this.#events = events;
   }
 
   get template() {
-    return createTripInfoTemplate(this.#pointEvents);
+    return createTripInfoTemplate(this.#events);
   }
 }

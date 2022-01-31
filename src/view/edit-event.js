@@ -39,13 +39,14 @@ const createDestinationOptionsTemplate = (destinations) => {
 };
 
 const createOfferOptionsTemplate = (offers) => {
-  const offersTemplate = offers.map(({ id, title, price }) => (
+  const offersTemplate = offers.map(({ id, title, price, isAdded }) => (
     `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox visually-hidden"
         id="${id}"
         type="checkbox"
         name="${id}"
+        ${isAdded ? 'checked' : ''}
       >
       <label
         class="event__offer-label"
