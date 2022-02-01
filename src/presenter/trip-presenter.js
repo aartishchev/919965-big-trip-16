@@ -4,7 +4,7 @@ import EventsSorter from '../view/events-sorter.js';
 import EmptyListMsg from '../view/empty-list.js';
 import EventsList from '../view/events-list.js';
 import LoadingView from '../view/loading-view.js';
-import { SortType, UpdateType, UserAction, FilterType, BLANK_POINT } from '../utils/const.js';
+import { SortType, UpdateType, UserAction, FilterType, BLANK_POINT, State } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
 import { sortByPrice, sortByStartDate, sortByDuration} from '../utils/event.js';
 import { filter } from '../utils/filter.js';
@@ -83,16 +83,32 @@ export default class tripPresenter {
     this.#newEventPresenter.init(BLANK_POINT, this.#destinations, this.#options);
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_EVENT:
-        this.#eventsModel.updateEvent(updateType, update);
+        this.#eventPresenters.get(update.id).setViewState(State.SAVING);
+        try {
+          await this.#eventsModel.updateEvent(updateType, update);
+        } catch(error) {
+          this.#eventPresenters.get(update.id).setViewState(State.ABORTING);
+        }
         break;
       case UserAction.ADD_EVENT:
-        this.#eventsModel.addEvent(updateType, update);
+        this.#newEventPresenter.setSaving();
+
+        try {
+          await this.#eventsModel.addEvent(updateType, update);
+        } catch(error) {
+          this.#newEventPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_EVENT:
-        this.#eventsModel.deleteEvent(updateType, update);
+        this.#eventPresenters.get(update.id).setViewState(State.DELETING);
+        try {
+          await this.#eventsModel.deleteEvent(updateType, update);
+        } catch(error) {
+          this.#eventPresenters.get(update.id).setViewState(State.ABORTING);
+        }
         break;
       default:
         throw new Error('Action type is undefined or does not exist');

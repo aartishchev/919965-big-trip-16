@@ -1,7 +1,6 @@
 import EditEvent from '../view/edit-event.js';
 import { renderElement, removeComponent } from '../utils/render.js';
 import { UserAction, UpdateType, RenderPosition } from '../utils/const.js';
-import { nanoid } from 'nanoid';
 
 export default class NewEventPresenter {
   #eventContainer = null;
@@ -18,11 +17,7 @@ export default class NewEventPresenter {
     this.#changeData = changeData;
   }
 
-  init = (
-    event,
-    destinations = this.#destinations,
-    options = this.#options
-  ) => {
+  init = (event, destinations = this.#destinations, options = this.#options) => {
     if (this.#editEventComponent !== null) {
       return;
     }
@@ -52,9 +47,27 @@ export default class NewEventPresenter {
     document.removeEventListener('keydown', this.#handleOnEscKeyDown);
   }
 
+  setSaving = () => {
+    this.#editEventComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#editEventComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editEventComponent.shake(resetFormState);
+  }
+
   #handleOnSubmit = (event) => {
-    this.#changeData(UserAction.ADD_EVENT, UpdateType.MAJOR, { id: nanoid(), ...event });
-    this.destroy();
+    this.#changeData(UserAction.ADD_EVENT, UpdateType.MAJOR, event);
   }
 
   #handleOnCancel = () => {

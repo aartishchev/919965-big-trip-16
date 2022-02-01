@@ -1,3 +1,10 @@
+export const AUTHORIZATION = 'Basic sep8orw0983q4hbksodzpfhb9035';
+export const END_POINT = 'https://16.ecmascript.pages.academy/big-trip/';
+export const STAT_BAR_HEIGHT = 55;
+export const EVENT_DURATION_DAYS_LIMIT = 28;
+export const MIN_PRICE_VALUE = 1;
+export const DEFAULT_TYPE = 'taxi';
+
 export const POINT_TYPES = [
   'Taxi',
   'Bus',
@@ -31,7 +38,7 @@ export const Format = {
 };
 
 export const BLANK_POINT = {
-  type: 'Taxi',
+  type: DEFAULT_TYPE,
   destination: {
     name: '',
     description: '',
@@ -39,7 +46,7 @@ export const BLANK_POINT = {
   },
   dateFrom: new Date(),
   dateTo: new Date(),
-  basePrice: 0,
+  basePrice: MIN_PRICE_VALUE,
   offers: [],
   isFavorite: false
 };
@@ -115,13 +122,11 @@ export const ChartLabel = {
 export const NavItem = {
   EVENTS: 'EVENTS',
   STATISTICS: 'STATISTICS',
-  ADD_NEW_EVENT: 'ADD_NEW_TASK'
+  ADD_NEW_EVENT: 'ADD_NEW_EVENT'
 };
 
-export const AUTHORIZATION = 'Basic sep8orw0983q4hbksodzpfhb9035';
-
-export const END_POINT = 'https://16.ecmascript.pages.academy/big-trip/';
-
-export const STAT_BAR_HEIGHT = 55;
-
-export const EVENT_DURATION_DAYS_LIMIT = 28;
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING'
+};

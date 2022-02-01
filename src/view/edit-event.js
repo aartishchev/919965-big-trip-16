@@ -1,10 +1,10 @@
-import { POINT_TYPES, BLANK_POINT, EVENT_DURATION_DAYS_LIMIT, Format } from '../utils/const.js';
+import { POINT_TYPES, BLANK_POINT, EVENT_DURATION_DAYS_LIMIT, Format, MIN_PRICE_VALUE } from '../utils/const.js';
 import SmartView from '../view/smart-view.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-const createTypesTemplate = (currentType) => {
+const createTypesTemplate = (currentType, isDisabled) => {
   const typesTemplate = POINT_TYPES.map((type) => {
     const loweredType = type.toLowerCase();
 
@@ -17,6 +17,7 @@ const createTypesTemplate = (currentType) => {
           name="event-type"
           value="${loweredType}"
           ${loweredType === currentType ? 'checked' : ''}
+          ${isDisabled ? 'disabled' : ''}
         >
         <label
           class="event__type-label event__type-label--${loweredType}"
@@ -31,13 +32,15 @@ const createTypesTemplate = (currentType) => {
   return typesTemplate.join('');
 };
 
-const createDestinationOptionsTemplate = (destinations) => {
-  const destinationOptionsTemplate = destinations.map((destination) => `<option value="${destination}"></option>`);
+const createDestinationOptionsTemplate = (destinations, isDisabled) => {
+  const destinationOptionsTemplate = destinations.map((destination) => (
+    `<option value="${destination}" ${isDisabled ? 'disabled' : ''}></option>`
+  ));
 
   return destinationOptionsTemplate.join('');
 };
 
-const createOfferOptionsTemplate = (offers) => {
+const createOfferOptionsTemplate = (offers, isDisabled) => {
   const offersTemplate = offers.map(({ id, title, price, isAdded }) => (
     `<div class="event__offer-selector">
       <input
@@ -46,6 +49,7 @@ const createOfferOptionsTemplate = (offers) => {
         type="checkbox"
         name="${id}"
         ${isAdded ? 'checked' : ''}
+        ${isDisabled ? 'disabled' : ''}
       >
       <label
         class="event__offer-label"
@@ -99,7 +103,21 @@ const createRollupBtnTemplate = () => (
 );
 
 const createEditEventTemplate = (data, destinations, isNewEvent) => {
-  const { type, destination, dateFrom, dateTo, basePrice, offers, isDescriptioned, arePhotos, typeOffers } = data;
+  const {
+    type,
+    destination,
+    dateFrom,
+    dateTo,
+    basePrice,
+    offers,
+    isDescriptioned,
+    arePhotos,
+    typeOffers,
+    isDisabled,
+    isSaving,
+    isDeleting,
+  } = data;
+
   const { description, photos, name } = destination;
 
   const destinationOptions = destinations.map((dest) => dest.name);
@@ -111,6 +129,8 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
 
     return { ...typeOffer, isAdded: false};
   });
+
+  const isSubmitDisabled = name.length < 1;
 
   const startDate = dayjs(dateFrom).format(Format.DATE_TIME);
   const finishDate = dayjs(dateTo).format(Format.DATE_TIME);
@@ -130,12 +150,17 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
                 alt="Event type icon"
               >
             </label>
-            <input class="event__type-toggle visually-hidden" id="event-type-toggle" type="checkbox">
-
+            <input
+              class="event__type-toggle
+              visually-hidden"
+              id="event-type-toggle"
+              type="checkbox"
+              ${isDisabled ? 'disabled' : ''}
+            >
             <div class="event__type-list">
               <fieldset class="event__type-group">
                 <legend class="visually-hidden">Event type</legend>
-                ${POINT_TYPES.length > 1 ? createTypesTemplate(type) : ''}
+                ${POINT_TYPES.length > 1 ? createTypesTemplate(type, isDisabled) : ''}
               </fieldset>
             </div>
           </div>
@@ -151,9 +176,10 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
               name="event-destination"
               value="${name}"
               list="destination-list"
+              ${isDisabled ? 'disabled' : ''}
             >
             <datalist id="destination-list">
-              ${destinations.length > 1 ? createDestinationOptionsTemplate(destinationOptions) : ''}
+              ${destinations.length > 1 ? createDestinationOptionsTemplate(destinationOptions, isDisabled) : ''}
             </datalist>
           </div>
 
@@ -165,6 +191,7 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
               type="text"
               name="event-start-time"
               value="${startDate}"
+              ${isDisabled ? 'disabled' : ''}
             >
             &mdash;
             <label class="visually-hidden" for="event-end-time">To</label>
@@ -174,6 +201,7 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
               type="text"
               name="event-end-time"
               value="${finishDate}"
+              ${isDisabled ? 'disabled' : ''}
             >
           </div>
 
@@ -186,25 +214,27 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
               class="event__input event__input--price"
               id="event-price"
               type="number"
-              min="0"
+              min="1"
               name="event-price"
               value="${basePrice}"
+              ${isDisabled ? 'disabled' : ''}
             >
           </div>
 
           <button
             class="event__save-btn btn btn--blue"
             type="submit"
+            ${isSubmitDisabled || isDisabled ? 'disabled' : ''}
           >
-            Save
+            ${isSaving ? 'Saving...' : 'Save'}
           </button>
           <button class="event__reset-btn" type="reset">
-            ${isNewEvent ? 'Cancel' : 'Delete'}
+            ${isNewEvent ? 'Cancel' : `${isDeleting ? 'Deleting' : 'Delete'}`}
           </button>
           ${!isNewEvent ? createRollupBtnTemplate() : ''}
         </header>
         <section class="event__details">
-          ${data.typeOffers.length > 0 ? createOfferOptionsTemplate(offersToRender) : ''}
+          ${data.typeOffers.length > 0 ? createOfferOptionsTemplate(offersToRender, isDisabled) : ''}
           ${isDescriptioned ? createDescriptionTemplate(description, photos, arePhotos) : ''}
         </section>
       </form>
@@ -213,7 +243,6 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
 };
 
 export default class EditEvent extends SmartView {
-  #descriptions = null;
   #destinations = null;
   #options = null;
   #isNewEvent = null;
@@ -370,13 +399,24 @@ export default class EditEvent extends SmartView {
         isDescriptioned: description.length > 0,
         arePhotos: photos.length > 0
       });
+
+      submitButton.disabled = false;
     } else {
       submitButton.disabled = true;
     }
   }
 
   #onPriceChangeHandler = (evt) => {
-    this.updateData({ basePrice: Number(evt.target.value) }, true);
+    const value = evt.target.value;
+
+    if ( value < 1) {
+      const input = this.element.querySelector('.event__input--price');
+      input.value = MIN_PRICE_VALUE;
+
+      this.updateData({ basePrice: Number(MIN_PRICE_VALUE) }, true);
+    } else {
+      this.updateData({ basePrice: Number(value) }, true);
+    }
   }
 
   #onOfferToggleHandler = (evt) => {
@@ -407,7 +447,10 @@ export default class EditEvent extends SmartView {
       arePhotos: photos.length > 0,
       description,
       photos,
-      typeOffers
+      typeOffers,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false,
     };
   }
 
@@ -419,6 +462,10 @@ export default class EditEvent extends SmartView {
     delete event.description;
     delete event.photos;
     delete event.typeOffers;
+    delete event.isDisabled;
+    delete event.isDisabled;
+    delete event.isSaving;
+    delete event.isDeleting;
 
     return event;
   }

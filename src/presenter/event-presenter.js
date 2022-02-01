@@ -1,7 +1,7 @@
 import EditEvent from '../view/edit-event.js';
 import PointEvent from '../view/point-event.js';
 import { renderElement, replaceElement, removeComponent } from '../utils/render.js';
-import { Mode, UserAction, UpdateType } from '../utils/const.js';
+import { Mode, UserAction, UpdateType, State } from '../utils/const.js';
 
 export default class EventPresenter {
   #eventContainer = null;
@@ -51,6 +51,7 @@ export default class EventPresenter {
 
     if (this.#mode === Mode.EDITING) {
       replaceElement(this.#editEventComponent, prevEditEventComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     removeComponent(prevPointEventComponent);
@@ -66,6 +67,39 @@ export default class EventPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#editEventComponent.resetEvent(this.#event);
       this.#replaceFormByPoint();
+    }
+  }
+
+  setViewState = (state) => {
+    if (this.#mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editEventComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this.#editEventComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this.#editEventComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+      case State.ABORTING:
+        this.#pointEventComponent.shake(resetFormState);
+        this.#editEventComponent.shake(resetFormState);
+        break;
     }
   }
 
@@ -101,7 +135,6 @@ export default class EventPresenter {
 
   #handleOnSubmit = (event) => {
     this.#changeData(UserAction.UPDATE_EVENT, UpdateType.MAJOR, event);
-    this.#replaceFormByPoint();
   }
 
   #handleOnDelete = (event) => {

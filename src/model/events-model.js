@@ -47,9 +47,31 @@ export default class EventsModel extends AbstractObservable {
     this._notify(updateType, update);
   }
 
-  deleteEvent = (updateType, update) => {
-    this.#events = this.#events.filter((event) => event.id !== update.id);
-    this._notify(updateType);
+  addEvent = async (updateType, update) => {
+    try {
+      const response = await this.#apiService.addEvent(update);
+      const newEvent = this.#adaptToClient(response);
+      this.#events = [newEvent, ...this.#events];
+      this._notify(updateType, newEvent);
+    } catch(err) {
+      throw new Error('Can\'t add event');
+    }
+  }
+
+  deleteEvent = async (updateType, update) => {
+    const index = this.#events.findIndex((event) => event.id === update.id);
+
+    if (index === -1) {
+      throw new Error('Can\'t delete unexisting event');
+    }
+
+    try {
+      await this.#apiService.deleteEvent(update);
+      this.#events = this.#events.filter((event) => event.id !== update.id);
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete event');
+    }
   }
 
   #adaptToClient = (event) => {
