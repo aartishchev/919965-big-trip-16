@@ -14,14 +14,14 @@ export const POINT_TYPES = [
   'Flight',
   'Check-in',
   'Sightseeing',
-  'Restaurant'
+  'Restaurant',
 ];
 
 export const RenderPosition = {
   BEFORE: 'before',
   PREPEND: 'prepend',
   APPEND: 'append',
-  AFTER: 'after'
+  AFTER: 'after',
 };
 
 export const Format = {
@@ -34,7 +34,7 @@ export const Format = {
   HOURS_W_CHAR: 'HH[H] mm[M]',
   DAYS_W_CHAR: 'DD[D] HH[H] mm[M]',
   MONTHS_W_CHAR: 'MM[M] DD[D] HH[H] mm[M]',
-  DATEPICKER: 'd/m/y H:i'
+  DATEPICKER: 'd/m/y H:i',
 };
 
 export const BLANK_POINT = {
@@ -42,24 +42,24 @@ export const BLANK_POINT = {
   destination: {
     name: '',
     description: '',
-    photos: []
+    photos: [],
   },
   dateFrom: new Date(),
   dateTo: new Date(),
   basePrice: MIN_PRICE_VALUE,
   offers: [],
-  isFavorite: false
+  isFavorite: false,
 };
 
 export const Mode = {
   DEFAULT: 'default',
-  EDITING: 'editing'
+  EDITING: 'editing',
 };
 
 export const SortType = {
   DATE: 'date',
   DURATION: 'duration',
-  PRICE: 'price'
+  PRICE: 'price',
 };
 
 export const SORTERS = [
@@ -83,26 +83,26 @@ export const SORTERS = [
   {
     name: 'offers',
     isDisabled: true,
-  }
+  },
 ];
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
   ADD_EVENT: 'ADD_EVENT',
-  DELETE_EVENT: 'DELETE_EVENT'
+  DELETE_EVENT: 'DELETE_EVENT',
 };
 
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
-  INIT: 'INIT'
+  INIT: 'INIT',
 };
 
 export const FilterType = {
   EVERYTHING: 'Everything',
   FUTURE: 'Future',
-  PAST: 'Past'
+  PAST: 'Past',
 };
 
 export const FILTER_TYPES = ['Everything', 'Future', 'Past'];
@@ -110,23 +110,23 @@ export const FILTER_TYPES = ['Everything', 'Future', 'Past'];
 export const EmptyFilterMsg = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',
-  [FilterType.PAST]: 'There are no past events now'
+  [FilterType.PAST]: 'There are no past events now',
 };
 
 export const ChartLabel = {
   MONEY: 'MONEY',
   TYPE: 'TYPE',
-  TIME: 'TIME'
+  TIME: 'TIME',
 };
 
 export const NavItem = {
   EVENTS: 'EVENTS',
   STATISTICS: 'STATISTICS',
-  ADD_NEW_EVENT: 'ADD_NEW_EVENT'
+  ADD_NEW_EVENT: 'ADD_NEW_EVENT',
 };
 
 export const State = {
   SAVING: 'SAVING',
   DELETING: 'DELETING',
-  ABORTING: 'ABORTING'
+  ABORTING: 'ABORTING',
 };
