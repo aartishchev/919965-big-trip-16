@@ -4,13 +4,7 @@ import duration from 'dayjs/plugin/duration';
 dayjs.extend(duration);
 
 export function getTotalPrice(offers, basePrice) {
-  return offers.reduce((acc, { isAdded, price }) => {
-    if (isAdded) {
-      return acc + Number(price);
-    }
-
-    return acc;
-  }, basePrice);
+  return offers.reduce((acc, offer) => acc + offer.price, basePrice);
 }
 
 export function getDuration(startDate, finishDate) {
@@ -33,7 +27,6 @@ export function formatDuration(eventDuration) {
   }
 
   return wrappedDuration.format(Format.MONTHS_W_CHAR);
-
 }
 
 export function getFormattedEventDuration (startDate, finishDate) {

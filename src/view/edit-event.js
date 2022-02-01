@@ -1,5 +1,4 @@
 import { POINT_TYPES, BLANK_POINT, EVENT_DURATION_DAYS_LIMIT, Format } from '../utils/const.js';
-import { updateItem } from '../utils/common.js';
 import SmartView from '../view/smart-view.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
@@ -100,33 +99,21 @@ const createRollupBtnTemplate = () => (
 );
 
 const createEditEventTemplate = (data, destinations, isNewEvent) => {
-  const {
-    type,
-    destination,
-    dateFrom,
-    dateTo,
-    basePrice,
-    offers,
-    isDescriptioned,
-    arePhotos,
-    typeOffers
-  } = data;
+  const { type, destination, dateFrom, dateTo, basePrice, offers, isDescriptioned, arePhotos, typeOffers } = data;
+  const { description, photos, name } = destination;
 
-  const addedOffers = offers;
-  const offersToRender = typeOffers.map((offer) => {
-    if (addedOffers.findIndex((addedOffer) => addedOffer.id === offer.id) > -1) {
-      return { ...offer, isAdded: true };
+  const destinationOptions = destinations.map((dest) => dest.name);
+
+  const offersToRender = typeOffers.map((typeOffer) => {
+    if (offers.findIndex((offer) => offer.id === typeOffer.id) > -1) {
+      return { ...typeOffer, isAdded: true };
     }
 
-    return { ...offer, isAdded: false};
+    return { ...typeOffer, isAdded: false};
   });
-
-  const { description, photos, name } = destination;
 
   const startDate = dayjs(dateFrom).format(Format.DATE_TIME);
   const finishDate = dayjs(dateTo).format(Format.DATE_TIME);
-
-  const isSubmitDisabled = !destinations.includes(destination);
 
   return (
     `<li class="trip-events__item">
@@ -166,7 +153,7 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
               list="destination-list"
             >
             <datalist id="destination-list">
-              ${destinations.length > 1 ? createDestinationOptionsTemplate(destinations) : ''}
+              ${destinations.length > 1 ? createDestinationOptionsTemplate(destinationOptions) : ''}
             </datalist>
           </div>
 
@@ -208,7 +195,6 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
           <button
             class="event__save-btn btn btn--blue"
             type="submit"
-            ${isSubmitDisabled ?  'disabled' : ''}
           >
             Save
           </button>
@@ -333,7 +319,6 @@ export default class EditEvent extends SmartView {
         onChange: this.#finishDataChangeHandler,
       },
     );
-
   }
 
   #startDateChangeHandler = ([date]) => {
@@ -374,22 +359,19 @@ export default class EditEvent extends SmartView {
 
   #onDestinationInputHandler = (evt) => {
     const value = evt.target.value;
-    const index = this.#destinations.findIndex((destination) => destination.toLowerCase() === value.toLowerCase());
+    const index = this.#destinations.findIndex((destination) => destination.name.toLowerCase() === value.toLowerCase());
+    const submitButton = this.element.querySelector('.event__save-btn');
 
     if (index > -1) {
-      const { description, photos } = this.#descriptions[index];
+      const { name, description, photos } = this.#destinations[index];
       this.updateData({
-        description,
-        photos,
+        destination: { name, description, photos },
         isDescriptioned: description.length > 0,
-        arePhotos: photos.length > 0,
-        destination: value
+        arePhotos: photos.length > 0
       });
-
-      return;
+    } else {
+      submitButton.disabled = true;
     }
-
-    this.updateData({ destination: value }, true);
   }
 
   #onPriceChangeHandler = (evt) => {
@@ -397,12 +379,19 @@ export default class EditEvent extends SmartView {
   }
 
   #onOfferToggleHandler = (evt) => {
-    const offer = this._data.typeOffers.find((el) => el.id.toString() === evt.target.id);
-    console.log(offer)
-    offer.isAdded = evt.target.checked;
-    console.log(offer.isAdded)
+    const dataTypeOffers = this._data.typeOffers;
+    const dataAddedOffers = this._data.offers;
 
-    this.updateData({ offers: updateItem(this._data.offers, offer) }, true);
+    const currentOffer = dataTypeOffers.find((offer) => offer.id.toString() === evt.target.id);
+    const index = dataAddedOffers.findIndex((offer) => offer.id === currentOffer.id);
+
+    if (index === -1) {
+      dataAddedOffers.push(currentOffer);
+      this.updateData({ offers: dataAddedOffers}, true);
+    } else {
+      dataAddedOffers.splice(index, 1);
+      this.updateData({ offers: dataAddedOffers}, true);
+    }
   }
 
   #parseEventToData = (event) => {
