@@ -32,7 +32,11 @@ export const Format = {
 
 export const BLANK_POINT = {
   type: 'Taxi',
-  destination: '',
+  destination: {
+    name: '',
+    description: '',
+    photos: []
+  },
   dateFrom: new Date(),
   dateTo: new Date(),
   basePrice: 0,

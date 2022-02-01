@@ -245,10 +245,10 @@ export default class EditEvent extends SmartView {
   removeElement = () => {
     super.removeElement();
 
-    this.#startDatepicker.destroy();
+    this.#startDatepicker?.destroy();
     this.#startDatepicker = null;
 
-    this.#finishDatepicker.destroy();
+    this.#finishDatepicker?.destroy();
     this.#finishDatepicker = null;
   }
 
@@ -305,7 +305,8 @@ export default class EditEvent extends SmartView {
         dateFormat: Format.DATEPICKER,
         enableTime: true,
         'time_24hr': true,
-        onChange: this.#startDateChangeHandler,
+        maxDate: this._data.dateTo,
+        onChange: this.#startDateChangeHandler
       },
     );
     this.#finishDatepicker = flatpickr(
