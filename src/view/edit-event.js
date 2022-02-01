@@ -107,10 +107,19 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
     dateTo,
     basePrice,
     offers,
-    areOffers,
     isDescriptioned,
-    arePhotos
+    arePhotos,
+    typeOffers
   } = data;
+
+  const addedOffers = offers;
+  const offersToRender = typeOffers.map((offer) => {
+    if (addedOffers.findIndex((addedOffer) => addedOffer.id === offer.id) > -1) {
+      return { ...offer, isAdded: true };
+    }
+
+    return { ...offer, isAdded: false};
+  });
 
   const { description, photos, name } = destination;
 
@@ -209,7 +218,7 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
           ${!isNewEvent ? createRollupBtnTemplate() : ''}
         </header>
         <section class="event__details">
-          ${areOffers ? createOfferOptionsTemplate(offers, type) : ''}
+          ${data.typeOffers.length > 0 ? createOfferOptionsTemplate(offersToRender) : ''}
           ${isDescriptioned ? createDescriptionTemplate(description, photos, arePhotos) : ''}
         </section>
       </form>
@@ -227,14 +236,12 @@ export default class EditEvent extends SmartView {
 
   constructor(
     event = BLANK_POINT,
-    descriptions = [],
     destinations = [],
     options = [],
     isNewEvent = false
   ) {
     super();
 
-    this.#descriptions = descriptions;
     this.#destinations = destinations;
     this.#options = options;
     this.#isNewEvent = isNewEvent;
@@ -355,16 +362,12 @@ export default class EditEvent extends SmartView {
       }
 
       const index = this.#options.findIndex((option) => option.type === targetType);
-      const newOffers = this.#options[index].offers || [];
-
-      newOffers.forEach((offer) => {
-        offer.isAdded = false;
-      });
+      const typeOffers = this.#options[index]?.offers || [];
 
       this.updateData({
         type: targetType,
-        offers: newOffers,
-        areOffers: newOffers.length > 0,
+        typeOffers,
+        offers: []
       });
     }
   }
@@ -394,8 +397,10 @@ export default class EditEvent extends SmartView {
   }
 
   #onOfferToggleHandler = (evt) => {
-    const offer = this._data.offers.find((el) => el.id === evt.target.id);
+    const offer = this._data.typeOffers.find((el) => el.id.toString() === evt.target.id);
+    console.log(offer)
     offer.isAdded = evt.target.checked;
+    console.log(offer.isAdded)
 
     this.updateData({ offers: updateItem(this._data.offers, offer) }, true);
   }
@@ -403,24 +408,27 @@ export default class EditEvent extends SmartView {
   #parseEventToData = (event) => {
     const { description, photos } = event.destination;
 
+    const index = this.#options.findIndex((option) => option.type === event.type);
+    const typeOffers = this.#options[index]?.offers || [];
+
     return {
       ...event,
-      areOffers: event.offers.length > 0,
       isDescriptioned: description.length > 0,
       arePhotos: photos.length > 0,
       description,
-      photos
+      photos,
+      typeOffers
     };
   }
 
   static parseDataToEvent = (data) => {
     const event = { ...data };
 
-    delete event.areOffers;
     delete event.isDescriptioned;
     delete event.arePhotos;
     delete event.description;
     delete event.photos;
+    delete event.typeOffers;
 
     return event;
   }

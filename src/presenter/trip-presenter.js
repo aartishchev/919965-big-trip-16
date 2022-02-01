@@ -26,7 +26,6 @@ export default class tripPresenter {
   #currentFilterType = FilterType.EVERYTHING;
   #isLoading = true;
 
-  #descriptions = [];
   #destinations = [];
   #options = [];
 
@@ -55,8 +54,7 @@ export default class tripPresenter {
     }
   }
 
-  init = (descriptions, destinations, options) => {
-    this.#descriptions = [...descriptions];
+  init = (destinations, options) => {
     this.#destinations = [...destinations];
     this.#options = [...options];
 
@@ -67,7 +65,6 @@ export default class tripPresenter {
   }
 
   destroy = () => {
-    this.#descriptions = [];
     this.#destinations = [];
     this.#options = [];
 
@@ -83,7 +80,7 @@ export default class tripPresenter {
       removeComponent(this.#emptyListMsgComponent);
     }
 
-    this.#newEventPresenter.init(BLANK_POINT, this.#descriptions, this.#destinations, this.#options);
+    this.#newEventPresenter.init(BLANK_POINT, this.#destinations, this.#options);
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -156,19 +153,19 @@ export default class tripPresenter {
     renderElement(this.#eventsContainer, this.#eventsSorterComponent);
   }
 
-  #renderEvent = (event, descriptions, destinations, options) => {
+  #renderEvent = (event, destinations, options) => {
     const eventPresenter = new EventPresenter(
       this.#eventsListComponent,
       this.#handleViewAction,
       this.#handleModeChange
     );
-    eventPresenter.init(event, descriptions, destinations, options);
+    eventPresenter.init(event, destinations, options);
     this.#eventPresenters.set(event.id, eventPresenter);
   }
 
   #renderEvents = () => {
     this.events.forEach((event) => {
-      this.#renderEvent(event, this.#descriptions, this.#destinations, this.#options);
+      this.#renderEvent(event, this.#destinations, this.#options);
     });
   };
 

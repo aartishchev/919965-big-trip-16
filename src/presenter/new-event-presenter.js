@@ -10,7 +10,6 @@ export default class NewEventPresenter {
   #editEventComponent = null;
 
   #event = null;
-  #descriptions = [];
   #destinations = [];
   #options = [];
 
@@ -21,7 +20,6 @@ export default class NewEventPresenter {
 
   init = (
     event,
-    descriptions = this.#descriptions,
     destinations = this.#destinations,
     options = this.#options
   ) => {
@@ -30,11 +28,10 @@ export default class NewEventPresenter {
     }
 
     this.#event = event;
-    this.#descriptions = descriptions;
     this.#destinations = destinations;
     this.#options = options;
 
-    this.#editEventComponent = new EditEvent(this.#event, this.#descriptions, this.#destinations, this.#options, true);
+    this.#editEventComponent = new EditEvent(this.#event, this.#destinations, this.#options, true);
 
     this.#editEventComponent.setOnSubmitHandler(this.#handleOnSubmit);
     this.#editEventComponent.setOnDeleteHandler(this.#handleOnCancel);

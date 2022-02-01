@@ -12,18 +12,9 @@ export default class OptionsModel {
 
   init = async () => {
     try {
-      const options = await this.#apiService.offers;
-      this.#options = options.map(this.#adaptToClient);
+      this.#options = await this.#apiService.offers;
     } catch(err) {
       this.#options = [];
     }
-  }
-
-  #adaptToClient = (offers) => {
-    const adaptedOptions = {
-      options: offers,
-    };
-
-    return adaptedOptions;
   }
 }

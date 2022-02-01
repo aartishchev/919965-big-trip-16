@@ -56,7 +56,15 @@ export default class ApiService {
   }
 
   #adaptToServer = (event) => {
+    const adaptedDestination = {
+      ...event.destination,
+      pictures: event.destination.photos
+    };
+
+    delete adaptedDestination.photos;
+
     const adaptedEvent = {...event,
+      destination: adaptedDestination,
       'date_from': event.dateFrom.toISOString(),
       'date_to': event.dateTo.toISOString(),
       'base_price': event.basePrice,
