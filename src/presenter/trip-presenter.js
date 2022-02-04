@@ -74,13 +74,13 @@ export default class tripPresenter {
     this.#filterModel.removeObserver(this.#handleModelEvent);
   }
 
-  createEvent = () => {
+  createEvent = (createButtonPresenter) => {
     if (this.#eventsModel.events.length < 1) {
       renderElement(this.#eventsContainer, this.#eventsListComponent);
       removeComponent(this.#emptyListMsgComponent);
     }
 
-    this.#newEventPresenter.init(BLANK_POINT, this.#destinations, this.#options);
+    this.#newEventPresenter.init(BLANK_POINT, this.#destinations, this.#options, createButtonPresenter);
   }
 
   #handleViewAction = async (actionType, updateType, update) => {

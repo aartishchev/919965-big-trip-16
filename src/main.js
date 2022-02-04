@@ -44,7 +44,8 @@ async function main() {
         filterPresenter.init();
         tripPresenter.destroy();
         tripPresenter.init(destinations, options);
-        tripPresenter.createEvent();
+        tripPresenter.createEvent(createButtonPresenter);
+        createButtonPresenter.addDisabled();
         break;
       case NavItem.EVENTS:
         filterPresenter.init();
@@ -67,8 +68,10 @@ async function main() {
 
   await optionsModel.init();
   options = optionsModel.options;
+
   await destinationsModel.init();
   destinations = destinationsModel.destinations;
+
   tripPresenter.init(destinations, options);
 
   eventsModel.init().finally(() => {

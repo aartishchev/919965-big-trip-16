@@ -1,5 +1,5 @@
 import SmartView from './smart-view.js';
-import { renderChart, getTypesTotalValues } from '../utils/statistics.js';
+import { renderChart, getTypesTotalValues, getTotalValuesSorted, ValueTitles } from '../utils/statistics.js';
 import { POINT_TYPES, STAT_BAR_HEIGHT, ChartLabel } from '../utils/const.js';
 import { formatDuration } from '../utils/event.js';
 
@@ -44,17 +44,17 @@ export default class StatView extends SmartView {
     timeCtx.height = STAT_BAR_HEIGHT * POINT_TYPES.length;
 
     const typesTotalValues = getTypesTotalValues(this.#events);
-    const typeLabels = typesTotalValues.map((el) => el.eventType.toUpperCase());
-    const totalTypesPrice = typesTotalValues.map((type) => type.totalPrice);
-    const totalTypesCount = typesTotalValues.map((type) => type.totalCount);
-    const totalTypesDuration = typesTotalValues.map((type) => type.totalDuration);
+
+    const sortedTypesbyPriceTotalValues = getTotalValuesSorted(typesTotalValues, ValueTitles.TOTAL_PRICE );
+    const sortedTypesbyCountTotalValues = getTotalValuesSorted(typesTotalValues, ValueTitles.TOTAL_COUNT );
+    const sortedTypesbyDurationTotalValues = getTotalValuesSorted(typesTotalValues, ValueTitles.TOTAL_DURATION );
 
     const moneyFormatter = (val) => `€ ${val}`;
     const countFormatter = (val) => `${val}x`;
     const timeFormatter = (val) => formatDuration(val);
 
-    renderChart(ChartLabel.MONEY, moneyCtx, typeLabels, totalTypesPrice, moneyFormatter);
-    renderChart(ChartLabel.TYPE, typeCtx, typeLabels, totalTypesCount, countFormatter);
-    renderChart(ChartLabel.TIME, timeCtx, typeLabels, totalTypesDuration, timeFormatter);
+    renderChart(ChartLabel.MONEY, moneyCtx, sortedTypesbyPriceTotalValues, moneyFormatter);
+    renderChart(ChartLabel.TYPE, typeCtx, sortedTypesbyCountTotalValues, countFormatter);
+    renderChart(ChartLabel.TIME, timeCtx, sortedTypesbyDurationTotalValues, timeFormatter);
   };
 }

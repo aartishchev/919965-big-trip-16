@@ -3,13 +3,19 @@ import { getDuration } from './event';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
+export const ValueTitles = {
+  TOTAL_COUNT: 'totalCount',
+  TOTAL_PRICE: 'totalPrice',
+  TOTAL_DURATION: 'totalDuration'
+};
+
 export function getTypesTotalValues (events) {
   return POINT_TYPES.map((eventType) => {
     const typeTotalValues = events.reduce((acc, { type, basePrice, dateFrom, dateTo }) => {
       if (type === eventType.toLowerCase()) {
-        acc.totalCount++;
-        acc.totalPrice += Number(basePrice);
-        acc.totalDuration += getDuration(dateFrom, dateTo);
+        acc[ValueTitles.TOTAL_COUNT]++;
+        acc[ValueTitles.TOTAL_PRICE] += Number(basePrice);
+        acc[ValueTitles.TOTAL_DURATION] += getDuration(dateFrom, dateTo);
 
         return acc;
       }
@@ -21,15 +27,21 @@ export function getTypesTotalValues (events) {
   });
 }
 
-export function renderChart (chartLabel, ctx, typeLabels, typeValues, formatter) {
+export function getTotalValuesSorted (typesTotalValues, valueType) {
+  return typesTotalValues
+    .map((typeValues) => ({ type: typeValues.eventType, value: typeValues[valueType] }))
+    .sort((aType, bType) => bType.value - aType.value);
+}
+
+export function renderChart (chartLabel, ctx, sortedTypesByValues, formatter) {
   return new Chart(ctx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
-      labels: typeLabels,
+      labels: sortedTypesByValues.map(({ type }) => type.toUpperCase()),
       datasets: [
         {
-          data: typeValues,
+          data: sortedTypesByValues.map(({ value }) => value),
           backgroundColor: '#ffffff',
           hoverBackgroundColor: '#ffffff',
           anchor: 'start',

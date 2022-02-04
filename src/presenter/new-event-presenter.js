@@ -5,6 +5,7 @@ import { UserAction, UpdateType, RenderPosition } from '../utils/const.js';
 export default class NewEventPresenter {
   #eventContainer = null;
   #changeData = null;
+  #createButtonPresenter = null;
 
   #editEventComponent = null;
 
@@ -17,11 +18,12 @@ export default class NewEventPresenter {
     this.#changeData = changeData;
   }
 
-  init = (event, destinations = this.#destinations, options = this.#options) => {
+  init = (event, destinations = this.#destinations, options = this.#options, createButtonPresenter) => {
     if (this.#editEventComponent !== null) {
       return;
     }
 
+    this.#createButtonPresenter = createButtonPresenter;
     this.#event = event;
     this.#destinations = destinations;
     this.#options = options;
@@ -40,6 +42,8 @@ export default class NewEventPresenter {
     if (this.#editEventComponent === null) {
       return;
     }
+
+    this.#createButtonPresenter.removeDisabled();
 
     removeComponent(this.#editEventComponent);
     this.#editEventComponent = null;
