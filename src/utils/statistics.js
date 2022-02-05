@@ -6,7 +6,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 export const ValueTitles = {
   TOTAL_COUNT: 'totalCount',
   TOTAL_PRICE: 'totalPrice',
-  TOTAL_DURATION: 'totalDuration'
+  TOTAL_DURATION: 'totalDuration',
 };
 
 export const getTypesTotalValues = (events) =>
@@ -22,7 +22,8 @@ export const getTypesTotalValues = (events) =>
         }
 
         return acc;
-      }, { totalPrice: 0, totalCount: 0, totalDuration: 0 }
+      },
+      { totalPrice: 0, totalCount: 0, totalDuration: 0 },
     );
 
     return { eventType, ...typeTotalValues };
