@@ -6,12 +6,12 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import NavPresenter from './presenter/nav-presenter.js';
 import EventsModel from './model/events-model.js';
 import FilterModel from './model/filter-model.js';
+import OptionsModel from './model/options-model.js';
+import DestinationsModel from './model/destinations-model.js';
 import ApiService from './api-service.js';
 import { AUTHORIZATION, END_POINT } from './utils/const.js';
 import { removeComponent, renderElement } from './utils/render.js';
 import { NavItem } from './utils/const.js';
-import OptionsModel from './model/options-model.js';
-import DestinationsModel from './model/destinations-model.js';
 
 async function main() {
   const mainContainer = document.querySelector('main .page-body__container');
@@ -20,14 +20,16 @@ async function main() {
   const filterTabsContainer = document.querySelector('.trip-controls__filters');
   const tripEventsContainer = document.querySelector('.trip-events');
 
+  const apiService = new ApiService(END_POINT, AUTHORIZATION);
+
   const filterModel = new FilterModel();
-  const eventsModel = new EventsModel(new ApiService(END_POINT, AUTHORIZATION));
-  const optionsModel = new OptionsModel(new ApiService(END_POINT, AUTHORIZATION));
-  const destinationsModel = new DestinationsModel(new ApiService(END_POINT, AUTHORIZATION));
+  const eventsModel = new EventsModel(apiService);
+  const optionsModel = new OptionsModel(apiService);
+  const destinationsModel = new DestinationsModel(apiService);
 
   const tripInfoPresenter = new TripInfoPresenter(tripInfoContainer, eventsModel);
   const tripPresenter = new TripPresenter(tripEventsContainer, eventsModel, filterModel);
-  const filterPresenter = new FilterPresenter(filterTabsContainer, filterModel);
+  const filterPresenter = new FilterPresenter(filterTabsContainer, filterModel, eventsModel);
   const navPresenter = new NavPresenter(navTabsContainer, handleOnNavClick);
   const createButtonPresenter = new CreateButtonPresenter(tripInfoContainer, handleOnNavClick);
 

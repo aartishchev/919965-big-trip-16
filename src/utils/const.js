@@ -105,8 +105,6 @@ export const FilterType = {
   PAST: 'Past',
 };
 
-export const FILTER_TYPES = ['Everything', 'Future', 'Past'];
-
 export const EmptyFilterMsg = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',

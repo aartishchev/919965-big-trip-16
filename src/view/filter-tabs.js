@@ -1,12 +1,7 @@
-import { FILTER_TYPES } from '../utils/const.js';
 import AbstractView from '../view/abstract-view.js';
 
-const createFilterTabsTemplate = (filterTypes, currentType) => {
-  if (filterTypes.length < 1 ) {
-    return;
-  }
-
-  const tabs = filterTypes.map((type) =>
+const createFilterTabsTemplate = (filters, currentType) => {
+  const tabs = filters.map(({ type, number }) =>
     `<div class="trip-filters__filter">
       <input
         id="filter-${type}"
@@ -15,6 +10,7 @@ const createFilterTabsTemplate = (filterTypes, currentType) => {
         name="trip-filter"
         value="${type}"
         ${type === currentType ? 'checked' : ''}
+        ${number < 1 ? 'disabled' : ''}
       >
       <label class="trip-filters__filter-label" for="filter-${type}">${type}</label>
     </div>`
@@ -29,15 +25,17 @@ const createFilterTabsTemplate = (filterTypes, currentType) => {
 };
 
 export default class FilterTabs extends AbstractView {
+  #filters = null;
   #currentFilter = null;
 
-  constructor(currentFilter) {
+  constructor(filters, currentFilter) {
     super();
+    this.#filters = filters;
     this.#currentFilter = currentFilter;
   }
 
   get template() {
-    return createFilterTabsTemplate(FILTER_TYPES, this.#currentFilter);
+    return createFilterTabsTemplate(this.#filters, this.#currentFilter);
   }
 
   setFilterTypeChangeHandler = (callback) => {
