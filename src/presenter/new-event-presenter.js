@@ -30,8 +30,8 @@ export default class NewEventPresenter {
 
     this.#editEventComponent = new EditEventView(this.#event, this.#destinations, this.#options, true);
 
-    this.#editEventComponent.setSubmitHandler(this.#handleOnSubmit);
-    this.#editEventComponent.setDeleteHandler(this.#handleOnCancel);
+    this.#editEventComponent.setSubmitHandler(this.#handleSubmit);
+    this.#editEventComponent.setDeleteHandler(this.#handleCancelClick);
 
     renderElement(this.#eventContainer, this.#editEventComponent, RenderPosition.PREPEND);
 
@@ -70,11 +70,11 @@ export default class NewEventPresenter {
     this.#editEventComponent.shake(resetFormState);
   }
 
-  #handleOnSubmit = (event) => {
+  #handleSubmit = (event) => {
     this.#changeData(UserAction.ADD_EVENT, UpdateType.MAJOR, event);
   }
 
-  #handleOnCancel = () => {
+  #handleCancelClick = () => {
     this.destroy();
   }
 

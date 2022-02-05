@@ -33,11 +33,11 @@ export default class EventPresenter {
     this.#pointEventComponent = new PointEventView(this.#event);
     this.#editEventComponent = new EditEventView(this.#event, this.#destinations, this.#options);
 
-    this.#pointEventComponent.setFavoriteToggleHandler(this.#handleOnFavorite);
-    this.#pointEventComponent.setExpandHandler(this.#handleOnExpand);
-    this.#editEventComponent.setCollapseHandler(this.#handleOnCollapse);
-    this.#editEventComponent.setSubmitHandler(this.#handleOnSubmit);
-    this.#editEventComponent.setDeleteHandler(this.#handleOnDelete);
+    this.#pointEventComponent.setFavoriteToggleHandler(this.#handleFavoriteToggle);
+    this.#pointEventComponent.setExpandHandler(this.#handleExpand);
+    this.#editEventComponent.setCollapseHandler(this.#handleCollapse);
+    this.#editEventComponent.setSubmitHandler(this.#handleSubmit);
+    this.#editEventComponent.setDeleteHandler(this.#handleDelete);
 
     if (prevPointEventComponent === null || prevEditEventComponent === null) {
       renderElement(this.#eventContainer, this.#pointEventComponent);
@@ -118,16 +118,16 @@ export default class EventPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
-  #handleOnExpand = () => {
+  #handleExpand = () => {
     this.#replacePointByForm();
   }
 
-  #handleOnCollapse = () => {
+  #handleCollapse = () => {
     this.#editEventComponent.resetEvent(this.#event);
     this.#replaceFormByPoint();
   }
 
-  #handleOnFavorite = () => {
+  #handleFavoriteToggle = () => {
     this.#changeData(
       UserAction.UPDATE_EVENT,
       UpdateType.PATCH,
@@ -135,11 +135,11 @@ export default class EventPresenter {
     );
   };
 
-  #handleOnSubmit = (event) => {
+  #handleSubmit = (event) => {
     this.#changeData(UserAction.UPDATE_EVENT, UpdateType.MAJOR, event);
   }
 
-  #handleOnDelete = (event) => {
+  #handleDelete = (event) => {
     this.#changeData(UserAction.DELETE_EVENT, UpdateType.MAJOR, event);
   }
 
