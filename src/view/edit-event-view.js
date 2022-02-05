@@ -1,5 +1,5 @@
 import { POINT_TYPES, BLANK_POINT, EVENT_DURATION_DAYS_LIMIT, Format, MIN_PRICE_VALUE } from '../utils/const.js';
-import SmartView from '../view/smart-view.js';
+import SmartView from './smart-view.js';
 import dayjs from 'dayjs';
 import flatpickr from 'flatpickr';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
@@ -242,7 +242,7 @@ const createEditEventTemplate = (data, destinations, isNewEvent) => {
   `);
 };
 
-export default class EditEvent extends SmartView {
+export default class EditEventView extends SmartView {
   #destinations = null;
   #options = null;
   #isNewEvent = null;
@@ -289,42 +289,42 @@ export default class EditEvent extends SmartView {
     this.#setInnerHandlers();
     this.#setDatepickers();
 
-    this.setOnCollapseHandler(this._callback.onCollapse);
-    this.setOnSubmitHandler(this._callback.onSubmit);
-    this.setOnDeleteHandler(this._callback.onDelete);
+    this.setCollapseHandler(this._callback.onCollapse);
+    this.setSubmitHandler(this._callback.onSubmit);
+    this.setDeleteHandler(this._callback.onDelete);
   }
 
-  setOnCollapseHandler = (callback) => {
+  setCollapseHandler = (callback) => {
     if (this.#isNewEvent) {
       return;
     }
 
     this._callback.onCollapse = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onCollapseHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#collapseHandler);
   }
 
-  setOnSubmitHandler = (callback) => {
+  setSubmitHandler = (callback) => {
     this._callback.onSubmit = callback;
-    this.element.addEventListener('submit', this.#onSubmitHandler);
+    this.element.addEventListener('submit', this.#submitHandler);
   }
 
-  setOnDeleteHandler = (callback) => {
+  setDeleteHandler = (callback) => {
     this._callback.onDelete = callback;
-    this.element.addEventListener('reset', this.#onDeleteHandler);
+    this.element.addEventListener('reset', this.#deleteHandler);
   }
 
-  #onCollapseHandler = () => {
+  #collapseHandler = () => {
     this._callback.onCollapse();
   }
 
-  #onSubmitHandler = (evt) => {
+  #submitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.onSubmit(EditEvent.parseDataToEvent(this._data));
+    this._callback.onSubmit(EditEventView.parseDataToEvent(this._data));
   }
 
-  #onDeleteHandler = (evt) => {
+  #deleteHandler = (evt) => {
     evt.preventDefault();
-    this._callback.onDelete(EditEvent.parseDataToEvent(this._data));
+    this._callback.onDelete(EditEventView.parseDataToEvent(this._data));
   }
 
   #setDatepickers = () => {
@@ -360,15 +360,15 @@ export default class EditEvent extends SmartView {
   }
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__type-group').addEventListener('click', this.#onTypeChangeHandler);
-    this.element.querySelector('.event__input--destination').addEventListener('input', this.#onDestinationInputHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#onPriceChangeHandler);
+    this.element.querySelector('.event__type-group').addEventListener('click', this.#typeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationInputHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
     this.element
       .querySelectorAll('.event__offer-checkbox')
-      .forEach((element) => element.addEventListener('click', this.#onOfferToggleHandler));
+      .forEach((element) => element.addEventListener('click', this.#offerToggleHandler));
   };
 
-  #onTypeChangeHandler = (evt) => {
+  #typeChangeHandler = (evt) => {
     if (evt.target.tagName === 'INPUT') {
       const targetType = evt.target.value;
 
@@ -387,7 +387,7 @@ export default class EditEvent extends SmartView {
     }
   }
 
-  #onDestinationInputHandler = (evt) => {
+  #destinationInputHandler = (evt) => {
     const value = evt.target.value;
     const index = this.#destinations.findIndex((destination) => destination.name.toLowerCase() === value.toLowerCase());
     const submitButton = this.element.querySelector('.event__save-btn');
@@ -406,7 +406,7 @@ export default class EditEvent extends SmartView {
     }
   }
 
-  #onPriceChangeHandler = (evt) => {
+  #priceChangeHandler = (evt) => {
     const value = evt.target.value;
 
     if ( value < 1) {
@@ -419,7 +419,7 @@ export default class EditEvent extends SmartView {
     }
   }
 
-  #onOfferToggleHandler = (evt) => {
+  #offerToggleHandler = (evt) => {
     const dataTypeOffers = this._data.typeOffers;
     const dataAddedOffers = this._data.offers;
 

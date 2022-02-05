@@ -1,4 +1,4 @@
-import EditEvent from '../view/edit-event.js';
+import EditEventView from '../view/edit-event-view.js';
 import { renderElement, removeComponent } from '../utils/render.js';
 import { UserAction, UpdateType, RenderPosition } from '../utils/const.js';
 
@@ -28,14 +28,14 @@ export default class NewEventPresenter {
     this.#destinations = destinations;
     this.#options = options;
 
-    this.#editEventComponent = new EditEvent(this.#event, this.#destinations, this.#options, true);
+    this.#editEventComponent = new EditEventView(this.#event, this.#destinations, this.#options, true);
 
-    this.#editEventComponent.setOnSubmitHandler(this.#handleOnSubmit);
-    this.#editEventComponent.setOnDeleteHandler(this.#handleOnCancel);
+    this.#editEventComponent.setSubmitHandler(this.#handleOnSubmit);
+    this.#editEventComponent.setDeleteHandler(this.#handleOnCancel);
 
     renderElement(this.#eventContainer, this.#editEventComponent, RenderPosition.PREPEND);
 
-    document.addEventListener('keydown', this.#handleOnEscKeyDown);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
   }
 
   destroy = () => {
@@ -48,7 +48,7 @@ export default class NewEventPresenter {
     removeComponent(this.#editEventComponent);
     this.#editEventComponent = null;
 
-    document.removeEventListener('keydown', this.#handleOnEscKeyDown);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
   setSaving = () => {
@@ -78,7 +78,7 @@ export default class NewEventPresenter {
     this.destroy();
   }
 
-  #handleOnEscKeyDown = (evt) => {
+  #escKeyDownHandler = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.destroy();

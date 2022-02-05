@@ -1,4 +1,4 @@
-import FilterTabs from '../view/filter-tabs.js';
+import FilterTabsView from '../view/filter-tabs-view.js';
 import { renderElement, replaceElement, removeComponent } from '../utils/render.js';
 import { FilterType, UpdateType}  from '../utils/const.js';
 import { filter } from '../utils/filter.js';
@@ -38,7 +38,7 @@ export default class FilterPresenter {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new FilterTabs(filters, this.#filterModel.filter);
+    this.#filterComponent = new FilterTabsView(filters, this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
     this.#filterModel.addObserver(this.#handleModelEvent);

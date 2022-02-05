@@ -1,4 +1,4 @@
-import TripInfo from '../view/trip-info';
+import TripInfoView from '../view/trip-info-view';
 import { renderElement, replaceElement, removeComponent } from '../utils/render.js';
 import { RenderPosition, UpdateType } from '../utils/const';
 
@@ -21,7 +21,7 @@ export default class TripInfoPresenter {
 
     const prevTripInfoComponent = this.#tripInfoComponent;
 
-    this.#tripInfoComponent = new TripInfo(this.#eventsModel.events);
+    this.#tripInfoComponent = new TripInfoView(this.#eventsModel.events);
 
     if (prevTripInfoComponent === null) {
       renderElement(this.#tripInfoContainer, this.#tripInfoComponent, RenderPosition.PREPEND);

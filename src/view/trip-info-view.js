@@ -1,6 +1,6 @@
 import { getTotalPrice, sortByStartDate, sortByFinishDate } from '../utils/event';
-import { Format } from '../utils/const';
-import AbstractView from '../view/abstract-view.js';
+import { EVENTS_NUMBER_CONDITION, Format } from '../utils/const';
+import AbstractView from './abstract-view.js';
 import dayjs from 'dayjs';
 
 const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
@@ -8,32 +8,31 @@ const getTravelDates = (sortedEventsByStartDate, sortedEventsByFinishDate) => {
   const finishDate = sortedEventsByFinishDate[0].dateTo;
 
   const formattedStartDate = dayjs(startDate).format(Format.MONTH_DATE);
-
   const isSameMonth = dayjs(startDate).isSame(dayjs(finishDate, 'month'));
 
   if (isSameMonth) {
-    const formattedFinishDate = dayjs(finishDate).format(Format.DATE);
+    const formattedByDateFinishDate = dayjs(finishDate).format(Format.DATE);
 
-    return `${formattedStartDate}&nbsp;&mdash;&nbsp;${formattedFinishDate}`;
-  } else {
-    const formattedFinishDate = dayjs(finishDate).format(Format.MONTH_DATE);
-
-    return `${formattedStartDate}&nbsp;&mdash;&nbsp;${formattedFinishDate}`;
+    return `${formattedStartDate}&nbsp;&mdash;&nbsp;${formattedByDateFinishDate}`;
   }
+
+  const formattedByMonthFinishDate = dayjs(finishDate).format(Format.MONTH_DATE);
+
+  return `${formattedStartDate}&nbsp;&mdash;&nbsp;${formattedByMonthFinishDate}`;
 };
 
 const getDestinationsRoute = (sortedEvents) => {
 
-  if (sortedEvents.length >= 3) {
+  if (sortedEvents.length >= EVENTS_NUMBER_CONDITION) {
     const startEvent = sortedEvents[0].destination.name;
     const finishEvent = sortedEvents[sortedEvents.length - 1].destination.name;
 
     return `${startEvent} &mdash; ... &mdash; ${finishEvent}`;
-  } else {
-    const route = sortedEvents.map((event) => event.destination.name);
-
-    return route.join(' &mdash; ');
   }
+
+  const route = sortedEvents.map((event) => event.destination.name);
+
+  return route.join(' &mdash; ');
 };
 
 const getAllPointsTotalPrice = (allEvents) => (
@@ -70,7 +69,7 @@ const createTripInfoTemplate = (events) => {
   );
 };
 
-export default class TripInfo extends AbstractView {
+export default class TripInfoView extends AbstractView {
   #events = null;
 
   constructor(events = []) {

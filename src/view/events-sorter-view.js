@@ -1,4 +1,4 @@
-import AbstractView from '../view/abstract-view.js';
+import AbstractView from './abstract-view.js';
 import { SORTERS } from '../utils/const.js';
 
 const createEventsSorterTemplate = () => {
@@ -29,7 +29,7 @@ const createEventsSorterTemplate = () => {
   );
 };
 
-export default class EventsSorter extends AbstractView {
+export default class EventsSorterView extends AbstractView {
   get template() {
     return createEventsSorterTemplate();
   }

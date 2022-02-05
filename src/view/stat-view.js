@@ -49,12 +49,12 @@ export default class StatView extends SmartView {
     const sortedTypesbyCountTotalValues = getTotalValuesSorted(typesTotalValues, ValueTitles.TOTAL_COUNT );
     const sortedTypesbyDurationTotalValues = getTotalValuesSorted(typesTotalValues, ValueTitles.TOTAL_DURATION );
 
-    const moneyFormatter = (val) => `€ ${val}`;
-    const countFormatter = (val) => `${val}x`;
-    const timeFormatter = (val) => formatDuration(val);
+    const getMoneyFormatter = (value) => `€ ${value}`;
+    const getCountFormatter = (value) => `${value}x`;
+    const getTimeFormatter = (value) => formatDuration(value);
 
-    renderChart(ChartLabel.MONEY, moneyCtx, sortedTypesbyPriceTotalValues, moneyFormatter);
-    renderChart(ChartLabel.TYPE, typeCtx, sortedTypesbyCountTotalValues, countFormatter);
-    renderChart(ChartLabel.TIME, timeCtx, sortedTypesbyDurationTotalValues, timeFormatter);
+    renderChart(ChartLabel.MONEY, moneyCtx, sortedTypesbyPriceTotalValues, getMoneyFormatter);
+    renderChart(ChartLabel.TYPE, typeCtx, sortedTypesbyCountTotalValues, getCountFormatter);
+    renderChart(ChartLabel.TIME, timeCtx, sortedTypesbyDurationTotalValues, getTimeFormatter);
   };
 }

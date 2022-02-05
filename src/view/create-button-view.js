@@ -1,4 +1,4 @@
-import AbstractView from '../view/abstract-view.js';
+import AbstractView from './abstract-view.js';
 import { NavItem } from '../utils/const.js';
 
 const createButtonTemplate = (isDisabled) => (
@@ -12,7 +12,7 @@ const createButtonTemplate = (isDisabled) => (
   </button>`
 );
 
-export default class CreateButton extends AbstractView {
+export default class CreateButtonView extends AbstractView {
   constructor (data) {
     super();
     this._data = data;
@@ -22,12 +22,12 @@ export default class CreateButton extends AbstractView {
     return createButtonTemplate(this._data);
   }
 
-  setOnClickHandler = (callback) => {
+  setClickHandler = (callback) => {
     this._callback.onClick = callback;
-    this.element.addEventListener('click', this.#onClickHandler);
+    this.element.addEventListener('click', this.#clickHandler);
   }
 
-  #onClickHandler = (evt) => {
+  #clickHandler = (evt) => {
     evt.preventDefault();
     this._callback.onClick(evt.target.dataset.eventItem);
   }

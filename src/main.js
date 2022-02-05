@@ -13,7 +13,7 @@ import { AUTHORIZATION, END_POINT } from './utils/const.js';
 import { removeComponent, renderElement } from './utils/render.js';
 import { NavItem } from './utils/const.js';
 
-async function main() {
+const main = async () => {
   const mainContainer = document.querySelector('main .page-body__container');
   const tripInfoContainer = document.querySelector('.trip-main');
   const navTabsContainer = document.querySelector('.trip-controls__navigation');
@@ -79,6 +79,6 @@ async function main() {
   eventsModel.init().finally(() => {
     createButtonPresenter.removeDisabled();
   });
-}
+};
 
 main();

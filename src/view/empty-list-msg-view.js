@@ -1,4 +1,4 @@
-import AbstractView from '../view/abstract-view.js';
+import AbstractView from './abstract-view.js';
 import { EmptyFilterMsg, FilterType } from '../utils/const.js';
 
 const createEmpyListTemplate = (filterType) => {
@@ -7,7 +7,7 @@ const createEmpyListTemplate = (filterType) => {
   return `<p class="trip-events__msg">${emptyListTextValue}</p>`;
 };
 
-export default class EmptyListMsg extends AbstractView {
+export default class EmptyListMsgView extends AbstractView {
   constructor (data = FilterType.EVERYTHING) {
     super();
     this._data = data;

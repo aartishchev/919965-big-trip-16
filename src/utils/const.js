@@ -4,6 +4,7 @@ export const STAT_BAR_HEIGHT = 55;
 export const EVENT_DURATION_DAYS_LIMIT = 28;
 export const MIN_PRICE_VALUE = 1;
 export const DEFAULT_TYPE = 'taxi';
+export const EVENTS_NUMBER_CONDITION = 3;
 
 export const POINT_TYPES = [
   'Taxi',
@@ -17,26 +18,6 @@ export const POINT_TYPES = [
   'Restaurant',
 ];
 
-export const RenderPosition = {
-  BEFORE: 'before',
-  PREPEND: 'prepend',
-  APPEND: 'append',
-  AFTER: 'after',
-};
-
-export const Format = {
-  DATE_TIME: 'DD/MM/YY HH:mm',
-  FULL_DATE: 'YYYY-MM-DD',
-  MONTH_DATE: 'MMM D',
-  DATE: 'DD',
-  TIME: 'HH:mm',
-  MIN_W_CHAR: 'mm[M]',
-  HOURS_W_CHAR: 'HH[H] mm[M]',
-  DAYS_W_CHAR: 'DD[D] HH[H] mm[M]',
-  MONTHS_W_CHAR: 'MM[M] DD[D] HH[H] mm[M]',
-  DATEPICKER: 'd/m/y H:i',
-};
-
 export const BLANK_POINT = {
   type: DEFAULT_TYPE,
   destination: {
@@ -49,11 +30,6 @@ export const BLANK_POINT = {
   basePrice: MIN_PRICE_VALUE,
   offers: [],
   isFavorite: false,
-};
-
-export const Mode = {
-  DEFAULT: 'default',
-  EDITING: 'editing',
 };
 
 export const SortType = {
@@ -85,6 +61,31 @@ export const SORTERS = [
     isDisabled: true,
   },
 ];
+
+export const RenderPosition = {
+  BEFORE: 'before',
+  PREPEND: 'prepend',
+  APPEND: 'append',
+  AFTER: 'after',
+};
+
+export const Format = {
+  DATE_TIME: 'DD/MM/YY HH:mm',
+  FULL_DATE: 'YYYY-MM-DD',
+  MONTH_DATE: 'MMM D',
+  DATE: 'DD',
+  TIME: 'HH:mm',
+  MIN_W_CHAR: 'mm[M]',
+  HOURS_W_CHAR: 'HH[H] mm[M]',
+  DAYS_W_CHAR: 'DD[D] HH[H] mm[M]',
+  MONTHS_W_CHAR: 'MM[M] DD[D] HH[H] mm[M]',
+  DATEPICKER: 'd/m/y H:i',
+};
+
+export const Mode = {
+  DEFAULT: 'default',
+  EDITING: 'editing',
+};
 
 export const UserAction = {
   UPDATE_EVENT: 'UPDATE_EVENT',
@@ -127,4 +128,9 @@ export const State = {
   SAVING: 'SAVING',
   DELETING: 'DELETING',
   ABORTING: 'ABORTING',
+};
+
+export const ChartColor = {
+  WHITE: '#ffffff',
+  BLACK: '#000000',
 };

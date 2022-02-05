@@ -1,4 +1,4 @@
-import AbstractView from '../view/abstract-view.js';
+import AbstractView from './abstract-view.js';
 
 const createFilterTabsTemplate = (filters, currentType) => {
   const tabs = filters.map(({ type, number }) =>
@@ -24,7 +24,7 @@ const createFilterTabsTemplate = (filters, currentType) => {
   );
 };
 
-export default class FilterTabs extends AbstractView {
+export default class FilterTabsView extends AbstractView {
   #filters = null;
   #currentFilter = null;
 

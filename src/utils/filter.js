@@ -1,6 +1,6 @@
 import { FilterType } from './const';
 
-export function filter (events, type) {
+export const filter = (events, type) => {
   if (type === FilterType.EVERYTHING) {
     return events;
   }
@@ -26,4 +26,4 @@ export function filter (events, type) {
   });
 
   return filteredEvents;
-}
+};

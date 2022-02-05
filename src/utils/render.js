@@ -1,19 +1,19 @@
 import AbstractView from '../view/abstract-view.js';
 import { RenderPosition } from './const.js';
 
-export function createElement (template) {
+export const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
   return newElement.firstChild;
-}
+};
 
-export function renderElement (container, element, place = RenderPosition.APPEND) {
+export const renderElement = (container, element, place = RenderPosition.APPEND) => {
   const parent = container instanceof AbstractView ? container.element : container;
   const child = element instanceof AbstractView ? element.element : element;
 
   parent[place](child);
-}
+};
 
 export const replaceElement = (newElement, oldElement) => {
   if (newElement === null || oldElement === null) {

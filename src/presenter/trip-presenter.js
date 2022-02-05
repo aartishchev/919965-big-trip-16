@@ -1,8 +1,8 @@
 import EventPresenter from './event-presenter.js';
 import NewEventPresenter from './new-event-presenter.js';
-import EventsSorter from '../view/events-sorter.js';
-import EmptyListMsg from '../view/empty-list.js';
-import EventsList from '../view/events-list.js';
+import EventsSorterView from '../view/events-sorter-view.js';
+import EmptyListMsgView from '../view/empty-list-msg-view.js';
+import EventsList from '../view/events-list-view.js';
 import LoadingView from '../view/loading-view.js';
 import { SortType, UpdateType, UserAction, FilterType, BLANK_POINT, State } from '../utils/const.js';
 import { removeComponent, renderElement } from '../utils/render.js';
@@ -148,7 +148,7 @@ export default class tripPresenter {
   }
 
   #renderEmptyListMsg = () => {
-    this.#emptyListMsgComponent = new EmptyListMsg(this.#currentFilterType);
+    this.#emptyListMsgComponent = new EmptyListMsgView(this.#currentFilterType);
     renderElement(this.#eventsContainer, this.#emptyListMsgComponent);
   }
 
@@ -163,7 +163,7 @@ export default class tripPresenter {
   }
 
   #renderSorter = () => {
-    this.#eventsSorterComponent = new EventsSorter();
+    this.#eventsSorterComponent = new EventsSorterView();
     this.#eventsSorterComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
 
     renderElement(this.#eventsContainer, this.#eventsSorterComponent);

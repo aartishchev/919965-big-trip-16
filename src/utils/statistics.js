@@ -1,4 +1,4 @@
-import { POINT_TYPES } from './const';
+import { ChartColor, POINT_TYPES } from './const';
 import { getDuration } from './event';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -9,32 +9,32 @@ export const ValueTitles = {
   TOTAL_DURATION: 'totalDuration'
 };
 
-export function getTypesTotalValues (events) {
-  return POINT_TYPES.map((eventType) => {
-    const typeTotalValues = events.reduce((acc, { type, basePrice, dateFrom, dateTo }) => {
-      if (type === eventType.toLowerCase()) {
-        acc[ValueTitles.TOTAL_COUNT]++;
-        acc[ValueTitles.TOTAL_PRICE] += Number(basePrice);
-        acc[ValueTitles.TOTAL_DURATION] += getDuration(dateFrom, dateTo);
+export const getTypesTotalValues = (events) =>
+  POINT_TYPES.map((eventType) => {
+    const typeTotalValues = events.reduce(
+      (acc, { type, basePrice, dateFrom, dateTo }) => {
+        if (type === eventType.toLowerCase()) {
+          acc[ValueTitles.TOTAL_COUNT]++;
+          acc[ValueTitles.TOTAL_PRICE] += Number(basePrice);
+          acc[ValueTitles.TOTAL_DURATION] += getDuration(dateFrom, dateTo);
+
+          return acc;
+        }
 
         return acc;
-      }
-
-      return acc;
-    }, { totalPrice: 0, totalCount: 0, totalDuration: 0 });
+      }, { totalPrice: 0, totalCount: 0, totalDuration: 0 }
+    );
 
     return { eventType, ...typeTotalValues };
   });
-}
 
-export function getTotalValuesSorted (typesTotalValues, valueType) {
-  return typesTotalValues
+export const getTotalValuesSorted = (typesTotalValues, valueType) =>
+  typesTotalValues
     .map((typeValues) => ({ type: typeValues.eventType, value: typeValues[valueType] }))
     .sort((aType, bType) => bType.value - aType.value);
-}
 
-export function renderChart (chartLabel, ctx, sortedTypesByValues, formatter) {
-  return new Chart(ctx, {
+export const renderChart = (chartLabel, ctx, sortedTypesByValues, formatter) =>
+  new Chart(ctx, {
     plugins: [ChartDataLabels],
     type: 'horizontalBar',
     data: {
@@ -42,8 +42,8 @@ export function renderChart (chartLabel, ctx, sortedTypesByValues, formatter) {
       datasets: [
         {
           data: sortedTypesByValues.map(({ value }) => value),
-          backgroundColor: '#ffffff',
-          hoverBackgroundColor: '#ffffff',
+          backgroundColor: ChartColor.WHITE,
+          hoverBackgroundColor: ChartColor.WHITE,
           anchor: 'start',
           barThickness: 44,
           minBarLength: 50,
@@ -57,7 +57,7 @@ export function renderChart (chartLabel, ctx, sortedTypesByValues, formatter) {
           font: {
             size: 13,
           },
-          color: '#000000',
+          color: ChartColor.BLACK,
           anchor: 'end',
           align: 'start',
           formatter,
@@ -66,7 +66,7 @@ export function renderChart (chartLabel, ctx, sortedTypesByValues, formatter) {
       title: {
         display: true,
         text: chartLabel,
-        fontColor: '#000000',
+        fontColor: ChartColor.BLACK,
         fontSize: 23,
         position: 'left',
       },
@@ -74,7 +74,7 @@ export function renderChart (chartLabel, ctx, sortedTypesByValues, formatter) {
         yAxes: [
           {
             ticks: {
-              fontColor: '#000000',
+              fontColor: ChartColor.BLACK,
               padding: 5,
               fontSize: 13,
             },
@@ -105,4 +105,3 @@ export function renderChart (chartLabel, ctx, sortedTypesByValues, formatter) {
       },
     },
   });
-}

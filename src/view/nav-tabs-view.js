@@ -1,4 +1,4 @@
-import AbstractView from '../view/abstract-view.js';
+import AbstractView from './abstract-view.js';
 import { NavItem } from '../utils/const.js';
 
 const createNavTabsTemplate = (currentActiveTab) => (
@@ -20,7 +20,7 @@ const createNavTabsTemplate = (currentActiveTab) => (
   </nav>`
 );
 
-export default class NavTabs extends AbstractView {
+export default class NavTabsView extends AbstractView {
   #currentActiveTab = null;
 
   constructor(currentActiveTab) {
@@ -32,12 +32,12 @@ export default class NavTabs extends AbstractView {
     return createNavTabsTemplate(this.#currentActiveTab);
   }
 
-  setOnTabsClickHandler = (callback) => {
+  setTabsClickHandler = (callback) => {
     this._callback.onTabClick = callback;
-    this.element.addEventListener('click', this.#onTabClickHandler);
+    this.element.addEventListener('click', this.#tabsClickHandler);
   }
 
-  #onTabClickHandler = (evt) => {
+  #tabsClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.onTabClick(evt.target.dataset.navItem);
   }

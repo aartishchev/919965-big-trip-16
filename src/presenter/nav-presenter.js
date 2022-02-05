@@ -1,4 +1,4 @@
-import NavTabs from '../view/nav-tabs.js';
+import NavTabsView from '../view/nav-tabs-view.js';
 import { renderElement, replaceElement, removeComponent } from '../utils/render.js';
 import { NavItem } from '../utils/const.js';
 
@@ -16,8 +16,8 @@ export default class NavPresenter {
   init = () => {
     const prevNavComponent = this.#navComponent;
 
-    this.#navComponent = new NavTabs(this.#currentActiveTab);
-    this.#navComponent.setOnTabsClickHandler(this.#handleActiveTabChange);
+    this.#navComponent = new NavTabsView(this.#currentActiveTab);
+    this.#navComponent.setTabsClickHandler(this.#handleActiveTabChange);
 
     if (prevNavComponent === null) {
       renderElement(this.#navContainer, this.#navComponent);

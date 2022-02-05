@@ -1,6 +1,6 @@
 import { getFormattedEventDuration } from '../utils/event.js';
 import { Format } from '../utils/const.js';
-import AbstractView from '../view/abstract-view.js';
+import AbstractView from './abstract-view.js';
 import dayjs from 'dayjs';
 
 const generateOffersTemplate = (offers) => {
@@ -79,7 +79,7 @@ const createPointEventTemplate = (event) => {
   );
 };
 
-export default class PointEvent extends AbstractView {
+export default class PointEventView extends AbstractView {
   #event = null;
 
   constructor(event) {
@@ -91,21 +91,21 @@ export default class PointEvent extends AbstractView {
     return createPointEventTemplate(this.#event);
   }
 
-  setOnExpandHandler = (callback) => {
+  setExpandHandler = (callback) => {
     this._callback.onExpand = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#onExpandHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#expandClickHandler);
   }
 
-  setOnFavoriteHandler = (callback) => {
+  setFavoriteToggleHandler = (callback) => {
     this._callback.onFavorite = callback;
-    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#onFavoriteHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
-  #onExpandHandler = () => {
+  #expandClickHandler = () => {
     this._callback.onExpand();
   }
 
-  #onFavoriteHandler = () => {
+  #favoriteClickHandler = () => {
     this._callback.onFavorite();
   }
 }
